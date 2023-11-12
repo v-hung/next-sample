@@ -1,6 +1,15 @@
 import { useEffect, useState } from "react"
 import { create } from "zustand"
-import { persist, createJSONStorage } from 'zustand/middleware'
+import { persist, createJSONStorage, StateStorage } from 'zustand/middleware'
+
+type State = {
+  open: boolean,
+  width: string,
+}
+
+type Actions = {
+  toggle: (data?: boolean) => void
+}
 
 const NAME = "admin-menu"
 
@@ -15,7 +24,7 @@ const useAdminMenu = create(
     }),
     {
       name: NAME,
-      storage: createJSONStorage(() => localStorage),
+      storage: createJSONStorage(() => sessionStorage),
     }
   )
 )
