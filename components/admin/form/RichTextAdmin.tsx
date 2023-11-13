@@ -1,7 +1,7 @@
 "use client"
 import ClientOnly from '@/components/CLientOnly';
 import { Editor } from '@tinymce/tinymce-react'
-import React, { useRef, InputHTMLAttributes, FC } from 'react'
+import React, { useRef, InputHTMLAttributes, FC, memo } from 'react'
 import type { Editor as TinyMCEEditor } from 'tinymce';
 
 type State = InputHTMLAttributes<HTMLTextAreaElement> & {
@@ -81,4 +81,4 @@ const RichTextAdmin: FC<State> = (props) => {
   )
 }
 
-export default RichTextAdmin
+export default memo(RichTextAdmin)

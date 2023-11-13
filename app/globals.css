@@ -11,6 +11,10 @@
     @apply border-[#dcdce4];
   }
 
+  html, body {
+    @apply w-full h-full
+  }
+
   .material-symbols-rounded,
   .icon {
     font-family: 'Material Symbols Rounded';

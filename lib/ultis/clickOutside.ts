@@ -1,10 +1,10 @@
 import { useEffect, useLayoutEffect, useRef } from "react";
 
-const useClickOutside = (ref: any, cb: () => void) => {
+const useClickOutside = (ref: any, cb: (e: Event) => void) => {
   useEffect(() => {
-    function handleClickOutside(event: any) {
+    function handleClickOutside(event: Event) {
       if (ref.current && !ref.current.contains(event.target) && !event.defaultPrevented) {
-        cb()
+        cb(event)
       }
     }
     document.addEventListener("mousedown", handleClickOutside, false);
