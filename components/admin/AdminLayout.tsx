@@ -3,11 +3,11 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react'
 import HeaderAdmin from './HeaderAdmin';
 import MenuAdmin from './MenuAdmin';
-import { TABLES_SAMPLE } from '@/app/admin/(admin)/(sample)/[slug]/table';
 import { useStore } from 'zustand';
 import useAdminMenu from '@/stores/admin/admin_menu';
 import ClientOnly from '../CLientOnly';
 import { AdminType } from '@/actions/admin/admin';
+import { TABLES_SAMPLE } from '@/app/admin/(admin)/[slug]/table';
 
 export type LinkState = {
   icon?: string,

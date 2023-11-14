@@ -7,7 +7,7 @@ const nextConfig = {
 
 const millionConfig = {
   auto: true,
-  mute: 'info'
+  mute: true
   // if you're using RSC:
   // auto: { rsc: true },
 }

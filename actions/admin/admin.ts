@@ -7,7 +7,7 @@ import { exclude } from "@/lib/ultis/hepler";
 import { signToken, verifyToken } from "@/lib/admin/jwt";
 import { removeSpace } from "@/lib/ultis/validator";
 import db from "@/lib/admin/db";
-import { Admin, PermissionsOnRoles, Role } from "@prisma/client";
+import { Admin, File, PermissionsOnRoles, Role } from "@prisma/client";
 import { NextRequest } from "next/server";
 
 export type AdminType = Omit<Admin, "password"> & {
@@ -70,7 +70,25 @@ export const getAdmin = async (request?: NextRequest) => {
   }
 }
 
-export const loginUserAdmin = async ({
+export const logoutAdmin = async () => {
+  'use server'
+
+  const adminId = cookies().get('token-admin')?.value
+
+  if (adminId) {
+    await createHistoryAdmin({
+      action: 'Đăng xuất',
+      adminId: adminId,
+      status: 'success',
+      title: 'Đã đăng xuất tại trang quản trị',
+    })
+  }
+
+  cookies().delete('token-admin')
+  redirect('/admin')
+}
+
+export const loginAdmin = async ({
   email, password, remember
 }: {
   email: string,

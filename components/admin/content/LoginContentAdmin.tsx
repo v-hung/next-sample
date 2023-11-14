@@ -3,8 +3,9 @@ import { redirect, useRouter, useSearchParams } from 'next/navigation'
 import Image from 'next/image'
 import React, { FormEvent, useState } from 'react'
 import { useAction, usePromise } from '@/lib/ultis/promise'
-import { loginUserAdmin } from '@/actions/admin/admin'
 import InputAdmin from '../form/InputAdmin'
+import Checkbox from '@/components/ui/Checkbox'
+import { loginAdmin } from '@/actions/admin/admin'
 
 const LoginContentAdmin = () => {
   const router = useRouter();
@@ -24,7 +25,7 @@ const LoginContentAdmin = () => {
           new FormData(e.target as HTMLFormElement),
         )
         
-        const { user } = await useAction(() => loginUserAdmin({
+        const { user } = await useAction(() => loginAdmin({
           email, password, remember
         }))
 
@@ -58,10 +59,7 @@ const LoginContentAdmin = () => {
 
                   <InputAdmin type='password' name='password' id='password' placeholder="Password" label="Password" startIcon="key" inputClass='bg-gray-100' />
 
-                  <div className="flex space-x-2 items-center">
-                    <input type="checkbox" name='remember' id='remember' value="true" />
-                    <label htmlFor='remember' className='select-none cursor-pointer'>Ghi nhớ tôi</label>
-                  </div>
+                  <Checkbox name='remember' label='Ghi nhớ tôi' value="true" />
 
                   { error != ""
                     ? <div className="border border-red-500 p-2 rounded bg-red-200">

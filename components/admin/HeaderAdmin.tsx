@@ -1,9 +1,13 @@
 "use client"
-import { AdminType } from '@/actions/admin/admin'
-import { memo, useState, useTransition, useRef } from 'react'
+import { AdminType, logoutAdmin } from '@/actions/admin/admin'
+import { memo, useState, useTransition, useRef, MouseEvent } from 'react'
 import { LinkState } from './AdminLayout'
 import useAdminMenu from '@/stores/admin/admin_menu'
 import { usePathname } from 'next/navigation'
+import dayjs from 'dayjs'
+import Dropdown, { Divide, MenuItem } from '../ui/Dropdown'
+import Link from 'next/link'
+import { useAction } from '@/lib/ultis/promise'
 
 const HeaderAdmin = memo(({
   adminUser, managerLinks, generalLinks
@@ -45,150 +49,86 @@ const HeaderAdmin = memo(({
 })
 
 const Notification = ({ user }: { user: AdminType}) => {
-  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
-  const open = Boolean(anchorEl)
   const [loginDate, setLoginDate] = useState(new Date)
 
-  const handleClick = (e: React.MouseEvent<HTMLElement>) => {
-    e.preventDefault()
-
-    setAnchorEl(e.currentTarget);
-  }
-  const handleClose = () => {
-    setAnchorEl(null);
-  }
-
   return (
-    <>
-      <button className="relative w-10 h-10 p-2 rounded-full hover:bg-gray-100"
-        onClick={handleClick}
-      >
-        <span className="icon">
-          notifications
-        </span>
-        <div className="absolute w-2 h-2 rounded-full bg-orange-600 top-2 right-3"></div>
-      </button>
-      <Menu
-        anchorEl={anchorEl}
-        open={open}
-        onClose={handleClose}
-        sx={{mt: 1.5}}
-        transformOrigin={{ horizontal: 'center', vertical: 'top' }}
-        anchorOrigin={{ horizontal: 'center', vertical: 'bottom' }}
-        PaperProps={{
-          sx: {
-            '& ul': {
-              py: 0
-            }
-          },
-        }}
-      >
-        <div className="w-96 max-w-[100vw]">
-          <div className="flex justify-between px-4 py-2 space-x-4 items-center border-b">
-            <p className="font-medium">Thông báo</p>
-            <span className="text-sm text-gray-600">Đánh dấu đã đọc</span>
-          </div>
-          <div className="flex flex-col divide-y">
-            <div className="p-4 flex space-x-3 hover:bg-blue-100">
-              <div className="w-10 h-10 rounded-full overflow-hidden bg-blue-500 flex items-center justify-center">
-                { user?.image
-                  ? <img src={user?.image.url} alt="" className='w-full h-full object-cover' loading='lazy' />
-                  : <span className="icon icon-fill !text-white !text-2xl">
-                    person
-                  </span>
-                }
-              </div>
+    <Dropdown
+      renderItem={(rest) => (
+        <button {...rest} className="relative w-10 h-10 p-2 rounded-full hover:bg-gray-100">
+          <span className="icon">
+            notifications
+          </span>
+          <div className="absolute w-2 h-2 rounded-full bg-orange-600 top-2 right-3"></div>
+        </button>
+      )}
+      placement='bottom'
+    >
+      <div className="w-96 max-w-[100vw]">
+        <div className="flex justify-between px-4 py-2 space-x-4 items-center border-b">
+          <p className="font-medium">Thông báo</p>
+          <span className="text-sm text-gray-600">Đánh dấu đã đọc</span>
+        </div>
+        <div className="flex flex-col divide-y">
+          <div className="p-4 flex space-x-3 hover:bg-blue-100">
+            <div className="w-10 h-10 rounded-full overflow-hidden bg-blue-500 flex items-center justify-center">
+              { user?.image
+                ? <img src={user?.image.url} alt="" className='w-full h-full object-cover' loading='lazy' />
+                : <span className="icon icon-fill !text-white !text-2xl">
+                  person
+                </span>
+              }
+            </div>
 
-              <div className="flex flex-col space-y-1">
-                <p><span className="font-medium">{user?.name}</span> chào mừng quay trở lại</p>
-                <p className="text-sm text-gray-600">{moment(loginDate).format('DD/MM/yyyy h:mm:ss a')}</p>
-              </div>
+            <div className="flex flex-col space-y-1">
+              <p><span className="font-medium">{user?.name}</span> chào mừng quay trở lại</p>
+              <p className="text-sm text-gray-600">{dayjs(loginDate).format('DD/MM/yyyy h:mm:ss a')}</p>
             </div>
           </div>
         </div>
-      </Menu>
-    </>
+      </div>
+    </Dropdown>
   )
 }
 
 const AvatarUser = ({ user }: { user: NonNullable<AdminType>}) => {
-  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
-  const open = Boolean(anchorEl)
-
-  const handleClick = (event: React.MouseEvent<HTMLElement>) => {
-    setAnchorEl(event.currentTarget);
-  }
-  const handleClose = () => {
-    setAnchorEl(null);
-  }
   
+  const logout = (e: MouseEvent) => {
+    e.preventDefault()
+    useAction(logoutAdmin)
+  }
+
   return (
-    <div>
-      <div 
-        className="flex items-center space-x-2 rounded-full p-1 pr-2 bg-gray-100 hover:bg-gray-200 cursor-pointer select-none"
-        onClick={handleClick}
-      >
-        <div className={`w-10 h-10 rounded-full overflow-hidden ${!user.image ? 'bg-blue-500' : ''} grid place-items-center`}>
-          { user.image
-            ? <img src={user.image.url} alt="" className='w-full h-full object-cover' loading='lazy' />
-            : <span className="icon icon-fill !text-white !text-2xl">
-              person
-            </span>
-          }
-        </div>
-        <div className='font-semibold'>{user.name}</div>
-        <span className="icon icon-fill">
-          arrow_drop_down
-        </span>
-      </div>
-      <Menu
-        anchorEl={anchorEl}
-        open={open}
-        onClose={handleClose}
-        onClick={handleClose}
-        PaperProps={{
-          elevation: 0,
-          sx: {
-            overflow: 'visible',
-            filter: 'drop-shadow(0px 2px 8px rgba(0,0,0,0.32))',
-            mt: 1.5,
-            '& .MuiAvatar-root': {
-              width: 32,
-              height: 32,
-              ml: -0.5,
-              mr: 1,
-            },
-            '&:before': {
-              content: '""',
-              display: 'block',
-              position: 'absolute',
-              top: 0,
-              right: 14,
-              width: 10,
-              height: 10,
-              bgcolor: 'background.paper',
-              transform: 'translateY(-50%) rotate(45deg)',
-              zIndex: 0,
-            },
-          },
-        }}
-        transformOrigin={{ horizontal: 'right', vertical: 'top' }}
-        anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
-      >
-        <MenuItem>
-          <Link href="/admin/profile" className='flex items-center'>
-            <Avatar /> Trang cá nhân
-          </Link>
-        </MenuItem>
-        <Divider />
-        <MenuItem onClick={() => logoutUserAdmin()}>
-          <span className="icon icon-fill text-red-600">
-            logout
+    <Dropdown
+      renderItem={(rest) => (
+        <div 
+          className="flex items-center space-x-2 rounded-full p-1 pr-2 bg-gray-100 hover:bg-gray-200 cursor-pointer select-none"
+          {...rest}
+        >
+          <div className={`w-10 h-10 rounded-full overflow-hidden ${!user.image ? 'bg-blue-500' : ''} grid place-items-center`}>
+            { user.image
+              ? <img src={user.image.url} alt="" className='w-full h-full object-cover' loading='lazy' />
+              : <span className="icon icon-fill !text-white !text-2xl">
+                person
+              </span>
+            }
+          </div>
+          <div className='font-semibold'>{user.name}</div>
+          <span className="icon icon-fill">
+            arrow_drop_down
           </span>
-          <span className="text-red-600">Đăng xuất</span>
-        </MenuItem>
-      </Menu>
-    </div>
+        </div>
+      )}
+      placement='bottom'
+    >
+      <MenuItem LinkComponent={Link} href='/admin/profile' icon="person">Trang cá nhân</MenuItem>
+      <Divide />
+      <MenuItem onClick={logout}>
+        <span className="icon icon-fill text-red-600">
+          logout
+        </span>
+        <span className="text-red-600">Đăng xuất</span>
+      </MenuItem>
+    </Dropdown>
   )
 }
 

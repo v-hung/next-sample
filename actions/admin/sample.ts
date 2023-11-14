@@ -2,11 +2,10 @@
 
 import db from "@/lib/admin/db";
 import { checkPermissions } from "@/lib/admin/fields";
-import { Setting } from "@prisma/client";
 import { FC } from "react";
 import { createHistoryAdmin, getAdmin } from "./admin";
 import { hash } from "bcrypt";
-import { parseDataInString } from "@/lib/ultis/hepler";
+import { TABLES_SAMPLE } from "@/app/admin/(admin)/[slug]/table";
 
 export type SampleColumnsType = {
   name: string,

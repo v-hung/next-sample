@@ -1,3 +1,6 @@
+"use client"
+import useAlerts from "@/stores/alerts"
+
 export const usePromise = async ({
   loading, setLoading, callback, successTitle = 'Thành công',
   showSuccessTitle = true, setError
@@ -17,11 +20,13 @@ export const usePromise = async ({
     await callback()
     
     if (showSuccessTitle) {
-      
+      useAlerts().addAlert({type: 'success', message: successTitle})
     }
   } 
   catch (error) {
     let text = error instanceof Error ? error.message : "Có lỗi xảy ra, vui lòng thử lại sau"
+
+    useAlerts().addAlert({type: 'error', message: text})
 
     if (typeof setError == "function") {
       setError(text)
