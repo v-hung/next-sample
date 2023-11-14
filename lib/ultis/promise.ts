@@ -3,9 +3,10 @@ import useAlerts from "@/stores/alerts"
 
 export const usePromise = async ({
   loading, setLoading, callback, successTitle = 'Thành công',
-  showSuccessTitle = true, setError
+  showSuccessTitle = true, setError, always = false
 }: {
   loading?: boolean,
+  always?: boolean,
   setLoading?: React.Dispatch<React.SetStateAction<boolean>>,
   setError?: React.Dispatch<React.SetStateAction<string>>,
   callback: () => Promise<void>,
@@ -13,7 +14,7 @@ export const usePromise = async ({
   showSuccessTitle?: boolean
 }) => {
   try {
-    if (loading) return
+    if (loading && !always) return
     if (typeof setLoading == "function")
       setLoading(true)
 
