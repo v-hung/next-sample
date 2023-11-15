@@ -3,29 +3,28 @@ import { generatePaginationArray } from '@/lib/admin/pagination'
 import React, { TdHTMLAttributes, TableHTMLAttributes, useEffect, useState, HTMLAttributes, ThHTMLAttributes } from 'react'
 import { twMerge } from 'tailwind-merge'
 
-type TableType = {
+type TableType = TableHTMLAttributes<HTMLTableElement> & {
   border?: boolean,
   rounded?: boolean,
-  shadow?: boolean,
-  className?: string,
-  children?: React.ReactNode
+  shadow?: boolean
 }
 
 export const Table = (props: TableType) => {
+  const {children, className, border, rounded, shadow, ...rest} = props
 
-  const commonClass = `${props.border ? 'border dark:border-gray-700' : ''}
-    ${props.rounded ? 'rounded-lg' : ''}
-    ${props.shadow ? 'shadow dark:shadow-gray-900' : ''}
+  const commonClass = `${border ? 'border dark:border-gray-700' : ''}
+    ${rounded ? 'rounded-lg' : ''}
+    ${shadow ? 'shadow dark:shadow-gray-900' : ''}
   `
 
   return (
     <div className="flex flex-col">
       <div className="-m-1.5 overflow-x-auto">
         <div className="p-1.5 min-w-full inline-block align-middle">
-          <div className={twMerge(commonClass, props.className)}>
+          <div className={twMerge(commonClass, className)}>
             <div className="overflow-hidden">
-              <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
-                {props.children}
+              <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700" {...rest}>
+                {children}
               </table>
             </div>
           </div>

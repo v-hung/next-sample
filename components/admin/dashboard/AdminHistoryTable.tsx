@@ -58,9 +58,7 @@ const AdminHistoryTable = () => {
     <>
       <section className='mt-4 relative'>
         <Table>
-          <div>asfdsadf</div>
-          <div>asdfsdf</div>
-          {/* <THead>
+          <THead>
             <Tr>
               <Td>Thời gian</Td>
               <Td>Quản trị viên</Td>
@@ -123,7 +121,7 @@ const AdminHistoryTable = () => {
               )
               : <Tr><Td colSpan={"100%" as any} className='!text-center'>Không có bản ghi nào</Td></Tr>
             }
-          </TBody> */}
+          </TBody>
         </Table>
 
         { loading
