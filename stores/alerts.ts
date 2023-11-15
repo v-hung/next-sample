@@ -1,8 +1,8 @@
 import { create } from "zustand"
 
-type ALertType = {
+export type ALertType = {
   id: number,
-  type: 'success' | 'error',
+  type: "success" | "error",
   message: string
 }
 

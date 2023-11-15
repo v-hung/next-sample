@@ -1,15 +1,12 @@
 "use client"
 
+import { getAccessDevice } from "@/actions/admin/dashboard"
 import Skeleton from "@/components/ui/Skeleton"
 import { useAction, usePromise } from "@/lib/ultis/promise"
 import { Chart } from "chart.js/auto"
 import { memo, useEffect, useRef, useState } from "react"
 
-const AdminChartDevice = ({
-  getAccessDevice
-}: {
-  getAccessDevice: () => Promise<{counts: {mobile: bigint, tablet: bigint, pc: bigint}}>
-}) => {
+const AdminChartDevice = () => {
   const [loading, setLoading] = useState(false)
 
   const [data, setData] = useState<{mobile: number, tablet: number, pc: number}>({
@@ -18,22 +15,29 @@ const AdminChartDevice = ({
     pc: 0
   })
 
-  const fetchData = () => usePromise({
-    loading,
-    setLoading,
-    showSuccessTitle: false,
-    callback: async () => {
-      const { counts } = await useAction(getAccessDevice)
-      setData({
-        mobile: Number(counts.mobile),
-        tablet: Number(counts.tablet),
-        pc: Number(counts.pc)
-      })
-    }
-  })
+  const checkData = data.mobile != 0 || data.tablet != 0 || data.pc != 0 
 
   useEffect(() => {
-    fetchData()
+    usePromise({
+      loading,
+      setLoading,
+      showSuccessTitle: false,
+      callback: async () => {
+        const { counts } = await useAction(getAccessDevice)
+  
+        console.log({
+          mobile: Number(counts.mobile),
+          tablet: Number(counts.tablet),
+          pc: Number(counts.pc)
+        })
+  
+        setData({
+          mobile: Number(counts.mobile),
+          tablet: Number(counts.tablet),
+          pc: Number(counts.pc)
+        })
+      }
+    })
   }, [])
 
   return (
@@ -44,16 +48,19 @@ const AdminChartDevice = ({
       </div>
       <div className="flex-grow min-h-0 flex justify-center items-center">
         { loading
-          ? <div className="animate-pulse">
-              <div className="h-full aspect-square">
-                <Skeleton className="!w-full !h-full rounded-full" />
+          ? <div className="animate-pulse justify-self-start">
+              <div className="h-full aspect-square mb-2">
+                <Skeleton className="w-full h-full" />
               </div>
-              <div className="flex-col justify-self-center ml-6">
+              <div className="flex-col items-start space-y-2">
                 <Skeleton width={150} />
                 <Skeleton width={100} />
                 <Skeleton width={120} />
               </div>
             </div>
+          : !checkData ? <div className="w-full h-full rounded-lg grid place-items-center bg-gray-100">
+            Chưa có dữ liệu
+          </div>
           : <ChartTwo data={data} />
         }
       </div>
@@ -71,7 +78,7 @@ const ChartTwo = memo(({
 
   const getPercent = (type: 'mobile' | 'tablet' | 'pc') => {
     const totalCount = mobile + tablet + pc
-    return Math.round((type == "mobile" ? mobile : type == "tablet" ? tablet : pc) / totalCount * 100)
+    return Math.round((type == "mobile" ? mobile : type == "tablet" ? tablet : pc) / (totalCount || 1) * 100)
   }
 
   useEffect(() => {

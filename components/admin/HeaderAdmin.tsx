@@ -8,6 +8,7 @@ import dayjs from 'dayjs'
 import Dropdown, { Divide, MenuItem } from '../ui/Dropdown'
 import Link from 'next/link'
 import { useAction } from '@/lib/ultis/promise'
+import Image from 'next/image'
 
 const HeaderAdmin = memo(({
   adminUser, managerLinks, generalLinks
@@ -106,7 +107,7 @@ const AvatarUser = ({ user }: { user: NonNullable<AdminType>}) => {
         >
           <div className={`w-10 h-10 rounded-full overflow-hidden ${!user.image ? 'bg-blue-500' : ''} grid place-items-center`}>
             { user.image
-              ? <img src={user.image.url} alt="" className='w-full h-full object-cover' loading='lazy' />
+              ? <Image src={user.image.url} alt={'photo ' + user.name} width={200} height={200} className='w-full h-full object-cover' loading='lazy' />
               : <span className="icon icon-fill !text-white !text-2xl">
                 person
               </span>
@@ -122,11 +123,8 @@ const AvatarUser = ({ user }: { user: NonNullable<AdminType>}) => {
     >
       <MenuItem LinkComponent={Link} href='/admin/profile' icon="person">Trang cá nhân</MenuItem>
       <Divide />
-      <MenuItem onClick={logout}>
-        <span className="icon icon-fill text-red-600">
-          logout
-        </span>
-        <span className="text-red-600">Đăng xuất</span>
+      <MenuItem onClick={logout} icon="logout" className='text-red-600 cursor-pointer'>
+        Đăng xuất
       </MenuItem>
     </Dropdown>
   )

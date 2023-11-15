@@ -2,7 +2,6 @@
 
 import { useState, useEffect, Dispatch, SetStateAction, useRef } from "react";
 import Image from "next/image"
-import { AdminHistoryState } from "@/app/admin/(admin)/page"
 import Prism from "prismjs";
 import "prismjs/themes/prism-tomorrow.css";
 import { generatePaginationArray } from "@/lib/admin/pagination"
@@ -10,12 +9,9 @@ import { useAction, usePromise } from "@/lib/ultis/promise";
 import dayjs from "dayjs";
 import Drawer from "@/components/ui/Drawer";
 import { TBody, THead, Table, Td, Tr } from "@/components/ui/Table";
+import { AdminHistoryState, getAdminHistory } from "@/actions/admin/dashboard";
 
-const AdminHistoryTable = ({
-  getAdminHistory
-}: {
-  getAdminHistory: (page?: number, per_page?: number) => Promise<{data: AdminHistoryState[], count: number}>
-}) => {
+const AdminHistoryTable = () => {
   const [loading, setLoading] = useState(false)
   const [data, setData] = useState<AdminHistoryState[]>([])
   const [page, setPage] = useState(1)
@@ -62,7 +58,9 @@ const AdminHistoryTable = ({
     <>
       <section className='mt-4 relative'>
         <Table>
-          <THead>
+          <div>asfdsadf</div>
+          <div>asdfsdf</div>
+          {/* <THead>
             <Tr>
               <Td>Thời gian</Td>
               <Td>Quản trị viên</Td>
@@ -125,7 +123,7 @@ const AdminHistoryTable = ({
               )
               : <Tr><Td colSpan={"100%" as any} className='!text-center'>Không có bản ghi nào</Td></Tr>
             }
-          </TBody>
+          </TBody> */}
         </Table>
 
         { loading

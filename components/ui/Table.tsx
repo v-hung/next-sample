@@ -8,7 +8,7 @@ type TableType = {
   rounded?: boolean,
   shadow?: boolean,
   className?: string,
-  children: React.ReactNode
+  children?: React.ReactNode
 }
 
 export const Table = (props: TableType) => {

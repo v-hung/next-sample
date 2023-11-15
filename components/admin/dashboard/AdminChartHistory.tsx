@@ -7,12 +7,9 @@ import zoomPlugin from 'chartjs-plugin-zoom';
 import { memo, useEffect, useRef, useState } from "react";
 import { useAction, usePromise } from "@/lib/ultis/promise";
 import Skeleton from "@/components/ui/Skeleton";
+import { getAccessHistory } from "@/actions/admin/dashboard";
 
-const AdminChartHistory = ({
-  getAccessHistory
-}: {
-  getAccessHistory: (data?: Date) => Promise<{data: {count: number, date: string}[]}>
-}) => {
+const AdminChartHistory = () => {
   const [loading, setLoading] = useState(false)
   const [data, setData] = useState<{date: string, count: number}[]>([])
 
@@ -38,7 +35,10 @@ const AdminChartHistory = ({
       </div>
       <div className="flex-grow min-h-0">
         { loading
-          ? <Skeleton className="!w-full !h-full" />
+          ? <Skeleton className="w-full h-full rounded-lg" />
+          : data.length == 0 ? <div className="w-full h-full rounded-lg grid place-items-center bg-gray-100">
+            Chưa có dữ liệu
+          </div>
           : <ChartOne data={data} />
         }
       </div>

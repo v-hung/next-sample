@@ -4,7 +4,9 @@ import useSettings from "@/stores/settings";
 import { findSettingByName } from '@/lib/admin/fields';
 import RootLayout from '@/components/RootLayout';
 import { getSettingsData } from '@/actions/admin/settings';
+import { Inter } from 'next/font/google';
 
+const font = Inter({ subsets: ['latin'] })
 
 const Layout = async ({ children }: {
   children: React.ReactNode
@@ -23,7 +25,7 @@ const Layout = async ({ children }: {
           : null
         }
       </head>
-      <body id='__next'>
+      <body id='__next' className={font.className}>
         <RootLayout settings={settings}>{children}</RootLayout>
       </body>
     </html>

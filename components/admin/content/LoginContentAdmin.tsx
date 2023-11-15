@@ -59,7 +59,7 @@ const LoginContentAdmin = () => {
 
                   <InputAdmin type='password' name='password' id='password' placeholder="Password" label="Password" startIcon="key" inputClass='bg-gray-100' />
 
-                  <Checkbox name='remember' label='Ghi nhớ tôi' value="true" />
+                  <Checkbox name='remember' label='Ghi nhớ tôi' defaultChecked />
 
                   { error != ""
                     ? <div className="border border-red-500 p-2 rounded bg-red-200">

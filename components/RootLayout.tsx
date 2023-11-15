@@ -4,8 +4,6 @@ import { Inter } from 'next/font/google'
 import useSettings from '@/stores/settings'
 import SnackBar from './ui/SnackBar'
 
-const font = Inter({ subsets: ['latin'] })
-
 const RootLayout = ({children, settings}: {
   children: React.ReactNode
   settings: any[]
@@ -26,10 +24,10 @@ const RootLayout = ({children, settings}: {
   }
 
   return (
-    <div className={font.className}>
+    <>
       {children}
       <SnackBar />
-    </div>
+    </>
   )
 }
 

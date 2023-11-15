@@ -1,7 +1,7 @@
-import { PrismaClient, Permission } from '@prisma/client'
-import bcrypt from 'bcrypt'
-
 (() => {
+  const { PrismaClient } = require('@prisma/client')
+  const bcrypt = require('bcrypt')
+
   const prisma = new PrismaClient();
   async function main() {
     const permissions = await prisma.$transaction([

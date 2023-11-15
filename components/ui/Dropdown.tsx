@@ -1,9 +1,6 @@
 "use client"
-import { useClickOutside } from '@/lib/ultis/clickOutside';
 import { useFloating, offset, flip, shift, autoUpdate, FloatingFocusManager, useClick, useDismiss, useRole, useInteractions, Placement } from '@floating-ui/react';
-import { AnimatePresence, motion } from 'framer-motion';
-import Link from 'next/link';
-import React, { useState, HTMLAttributes, useRef, ReactNode, memo, FC } from 'react'
+import React, { useState, HTMLAttributes, ReactNode, memo, FC } from 'react'
 import { twMerge } from "tailwind-merge";
 
 type State = HTMLAttributes<HTMLElement> & {
@@ -20,7 +17,9 @@ const Dropdown: React.FC<State> = (props) => {
     placement: placement,
     open: isOpen,
     onOpenChange: setIsOpen,
-    middleware: [offset(5), flip(), shift()],
+    middleware: [offset(5), flip(), shift({
+      padding: 10
+    })],
     whileElementsMounted: autoUpdate,
   })
 
@@ -45,7 +44,8 @@ const Dropdown: React.FC<State> = (props) => {
           <div ref={refs.setFloating}
             style={floatingStyles}
             {...getFloatingProps()}
-            className={twMerge(`min-w-[15rem] bg-white shadow-md border rounded-lg p-2 dark:bg-gray-800 dark:border dark:border-gray-700`, className)}
+            tabIndex={-1}
+            className={twMerge(`min-w-[15rem] bg-white shadow-md border rounded-lg p-2 dark:bg-gray-800 dark:border dark:border-gray-700 !m-0`, className)}
           >
             {children}
           </div>
