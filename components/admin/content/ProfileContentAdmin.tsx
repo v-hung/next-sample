@@ -2,20 +2,18 @@
 
 import React, { MouseEvent, useState } from 'react'
 import { useRouter } from 'next/navigation';
-import { UpdateProfileType } from '@/app/admin/(admin)/profile/page';
 import Image from 'next/image';
-import { AdminType } from '@/actions/admin/admin';
-import { usePromise } from '@/lib/ultis/promise';
+import { AdminType, updateProfile } from '@/actions/admin/admin';
+import { useAction, usePromise } from '@/lib/utils/promise';
 import ButtonAdmin from '../form/ButtonAdmin';
 import InputAdmin from '../form/InputAdmin';
 import FileInputAdmin from '../form/FileInputAdmin';
 
-type State = {
-  defaultValue: NonNullable<AdminType>,
-  updateProfile: (data: UpdateProfileType) => Promise<void>
+type Props = {
+  defaultValue: NonNullable<AdminType>
 }
 
-const ProfileContentAdmin: React.FC<State> = ({defaultValue, updateProfile}) => {
+const ProfileContentAdmin: React.FC<Props> = ({defaultValue}) => {
   const router = useRouter()
   const [loading, setLoading] = useState(false)
 
@@ -40,12 +38,12 @@ const ProfileContentAdmin: React.FC<State> = ({defaultValue, updateProfile}) => 
         if (loading) return
         setLoading(true)
   
-        await updateProfile({
+        await useAction(() => updateProfile({
           email,
           name,
           imageId: image?.id,
           password
-        })
+        }))
   
         router.refresh()
       }
@@ -58,10 +56,10 @@ const ProfileContentAdmin: React.FC<State> = ({defaultValue, updateProfile}) => 
         <div className="w-full h-36 bg-gray-200 relative bg-[url('/bg-profile.png')] overflow-hidden"></div>
         <div className="px-8">
           <div className="-translate-y-8 flex items-center space-x-4">
-            <div className={`w-28 h-28 rounded-full border-4 border-white ${!defaultValue.image ? 'bg-blue-500' : ''} overflow-hidden grid place-items-center`}>
+            <div className={`w-28 h-28 rounded-full border-4 border-white ${!defaultValue.image ? 'bg-sky-500' : ''} overflow-hidden grid place-items-center`}>
               { defaultValue.image
                 ? <Image src={defaultValue.image.url} alt={`image profile user ${defaultValue.name}`} width={112} height={112} className='w-full h-full object-cover' />
-                : <span className="material-symbols-outlined icon-fill !text-white !text-7xl">
+                : <span className="icon icon-fill !text-white !text-7xl">
                   person
                 </span>
               }
@@ -89,7 +87,7 @@ const ProfileContentAdmin: React.FC<State> = ({defaultValue, updateProfile}) => 
               <div className="font-semibold">Thông tin công khai</div>
               <p className='text-gray-600'>Mọi người có thể thấy được thông tin này</p>
             </div>
-            <div className='flex flex-col space-y-4 border-b pb-6'>
+            <div className='flex flex-col gap-4 border-b pb-6'>
               <InputAdmin name='name' className='w-96' label="Tên" value={name} onChange={(e) => setName(e.target.value)} />
               <InputAdmin name='email' className='w-96' label="Email" value={email} onChange={(e) => setEmail(e.target.value)} />
             </div>
@@ -97,11 +95,11 @@ const ProfileContentAdmin: React.FC<State> = ({defaultValue, updateProfile}) => 
               <div className="font-semibold">Ảnh cá nhân</div>
               <p className='text-gray-600'>Cập nhập ảnh của bạn bằng cách chọn tùy chọn thêm ảnh bên cạnh</p>
             </div>
-            <div className="border-b pb-6 flex space-x-4 items-center">
-              <div className={`w-24 h-24 rounded-full border-2 border-white ${!defaultValue.image ? 'bg-blue-500' : ''} overflow-hidden shadow grid place-items-center`}>
+            <div className="border-b pb-6 flex gap-4 items-center">
+              <div className={`w-24 h-24 rounded-full border-2 border-white ${!defaultValue.image ? 'bg-sky-500' : ''} overflow-hidden shadow grid place-items-center`}>
                 { defaultValue.image
                   ? <Image src={defaultValue.image.url} alt={`image profile user ${defaultValue.name}`} width={96} height={96} className='w-full h-full object-cover' />
-                  : <span className="material-symbols-outlined icon-fill !text-white !text-6xl">
+                  : <span className="icon icon-fill !text-white !text-6xl">
                     person
                   </span>
                 }
@@ -112,7 +110,7 @@ const ProfileContentAdmin: React.FC<State> = ({defaultValue, updateProfile}) => 
               <div className="font-semibold">Mật khẩu</div>
               <p className='text-gray-600'>Bạn nên giữ bí mật mật khẩu của mình</p>
             </div>
-            <div className='flex flex-col space-y-4 border-b pb-6'>
+            <div className='flex flex-col gap-4 border-b pb-6'>
               <InputAdmin name='name' type='password' value={password} onChange={(e) => setPassword(e.target.value)} className='w-96' label="Mật khẩu" autoComplete="new-password" />
             </div>
             <div className='col-span-2 flex justify-end space-x-4'>

@@ -2,7 +2,7 @@
 
 import { getAccessDevice } from "@/actions/admin/dashboard"
 import Skeleton from "@/components/ui/Skeleton"
-import { useAction, usePromise } from "@/lib/ultis/promise"
+import { useAction, usePromise } from "@/lib/utils/promise"
 import { Chart } from "chart.js/auto"
 import { memo, useEffect, useRef, useState } from "react"
 

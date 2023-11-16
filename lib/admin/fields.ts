@@ -12,16 +12,13 @@ import SelectAdmin from "@/components/admin/form/SelectAdmin";
 import RelationInputAdmin from "@/components/admin/form/RelationInputAdmin";
 import PermissionsInputAdmin from "@/components/admin/form/PermissionsInputAdmin";
 import PasswordInputAdmin from "@/components/admin/form/PasswordInputAdmin";
-import { SampleFieldAndDetailsType } from "@/actions/admin/sample";
+import { SampleColumnsType, SampleFieldAndDetailsType } from "@/actions/admin/sample";
+import { SettingType } from "@/actions/admin/settings";
 
 export type DataFieldType = Record<SampleFieldAndDetailsType['type'], {
   fieldName: string,
   icon: string,
-  Component: React.FC<{
-    label?: string | null,
-    isReturnData?: boolean,
-    details: any,
-  }> | null,
+  Component: React.FC<any> | null,
   defaultValue?: any
 }>
 
@@ -51,15 +48,15 @@ export const checkPermissions = (permission: PermissionsOnRoles[], tableName: st
   return permission.findIndex(v => v.permissionTableName == tableName && v.permissionKey == key) >= 0
 }
 
-// export const createDefaultValue = (column: SampleColumnsType) => {
-//   if (column.type == "custom" && column.details.defaultValue) {
-//     return column.details.defaultValue
-//   }
+export const createDefaultValue = (column: SampleColumnsType | SettingType) => {
+  if (column.type == "custom" && column.details.defaultValue) {
+    return column.details.defaultValue
+  }
 
-//   const dataField = DATA_FIELDS[column.type]
-//   if (typeof dataField.defaultValue != "undefined") {
-//     return dataField.defaultValue
-//   }
+  const dataField = DATA_FIELDS[column.type]
+  if (typeof dataField.defaultValue != "undefined") {
+    return dataField.defaultValue
+  }
 
-//   return ''
-// }
+  return ''
+}

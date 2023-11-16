@@ -2,7 +2,7 @@
 import { redirect, useRouter, useSearchParams } from 'next/navigation'
 import Image from 'next/image'
 import React, { FormEvent, useState } from 'react'
-import { useAction, usePromise } from '@/lib/ultis/promise'
+import { useAction, usePromise } from '@/lib/utils/promise'
 import InputAdmin from '../form/InputAdmin'
 import Checkbox from '@/components/ui/Checkbox'
 import { loginAdmin } from '@/actions/admin/admin'

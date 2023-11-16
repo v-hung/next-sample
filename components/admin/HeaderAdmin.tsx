@@ -5,9 +5,9 @@ import { LinkState } from './AdminLayout'
 import useAdminMenu from '@/stores/admin/admin_menu'
 import { usePathname } from 'next/navigation'
 import dayjs from 'dayjs'
-import Dropdown, { Divide, MenuItem } from '../ui/Dropdown'
+import Dropdown, { Divide, MenuItem, MenuTitle } from '../ui/Dropdown'
 import Link from 'next/link'
-import { useAction } from '@/lib/ultis/promise'
+import { useAction } from '@/lib/utils/promise'
 import Image from 'next/image'
 
 const HeaderAdmin = memo(({
@@ -64,29 +64,22 @@ const Notification = ({ user }: { user: AdminType}) => {
       )}
       placement='bottom'
     >
-      <div className="w-96 max-w-[100vw]">
-        <div className="flex justify-between px-4 py-2 space-x-4 items-center border-b">
-          <p className="font-medium">Thông báo</p>
-          <span className="text-sm text-gray-600">Đánh dấu đã đọc</span>
+      <MenuTitle>Thông báo</MenuTitle>
+      <MenuItem>
+        <div className="w-10 h-10 rounded-full overflow-hidden bg-sky-500 flex items-center justify-center">
+          { user?.image
+            ? <img src={user?.image.url} alt="" className='w-full h-full object-cover' loading='lazy' />
+            : <span className="icon icon-fill !text-white !text-2xl">
+              person
+            </span>
+          }
         </div>
-        <div className="flex flex-col divide-y">
-          <div className="p-4 flex space-x-3 hover:bg-blue-100">
-            <div className="w-10 h-10 rounded-full overflow-hidden bg-blue-500 flex items-center justify-center">
-              { user?.image
-                ? <img src={user?.image.url} alt="" className='w-full h-full object-cover' loading='lazy' />
-                : <span className="icon icon-fill !text-white !text-2xl">
-                  person
-                </span>
-              }
-            </div>
 
-            <div className="flex flex-col space-y-1">
-              <p><span className="font-medium">{user?.name}</span> chào mừng quay trở lại</p>
-              <p className="text-sm text-gray-600">{dayjs(loginDate).format('DD/MM/yyyy h:mm:ss a')}</p>
-            </div>
-          </div>
+        <div className="flex flex-col space-y-1">
+          <p><span className="font-medium">{user?.name}</span> chào mừng quay trở lại</p>
+          <p className="text-sm text-gray-600">{dayjs(loginDate).format('DD/MM/YYYY h:mm:ss a')}</p>
         </div>
-      </div>
+      </MenuItem>
     </Dropdown>
   )
 }
@@ -105,7 +98,7 @@ const AvatarUser = ({ user }: { user: NonNullable<AdminType>}) => {
           className="flex items-center space-x-2 rounded-full p-1 pr-2 bg-gray-100 hover:bg-gray-200 cursor-pointer select-none"
           {...rest}
         >
-          <div className={`w-10 h-10 rounded-full overflow-hidden ${!user.image ? 'bg-blue-500' : ''} grid place-items-center`}>
+          <div className={`w-10 h-10 rounded-full overflow-hidden ${!user.image ? 'bg-sky-500' : ''} grid place-items-center`}>
             { user.image
               ? <Image src={user.image.url} alt={'photo ' + user.name} width={200} height={200} className='w-full h-full object-cover' loading='lazy' />
               : <span className="icon icon-fill !text-white !text-2xl">

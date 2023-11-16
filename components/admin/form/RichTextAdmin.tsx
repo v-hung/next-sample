@@ -4,11 +4,11 @@ import { Editor } from '@tinymce/tinymce-react'
 import React, { useRef, InputHTMLAttributes, FC, memo } from 'react'
 import type { Editor as TinyMCEEditor } from 'tinymce';
 
-type State = InputHTMLAttributes<HTMLTextAreaElement> & {
+type Props = InputHTMLAttributes<HTMLTextAreaElement> & {
   label?: string | null | undefined,
 }
 
-const RichTextAdmin: FC<State> = (props) => {
+const RichTextAdmin: FC<Props> = (props) => {
   const { className, label, onChange, value, defaultValue, name, ...rest } = props
 
   const editorRef = useRef<TinyMCEEditor | null>(null)

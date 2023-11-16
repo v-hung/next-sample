@@ -7,7 +7,16 @@ import { usePathname, useRouter } from 'next/navigation';
 import { useSearchParams } from 'next/navigation';
 import { DeleteDataSampleState, SampleColumnsType, deleteDataSample } from '@/actions/admin/sample';
 import { useTransition } from "react";
-import FileIcon from '../form-field/image/FileIcon';
+import dayjs from 'dayjs';
+import { useAction, usePromise } from '@/lib/utils/promise';
+import ButtonAdmin from '../form/ButtonAdmin';
+import Dropdown, { MenuItem } from '@/components/ui/Dropdown';
+import SwitchAdmin from '../form/SwitchAdmin';
+import FileIcon from '../form/image/FileIcon';
+import { Modal, ModalAction, ModalContent, ModalTitle } from '@/components/ui/Modal';
+import Backdrop from '@/components/ui/Backdrop';
+import { TBody, THead, Table, Td, Th, Tr } from '@/components/ui/Table';
+import Checkbox from '@/components/ui/Checkbox';
 
 export type SampleStateType = {
   data: any[],
@@ -90,14 +99,6 @@ const AdminContentSample: React.FC<SampleStateType> = ({
   }
 
   // show field
-  const [anchorElShowField, setAnchorElShowField] = useState<null | HTMLElement>(null)
-  const openShowField = Boolean(anchorElShowField)
-  const handleClickShowField = (event: React.MouseEvent<HTMLButtonElement>) => {
-    setAnchorElShowField(event.currentTarget)
-  }
-  const handleCloseShowField = () => {
-    setAnchorElShowField(null)
-  }
 
   const [columnShowFields, setColumnShowFields] = useState<string[]>(columns.filter(v => v.show).map(e => e.name))
   const handelChangeColumnShowField = (e: React.FormEvent<HTMLInputElement>, key: string) => {
@@ -153,16 +154,14 @@ const AdminContentSample: React.FC<SampleStateType> = ({
   }
 
   const handelDeleteData = async (e: React.MouseEvent<HTMLElement>) => {
-    await promiseFunction({
+    usePromise({
       loading,
       setLoading,
       callback: async () => {
-        if (deleteId) {
-          await deleteDataSample({ ids: [deleteId], tableName: table_name})
-        }
-        else if (checked.length > 0) {
-          await deleteDataSample({ ids: checked, tableName: table_name})
-        }
+        let ids = deleteId ? [deleteId] : checked
+        
+        await useAction(() => deleteDataSample({ ids: ids, tableName: table_name}))
+
         router.refresh()
         setIsDelete(false)
       }
@@ -177,7 +176,7 @@ const AdminContentSample: React.FC<SampleStateType> = ({
           {/* <p className="text-sm text-gray-600 mt-1">{count} bản ghi</p> */}
         </div>
 
-        <Button variant="contained" color='error' disabled={!canDelete || checked.length == 0} 
+        <ButtonAdmin color='red' disabled={!canDelete || checked.length == 0} 
           onClick={() => showDeleteModal()}
           startIcon={(
             <span className="icon">
@@ -186,208 +185,133 @@ const AdminContentSample: React.FC<SampleStateType> = ({
           )}
         >
           Xóa bản ghi
-        </Button>
+        </ButtonAdmin>
 
-        <Button href={`${pathname}/create`} disabled={!canCreate} LinkComponent={Link} className='!ml-auto' variant="contained" startIcon={(
+        <ButtonAdmin href={`${pathname}/create`} disabled={!canCreate} LinkComponent={Link} className='!ml-auto' startIcon={(
           <span className="icon">
             add
           </span>
         )}>
           Thêm bản ghi mới
-        </Button>
+        </ButtonAdmin>
 
         <div className="relative">
-          <button className="flex space-x-2 p-2 pr-2 bg-white border rounded shadow" onClick={handleClickShowField}>
-            <span className="icon icon-fill">
-              settings
-            </span>
-            <span className="icon">
-              arrow_drop_down
-            </span>
-          </button>
-          <Menu
-            anchorEl={anchorElShowField}
-            open={openShowField}
-            onClose={handleCloseShowField}
-            anchorOrigin={{
-              vertical: 'bottom',
-              horizontal: 'right',
-            }}
-            transformOrigin={{
-              vertical: 'top',
-              horizontal: 'right',
-            }}
-          >
+          
+          <Dropdown renderItem={(rest) => (
+            <button {...rest} className="flex space-x-2 p-2 pr-2 bg-white border rounded shadow">
+              <span className="icon icon-fill">
+                settings
+              </span>
+              <span className="icon">
+                arrow_drop_down
+              </span>
+            </button>
+          )}>
             {columns.map(column =>
               <MenuItem key={column.name}>
-                <FormIOSSwitch label={column.label} 
+                <SwitchAdmin label={column.label} 
                   onChange={(e) => handelChangeColumnShowField(e, column.name)} 
                   checked={columnShowFields.includes(column.name)} className='block w-full'/>
               </MenuItem>
             )}
-          </Menu>
+          </Dropdown>
         </div>
       </section>
 
       <section className='mt-8'>
-        <Paper sx={{ width: '100%' }} className='rounded overflow-hidden'>
-          <TableContainer sx={{ maxHeight: 'calc(100vh - 222px)' }}>
-            <Table stickyHeader>
-              <TableHead>
-                <TableRow>
-                  <StyledTableCell style={{width: '0px'}} align="left">
-                    <input type="checkbox" checked={checked.length == data.length} onChange={handleSelectAll} />
-                  </StyledTableCell>
-                  {columns.filter(v => columnShowFields.includes(v.name)).map((column) => (
-                    <StyledTableCell
-                      key={column.name}
-                      align="center"
-                      // width={column?.width || 'auto'}
-                      style={{width: column.name == 'id' ? 0 : 'auto'}}
-                      className='cursor-pointer select-none'
-                      onClick={() => changeOrder(column.name)}
-                    >
-                      <div className="flex space-x-2 items-center justify-center">
-                        <span>{column.label}</span>
-                        { orderBy == column.name && orderType != undefined
-                          ? <span className="icon">{orderType == "asc" ? 'arrow_drop_down' : 'arrow_drop_up'}</span>
-                          : null
-                        }
-                      </div>
-                    </StyledTableCell>
-                  ))}
-                  <StyledTableCell align="right" style={{width: '0px', whiteSpace: 'nowrap'}}>Hành động</StyledTableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {data.length > 0 ? data.map((row) => (
-                  <StyledTableRow key={row.id}>
-                    <TableCell align="left">
-                      <input type="checkbox" id={row.id} checked={checked.includes(row.id)} onChange={handleSelect} />
-                    </TableCell>
-                    {columns.filter(v => columnShowFields.includes(v.name)).map(column => 
-                      <TableCell align="center" key={`${row.id}-${column.name}`}>
-                        { column.type == 'date'
-                          ? ViewDateField(row[column.name])
-                          : column.type == 'publish' ? ViewPublishField(row[column.name])
-                          : column.type == 'select' ? ViewSelectField(row[column.name], column.details.list)
-                          : column.type == 'file' ? ViewFileField(row[column.name])
-                          : column.type == 'relation' ? ViewRelationField(row[column.name], column.details.titleRelation)
-                          : column.type == 'permissions' ? null
-                          : (column.type == "custom" && column.details.customComponentView) ? column.details.customComponentView(row[column.name])
-                          : <span className={column.name == "id" ? 'whitespace-nowrap' : ''}>{row[column.name] || ''}</span>
-                        }
-                      </TableCell>
-                    )}
-                    <TableCell align="right">
-                      <div className="flex space-x-1 items-center justify-end">
-                        {/* <Button color='warning' variant='contained' size='small' startIcon={(
-                          <span className="icon">
-                            visibility
-                          </span>
-                        )}>Xem</Button> */}
-                        <Button LinkComponent={Link} href={`${pathname}/${row.id}`} disabled={!canDelete} color='primary' variant='contained' size='small' startIcon={(
-                          <span className="icon">
-                            edit
-                          </span>
-                        )}>Sửa</Button>
-                        <Button color='error' disabled={!canDelete} variant='contained' size='small' 
-                          onClick={() => showDeleteModal(row.id)}
-                          startIcon={(
-                            <span className="icon">
-                              delete
-                            </span>
-                          )}
-                        >Xóa</Button>
-                      </div>
-                    </TableCell>
-                  </StyledTableRow>
-                ))
-                : <TableRow><TableCell colSpan={"100%" as any} className='!text-center'>Không có bản ghi nào</TableCell></TableRow> }
-              </TableBody>
-            </Table>
-          </TableContainer>
-          <TablePagination
-            rowsPerPageOptions={[...ROWS_PER_PAGES, { label: 'All', value: -1 }]}
-            component="div"
-            count={count}
-            rowsPerPage={per_page}
-            page={page - 1}
-            onPageChange={handleChangePage}
-            onRowsPerPageChange={handleChangeRowsPerPage}
-          />
-        </Paper>
+        <Table rounded border shadow className='bg-white'>
+          <THead>
+            <Tr>
+              <Th style={{width: '0px'}}>
+                <Checkbox checked={checked.length == data.length} onChange={handleSelectAll} />
+              </Th>
+              {columns.filter(v => columnShowFields.includes(v.name)).map((column) => (
+                <Th
+                  key={column.name}
+                  // width={column?.width || 'auto'}
+                  style={{width: column.name == 'id' ? 0 : 'auto'}}
+                  className='cursor-pointer select-none'
+                  onClick={() => changeOrder(column.name)}
+                >
+                  <div className="flex space-x-2 items-center justify-between">
+                    <span>{column.label}</span>
+                    { orderBy == column.name && orderType != undefined
+                      ? <span className="icon">{orderType == "asc" ? 'arrow_drop_down' : 'arrow_drop_up'}</span>
+                      : null
+                    }
+                  </div>
+                </Th>
+              ))}
+              <Th align="right" style={{width: '0px', whiteSpace: 'nowrap'}}>Hành động</Th>
+            </Tr>
+          </THead>
+          <TBody>
+            {data.length > 0 ? data.map((row) => (
+              <Tr key={row.id}>
+                <Td>
+                  <Checkbox id={row.id} checked={checked.includes(row.id)} onChange={handleSelect} />
+                </Td>
+                {columns.filter(v => columnShowFields.includes(v.name)).map(column => 
+                  <Td key={`${row.id}-${column.name}`}>
+                    { column.type == 'date'
+                      ? ViewDateField(row[column.name])
+                      : column.type == 'publish' ? ViewPublishField(row[column.name])
+                      : column.type == 'select' ? ViewSelectField(row[column.name], column.details.list)
+                      : column.type == 'file' ? ViewFileField(row[column.name])
+                      : column.type == 'relation' ? ViewRelationField(row[column.name], column.details.titleRelation)
+                      : column.type == 'permissions' ? null
+                      : (column.type == "custom" && column.details.customComponentView) ? column.details.customComponentView(row[column.name])
+                      : <span className={column.name == "id" ? 'whitespace-nowrap' : ''}>{row[column.name] || ''}</span>
+                    }
+                  </Td>
+                )}
+                <Td align="right">
+                  <div className="flex space-x-1 items-center justify-end">
+                    <ButtonAdmin LinkComponent={Link} href={`${pathname}/${row.id}`} disabled={!canDelete} size='sm' startIcon="edit" >Sửa</ButtonAdmin>
+                    <ButtonAdmin color='red' disabled={!canDelete} size='sm' 
+                      onClick={() => showDeleteModal(row.id)}
+                      startIcon="delete"
+                    >Xóa</ButtonAdmin>
+                  </div>
+                </Td>
+              </Tr>
+            ))
+            : <Tr><Td colSpan={"100%" as any} className='!text-center'>Không có bản ghi nào</Td></Tr> }
+          </TBody>
+        </Table>
       </section>
 
       <Modal
         open={isDelete}
         onClose={handleCloseModalDelete}
-        closeAfterTransition
-        slots={{ backdrop: Backdrop }}
-        slotProps={{
-          backdrop: {
-            timeout: 500,
-          },
-        }}
       >
-        <Fade in={isDelete}>
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-xl rounded shadow bg-white">
-            <div className="p-4 flex items-center justify-between">
-              <h5 className="text-lg font-medium">Xóa bản ghi</h5>
-              <button className='flex' onClick={handleCloseModalDelete}>
-                <span className="icon">
-                  close
-                </span>
-              </button>
-            </div>
-            <div className="p-4 border-y bg-gray-100">
-              Bạn có chắc chắn muốn xóa 
-              <span className="text-red-600"> {deleteId ? `"${deleteId}"` : checked.join(', ')}</span>
-            </div>
-            <div className="flex items-center justify-end p-4 space-x-4">
-              <Button variant="outlined" color='black' onClick={handleCloseModalDelete}>Hủy bỏ</Button>
-              <Button variant="contained" color='error' onClick={handelDeleteData}>Tiếp tục</Button>
-            </div>
-          </div>
-        </Fade>
+        <ModalTitle>Xóa bản ghi</ModalTitle>
+        <ModalContent>
+          Bạn có chắc chắn muốn xóa 
+          <span className="text-red-600"> {deleteId ? `"${deleteId}"` : checked.join(', ')}</span>
+        </ModalContent>
+        <ModalAction>
+          <ButtonAdmin size='sm' variant="outline" color='black' onClick={handleCloseModalDelete}>Hủy bỏ</ButtonAdmin>
+          <ButtonAdmin size='sm' color='red' onClick={handelDeleteData}>Tiếp tục</ButtonAdmin>
+        </ModalAction>
       </Modal>
 
       <Backdrop
-        sx={{ color: '#fff', zIndex: '99999' }}
         open={loading}
+        className='grid place-items-center'
       >
-        <CircularProgress color="inherit" />
+        <span className="icon animate-spin">progress_activity</span>
       </Backdrop>
     </>
   )
 }
 
-const StyledTableCell = styled(TableCell)(({ theme }) => ({
-  [`&.${tableCellClasses.head}`]: {
-    backgroundColor: "#3e3e3e",
-    color: "white",
-  },
-  [`&.${tableCellClasses.body}`]: {
-    fontSize: 14,
-  },
-}))
-
-const StyledTableRow = styled(TableRow)(({ theme }) => ({
-  '&:nth-of-type(odd)': {
-    backgroundColor: "#0000000a",
-  },
-  // hide last border
-  '&:last-child td, &:last-child th': {
-    border: 0,
-  },
-}))
-
 const ViewDateField = (value: Date) => {
-  const date = moment(value)
+  const date = dayjs(value)
   const formattedDate = date.format('YYYY-MM-DD')
   const formattedTime = date.format('HH:mm:ss')
 
-  return <div className="whitespace-nowrap text-center">
+  return <div className="whitespace-nowrap">
     <p className="text-sm">{formattedDate}</p>
     <p className='text-gray-500 text-xs'>{formattedTime}</p>
   </div>
@@ -395,7 +319,7 @@ const ViewDateField = (value: Date) => {
 
 const ViewPublishField = (value: string) => {
   return <div className={`inline-block px-4 py-1.5 rounded border font-semibold 
-    ${value == 'draft' ? 'bg-blue-100 border-blue-300 text-blue-600' : 'bg-green-100 border-green-300 text-green-700'}`}
+    ${value == 'draft' ? 'bg-sky-100 border-sky-300 text-sky-600' : 'bg-green-100 border-green-300 text-green-700'}`}
   >
     { value == 'draft' ? 'Nháp' : 'Xuất bản'}
   </div>
@@ -410,7 +334,7 @@ const ViewFileField = (data: File | File[] | null) => {
   const length = files.length > 2 ? 2 : files.length
 
   return (
-    <div className="flex -space-x-10 justify-center">
+    <div className="flex -space-x-10">
       {files.slice(0, length).map((file,i) =>
         <FileIcon key={file.id} name={file.name} mime={file.mime} url={file.url} className='w-20 h-16 rounded-lg object-cover ring-2 ring-white' />
       )}
@@ -431,7 +355,7 @@ const ViewRelationField = (data: any | any[] | null, title: string) => {
   const length = list.length > 3 ? 3 : list.length
 
   return (
-    <div className="flex flex-wrap items-center justify-center -mx-1">
+    <div className="flex flex-wrap items-center -mx-1">
       {list.slice(0, length).map((item,i) =>
         <div className="px-1 mb-2" key={item.id}>
           <div key={item.id} className='rounded-full bg-gray-200 px-2 py-1.5 font-semibold text-xs'>{item[title] || ''}</div>

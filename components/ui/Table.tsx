@@ -3,7 +3,7 @@ import { generatePaginationArray } from '@/lib/admin/pagination'
 import React, { TdHTMLAttributes, TableHTMLAttributes, useEffect, useState, HTMLAttributes, ThHTMLAttributes } from 'react'
 import { twMerge } from 'tailwind-merge'
 
-type TableType = TableHTMLAttributes<HTMLTableElement> & {
+type TableType = Omit<TableHTMLAttributes<HTMLTableElement>, 'border'> & {
   border?: boolean,
   rounded?: boolean,
   shadow?: boolean
@@ -45,9 +45,9 @@ export const THead = (props: HTMLAttributes<HTMLTableSectionElement> & {
 }
 
 export const Th = (props: ThHTMLAttributes<HTMLTableHeaderCellElement>) => {
-  const {children, ...rest} = props
+  const {children, className, ...rest} = props
 
-  return <th {...rest}>{children}</th>
+  return <th className={twMerge("px-6 py-3 text-xs font-medium text-gray-500 uppercase", className)} align='left' {...rest}>{children}</th>
 }
 
 export const TBody = (props: HTMLAttributes<HTMLTableSectionElement>) => {
@@ -71,7 +71,7 @@ export const Tr = (props: HTMLAttributes<HTMLTableRowElement> & { divide?: boole
 export const Td = (props: TdHTMLAttributes<HTMLTableCellElement>) => {
   const {children, className, ...rest} = props
 
-  return <td className={twMerge("px-6 py-4 whitespace-nowrap text-sm text-gray-800 dark:text-gray-200", className)} {...rest}>{children}</td>
+  return <td className={twMerge("px-6 py-4 whitespace-nowrap text-sm text-gray-800 dark:text-gray-200", className)} align='left' {...rest}>{children}</td>
 }
 
 export const Pagination = (props: {

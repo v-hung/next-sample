@@ -5,7 +5,7 @@ import { Chart } from "chart.js/auto"
 import 'chartjs-adapter-dayjs-4/dist/chartjs-adapter-dayjs-4.esm';
 import zoomPlugin from 'chartjs-plugin-zoom';
 import { memo, useEffect, useRef, useState } from "react";
-import { useAction, usePromise } from "@/lib/ultis/promise";
+import { useAction, usePromise } from "@/lib/utils/promise";
 import Skeleton from "@/components/ui/Skeleton";
 import { getAccessHistory } from "@/actions/admin/dashboard";
 

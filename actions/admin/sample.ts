@@ -281,13 +281,13 @@ export const addEditDataSample = async ({
                       connectOrCreate: {
                         where: {
                           key_tableName: {
-                            key: v.key,
-                            tableName: v.tableName
+                            key: v.permissionKey,
+                            tableName: v.permissionTableName
                           }
                         },
                         create: {
-                          key: v.key,
-                          tableName: v.tableName
+                          key: v.permissionKey,
+                          tableName: v.permissionTableName
                         }
                       }
                     }
@@ -300,13 +300,13 @@ export const addEditDataSample = async ({
               await db.$transaction(data[pre.name].map((v: any) => db.permission.upsert({
                 where: {
                   key_tableName: {
-                    key: v.key,
-                    tableName: v.tableName
+                    key: v.permissionKey,
+                    tableName: v.permissionTableName
                   }
                 },
                 create: {
-                  key: v.key,
-                  tableName: v.tableName
+                  key: v.permissionKey,
+                  tableName: v.permissionTableName
                 },
                 update: {}
               })))
@@ -320,8 +320,8 @@ export const addEditDataSample = async ({
               tempCreate = {
                 create: data[pre.name].map((v: any) =>
                   ({
-                    permissionKey: v.key,
-                    permissionTableName: v.tableName
+                    permissionKey: v.permissionKey,
+                    permissionTableName: v.permissionTableName
                   })
                 )
               }

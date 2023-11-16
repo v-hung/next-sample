@@ -1,11 +1,11 @@
 "use client"
 import React, { FC, InputHTMLAttributes, useId } from 'react'
 
-type State = InputHTMLAttributes<HTMLInputElement> & {
+type Props = InputHTMLAttributes<HTMLInputElement> & {
   label?: string | null | undefined,
 }
 
-const PasswordInputAdmin: FC<State> = (props) => {
+const PasswordInputAdmin: FC<Props> = (props) => {
   const { className, label, ...rest } = props
 
   const id = useId()
@@ -18,7 +18,7 @@ const PasswordInputAdmin: FC<State> = (props) => {
         </label> 
         : null 
       }
-      <input type="password" id={id} className="py-3 px-4 block w-full border-gray-200 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-slate-900 dark:border-gray-700 dark:text-gray-400 dark:focus:ring-gray-600" {...rest} />
+      <input type="password" id={id} className="py-3 px-4 block w-full border-gray-200 rounded-lg text-sm focus:border-sky-500 focus:ring-sky-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-slate-900 dark:border-gray-700 dark:text-gray-400 dark:focus:ring-gray-600" {...rest} />
     </div>
   )
 }

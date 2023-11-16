@@ -40,10 +40,16 @@ export const usePromise = async ({
   }
 }
 
-export const useAction = async (callback: () => Promise<any>) => {
+type SuccessResult<T> = T & { error?: never }
+
+export const useAction = async <T extends { error?: any }>(
+  callback: () => Promise<T | undefined | void>
+): Promise<SuccessResult<T>> => {
   const data = await callback()
 
-  if (data?.error) throw new Error(data.error)
+  if (data?.error) {
+    throw new Error(data.error)
+  }
 
-  return data
+  return data as SuccessResult<T>
 }

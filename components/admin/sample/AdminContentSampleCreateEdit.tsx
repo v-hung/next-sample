@@ -1,13 +1,13 @@
 "use client"
-import { Backdrop, Button, CircularProgress } from '@mui/material'
 import { useRouter } from 'next/navigation'
-import React, { useState, FormEvent, MouseEvent } from 'react'
-import moment from 'moment'
-import { SampleColumnSlugType, SampleColumnsType, addEditDataSample, changePublishData } from '@/lib/admin/sample'
+import React, { useState, FormEvent, MouseEvent, ChangeEvent } from 'react'
+import { SampleColumnSlugType, SampleColumnsType, addEditDataSample, changePublishData } from '@/actions/admin/sample'
 import { DATA_FIELDS, createDefaultValue } from '@/lib/admin/fields'
-import { promiseFunction } from '@/lib/admin/promise'
-import AdminFormFieldSlug from '../form-field/AdminFormFieldSlug'
 import slugify from 'slugify'
+import { useAction, usePromise } from '@/lib/utils/promise'
+import ButtonAdmin from '../form/ButtonAdmin'
+import dayjs from 'dayjs'
+import Backdrop from '@/components/ui/Backdrop'
 
 export type SampleStateType = {
   data?: any | undefined,
@@ -26,7 +26,7 @@ const AdminContentSampleCreateEdit: React.FC<SampleStateType> = ({
 
   const save = async (e: FormEvent) => {
     e.preventDefault()
-    await promiseFunction({
+    usePromise({
       loading,
       setLoading,
       callback: async () => {
@@ -40,7 +40,8 @@ const AdminContentSampleCreateEdit: React.FC<SampleStateType> = ({
           formData.id = data.id
         }
   
-        await addEditDataSample({data: formData, edit: data != undefined, tableName: tableName})
+        await useAction(() => addEditDataSample({data: formData, edit: data != undefined, tableName: tableName}))
+
         if (!data) {
           router.back()
         }
@@ -52,15 +53,15 @@ const AdminContentSampleCreateEdit: React.FC<SampleStateType> = ({
   const handelChangePublish = async (e: MouseEvent) => {
     if (!data || data.publish == undefined) return
 
-    await promiseFunction({
+    usePromise({
       loading,
       setLoading,
       callback: async () => {
-        await changePublishData({
+        await useAction(() => changePublishData({
           id: data.id,
           publish: data.publish == 'publish' ? 'draft' : 'publish',
           tableName: tableName
-        })
+        }))
         
         router.refresh()
       }
@@ -98,7 +99,7 @@ const AdminContentSampleCreateEdit: React.FC<SampleStateType> = ({
 
   return (
     <form onSubmit={save}>
-      <div className="flex items-center space-x-1 text-blue-500 hover:text-blue-600 bg-transparent cursor-pointer"
+      <div className="flex items-center space-x-1 text-sky-500 hover:text-sky-600 bg-transparent cursor-pointer"
         onClick={() => router.back()}
       >
         <span className="icon">
@@ -113,19 +114,16 @@ const AdminContentSampleCreateEdit: React.FC<SampleStateType> = ({
         </div>
 
         { data && typeof data.publish !== 'undefined'
-          ? <Button disabled={!data} variant="contained" color={(data ? data.publish == 'publish' : false) ? 'secondary' : 'black'} startIcon={(
-            <span className="icon">
-              {(data ? data.publish == 'publish' : false) ? 'check' : 'remove'}
-            </span>
-          )} onClick={handelChangePublish}>
+          ? <ButtonAdmin disabled={!data} color={(data ? data.publish == 'publish' : false) ? 'green' : 'black'} 
+            startIcon={(data ? data.publish == 'publish' : false) ? 'check' : 'remove'} onClick={handelChangePublish}>
             {(data ? data.publish == 'publish' : false) ? 'Xuất bản' : 'Nháp'}
-          </Button>
+          </ButtonAdmin>
           : null
         }
 
-        <Button variant="contained" type='submit'>
+        <ButtonAdmin type='submit'>
           Lưu
-        </Button>
+        </ButtonAdmin>
       </section>
 
       <div className="mt-6 flex flex-wrap -mx-2">
@@ -144,7 +142,7 @@ const AdminContentSampleCreateEdit: React.FC<SampleStateType> = ({
                     required={column.required} 
                     // defaultValue={data ? data[column.name] : undefined}
                     value={listDataValue.find(v => v.name == column.name)?.value}
-                    onChange={(v) => onChangeValue(v, column.name)}
+                    onChange={(e: ChangeEvent<HTMLInputElement>) => onChangeValue(e.target.value, column.name)}
                     details={{...column.details, tableName: tableName}}
                   />
                 </div> : null
@@ -153,10 +151,10 @@ const AdminContentSampleCreateEdit: React.FC<SampleStateType> = ({
           </div>
         </div>
 
-        <div className="w-full lg:w-1/4 px-2 mb-4 flex flex-col space-y-4">
+        <div className="w-full lg:w-1/4 px-2 mb-4 flex flex-col gap-4">
           { data && typeof data.publish !== 'undefined'
             ? <div className={`w-full p-4 border rounded flex space-x-2 items-center text-sm
-              ${(data ? data.publish == 'publish' : false) ? 'bg-purple-100 border-purple-400 text-purple-600' : 'bg-blue-100 border-blue-400 text-blue-600'}
+              ${(data ? data.publish == 'publish' : false) ? 'bg-purple-100 border-purple-400 text-purple-600' : 'bg-sky-100 border-sky-400 text-sky-600'}
             `}>
               <span className="w-2 h-2 rounded-full bg-current"></span>
               <span className="font-semibold">{data ? 'Chỉnh sửa' : 'Tạo mới'}</span>
@@ -171,11 +169,11 @@ const AdminContentSampleCreateEdit: React.FC<SampleStateType> = ({
             <div className="flex flex-col space-y-4 mt-4 text-sm">
               <div className="flex justify-between">
                 <span className="font-medium text-gray-600">Thời gian tạo</span>
-                <span>{data ? moment(data?.createdAt).format('YYYY-MM-DD HH:mm:ss') : 'now'}</span>
+                <span>{data ? dayjs(data?.createdAt).format('YYYY-MM-DD HH:mm:ss') : 'now'}</span>
               </div>
               <div className="flex justify-between">
                 <span className="font-medium text-gray-600">Thời gian cập nhập</span>
-                <span>{data ? moment(data?.updatedAt).format('YYYY-MM-DD HH:mm:ss') : 'now'}</span>
+                <span>{data ? dayjs(data?.updatedAt).format('YYYY-MM-DD HH:mm:ss') : 'now'}</span>
               </div>
             </div>
           </div>
@@ -183,27 +181,12 @@ const AdminContentSampleCreateEdit: React.FC<SampleStateType> = ({
       </div>
 
       <Backdrop
-        sx={{ color: '#fff', zIndex: '99999' }}
         open={loading}
+        className='grid place-items-center'
       >
-        <CircularProgress color="inherit" />
+        <span className="icon animate-spin">progress_activity</span>
       </Backdrop>
     </form>
-  )
-}
-
-const SlugFieldEdit = ({
-  label, name, required, value, setValue
-}: {
-  label?: string,
-  name?: string
-  required?: boolean,
-  value?: string,
-  setValue: (value: string) => void
-}) => {
-  
-  return (
-    <AdminFormFieldSlug label={label} name={name} required={required} value={value} onChange={(v) => setValue(v)} />
   )
 }
 

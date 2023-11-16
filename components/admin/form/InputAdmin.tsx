@@ -2,14 +2,14 @@
 import React, {FC, InputHTMLAttributes, useId} from 'react'
 import { twMerge } from "tailwind-merge";
 
-type State = InputHTMLAttributes<HTMLInputElement> & {
+type Props = InputHTMLAttributes<HTMLInputElement> & {
   label?: string | null | undefined,
   startIcon?: React.ReactNode | string,
   endIcon?: React.ReactNode | string,
   inputClass?: string
 }
 
-const InputAdmin: FC<State> = (props) => {
+const InputAdmin: FC<Props> = (props) => {
   const { className, label, startIcon, endIcon, inputClass, ...rest } = props
 
   const id = useId()
@@ -24,7 +24,7 @@ const InputAdmin: FC<State> = (props) => {
       }
       <div className="relative">
         <input type="text" id={id} 
-          className={twMerge(`py-3 px-4 block w-full border-gray-200 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-slate-900 dark:border-gray-700 dark:text-gray-400 dark:focus:ring-gray-600 
+          className={twMerge(`py-3 px-4 block w-full border-gray-200 rounded-lg text-sm focus:border-sky-500 focus:ring-sky-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-slate-900 dark:border-gray-700 dark:text-gray-400 dark:focus:ring-gray-600 
           ${startIcon ? 'ps-11' : ''} ${endIcon ? 'pe-11' : ''}`, inputClass)} {...rest} />
 
         { startIcon

@@ -37,7 +37,7 @@ const MenuAdmin = ({
   
   return (
     <div 
-      className='fixed h-full transition-all bg-white border-r z-[100]' 
+      className='fixed h-full transition-all bg-white border-r z-50' 
       style={{width: isHover ? adminMenu?.width : (adminMenu?.open ? adminMenu?.width : "60px")}}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
@@ -67,8 +67,8 @@ const MenuAdmin = ({
           {managerLinksPermission.map((v,i) => {
             return (
               <Link
-                className={`flex-none w-full flex items-center py-3 overflow-x-hidden hover:bg-blue-200 rounded text-gray-800
-                  ${(v.path == "/admin" ? pathname == v.path : pathname?.includes(v.path)) ? 'font-semibold !text-blue-800' : 'font-medium'}
+                className={`flex-none w-full flex items-center py-3 overflow-x-hidden hover:bg-sky-200 rounded text-gray-800
+                  ${(v.path == "/admin" ? pathname == v.path : pathname?.includes(v.path)) ? 'font-semibold !text-sky-800' : 'font-medium'}
                 `}
                 href={v.path}
                 key={i}
@@ -91,8 +91,8 @@ const MenuAdmin = ({
           {generalLinksPermission.map((v,i) => {
             return (
               <Link
-                className={`flex-none w-full flex items-center py-3 overflow-x-hidden hover:bg-blue-200 rounded text-gray-800
-                  ${pathname?.includes(v.path) ? 'font-semibold !text-blue-800' : 'font-medium'}
+                className={`flex-none w-full flex items-center py-3 overflow-x-hidden hover:bg-sky-200 rounded text-gray-800
+                  ${pathname?.includes(v.path) ? 'font-semibold !text-sky-800' : 'font-medium'}
                 `}
                 href={v.path}
                 key={i}

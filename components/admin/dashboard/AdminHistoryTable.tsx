@@ -5,7 +5,7 @@ import Image from "next/image"
 import Prism from "prismjs";
 import "prismjs/themes/prism-tomorrow.css";
 import { generatePaginationArray } from "@/lib/admin/pagination"
-import { useAction, usePromise } from "@/lib/ultis/promise";
+import { useAction, usePromise } from "@/lib/utils/promise";
 import dayjs from "dayjs";
 import Drawer from "@/components/ui/Drawer";
 import { TBody, THead, Table, Td, Tr } from "@/components/ui/Table";
@@ -71,13 +71,13 @@ const AdminHistoryTable = () => {
           <TBody>
             { data.length > 0
               ? data.map((v,i) =>
-                <Tr key={v.id} onClick={() => handelClickItem(v)} className="hover:bg-blue-50 cursor-pointer">
+                <Tr key={v.id} onClick={() => handelClickItem(v)} className="hover:bg-sky-50 cursor-pointer">
                   <Td>
                     <ViewDateField value={v.createdAt} />
                   </Td>
                   <Td>
                     <div className="flex items-center space-x-2">
-                      <div className={`w-12 h-12 rounded-full border-2 border-white overflow-hidden ${!v?.admin.image ? 'bg-blue-500' : ''} shadow grid place-items-center`}>
+                      <div className={`w-12 h-12 rounded-full border-2 border-white overflow-hidden ${!v?.admin.image ? 'bg-sky-500' : ''} shadow grid place-items-center`}>
                         { v.admin.image?.url
                           ? <Image src={v.admin.image?.url} alt={`image profile ${v.admin.name}`} width={48} height={48} />
                           : <span className="icon icon-fill !text-white !text-3xl">
@@ -171,13 +171,13 @@ const TableItem = ({
       >
         <div className='w-[600px] max-w-[100vw] flex flex-col h-full'>
           <div className="flex-none bg-gray-100 py-4 px-6">
-            <h3 className='text-xl'>Thông tin lịch sử <span className="text-blue-600">{data?.id}</span></h3>
+            <h3 className='text-xl'>Thông tin lịch sử <span className="text-sky-600">{data?.id}</span></h3>
           </div>
           <div className="flex-grow min-h-0 overflow-y-auto py-6 px-6 flex flex-col space-y-6">
             <div>
               <p className="text-sm font-medium mb-1 capitalize">Quản trị viên</p>
               <div className="flex items-center space-x-2">
-                <div className={`w-12 h-12 rounded-full border-2 border-white overflow-hidden ${!data?.admin.image ? 'bg-blue-500' : ''} shadow grid place-items-center`}>
+                <div className={`w-12 h-12 rounded-full border-2 border-white overflow-hidden ${!data?.admin.image ? 'bg-sky-500' : ''} shadow grid place-items-center`}>
                   { data?.admin.image?.url
                     ? <Image src={data.admin.image?.url} alt={`image profile ${data.admin.name}`} width={48} height={48} />
                     : <span className="icon icon-fill !text-white !text-3xl">

@@ -3,9 +3,9 @@
 import { cookies, headers } from "next/headers";
 import { redirect } from "next/navigation";
 import bcrypt from 'bcrypt'
-import { exclude } from "@/lib/ultis/hepler";
+import { exclude } from "@/lib/utils/hepler";
 import { signToken, verifyToken } from "@/lib/admin/jwt";
-import { removeSpace } from "@/lib/ultis/validator";
+import { removeSpace } from "@/lib/utils/validator";
 import db from "@/lib/admin/db";
 import { Admin, File, PermissionsOnRoles, Role } from "@prisma/client";
 import { NextRequest } from "next/server";
@@ -170,6 +170,37 @@ export const createHistoryAdmin = async ({
     })
   } catch (error) {
     console.log({error})
+    return { error: (typeof error === "string" && error != "") ? error : 'Có lỗi xảy ra vui lòng thử lại sau' }
+  }
+}
+
+export const updateProfile = async ({
+  name, email, imageId, password
+}: {
+  name: string,
+  email: string,
+  imageId?: string,
+  password?: string
+}) => {
+  "use server"
+  try {
+    const user = await getAdmin()
+    if (!user) throw "Authorization"
+
+    await db.admin.update({
+      where: {
+        id: user.id
+      },
+      data: {
+        name,
+        email,
+        imageId: imageId || undefined,
+        password: password || undefined
+      }
+    })
+
+  } catch (error) {
+    console.log(error)
     return { error: (typeof error === "string" && error != "") ? error : 'Có lỗi xảy ra vui lòng thử lại sau' }
   }
 }

@@ -3,12 +3,12 @@ import { useFloating, offset, flip, shift, autoUpdate, FloatingFocusManager, use
 import React, { useState, HTMLAttributes, ReactNode, memo, FC } from 'react'
 import { twMerge } from "tailwind-merge";
 
-type State = HTMLAttributes<HTMLElement> & {
+type Props = HTMLAttributes<HTMLElement> & {
   renderItem: (rest: any, isOpen: boolean) => ReactNode,
   placement?: Placement
 }
 
-const Dropdown: React.FC<State> = (props) => {
+const Dropdown: React.FC<Props> = (props) => {
   const { renderItem, className, placement, children, ...rest } = props
 
   const [isOpen, setIsOpen] = useState(false);
@@ -40,11 +40,10 @@ const Dropdown: React.FC<State> = (props) => {
       {/* </span> */}
       
       {isOpen && (
-        <FloatingFocusManager context={context} modal={false}>
+        <FloatingFocusManager context={context} modal={false} initialFocus={-1}>
           <div ref={refs.setFloating}
             style={floatingStyles}
             {...getFloatingProps()}
-            tabIndex={-1}
             className={twMerge(`min-w-[15rem] bg-white shadow-md border rounded-lg p-2 dark:bg-gray-800 dark:border dark:border-gray-700 !m-0`, className)}
           >
             {children}
@@ -88,5 +87,7 @@ export const MenuTitle = (props: HTMLAttributes<HTMLDivElement>) => {
     </span>
   )
 }
+
+export const Menu = memo(Dropdown)
 
 export default memo(Dropdown)

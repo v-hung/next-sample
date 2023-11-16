@@ -1,4 +1,4 @@
-import { SampleColumnsType } from "@/actions/admin/sample"
+import { SampleColumnsType, SampleFieldAndDetailsType } from "@/actions/admin/sample"
 
 type TableType = {
   name: string,
@@ -64,4 +64,56 @@ export const TABLES_SAMPLE: TableType[] = [
       { name: 'updatedAt', label: 'Ngày cập nhập', type: 'date', show: true},
     ]
   }
+]
+
+export type GroupSettingSampleType = {
+  name: string,
+  label?: string,
+  settings: ({
+    name: string,
+    label?: string,
+    col?: number
+  } & SampleFieldAndDetailsType)[]
+}
+
+export const GROUP_SETTINGS: GroupSettingSampleType[] = [
+  { name: "Site", settings: [
+    { name: 'site title', label: 'Tiêu đề', type: 'string' },
+    { name: 'site description', label: 'Mô tả', type: 'string' },
+    { name: 'site logo', label: 'logo', type: 'file', details: {
+      multiple: false,
+      onlyTable: true,
+      fileTypes: ['image']
+    }},
+    { name: 'site favicon', label: 'Favicon', type: 'file', details: {
+      multiple: false,
+      onlyTable: true,
+      fileTypes: ['image']
+    }},
+    { name: 'banner', label: 'Banner', type: 'file', details: {
+      multiple: false,
+      onlyTable: true,
+      fileTypes: ['image']
+    }, col: 4},
+    { name: 'so do', label: 'Sơ đồ', type: 'file', details: {
+      multiple: false,
+      onlyTable: true,
+      fileTypes: ['image']
+    }, col: 4 },
+    { name: 'main audio', label: 'Nhạc nền', type: 'file', details: {
+      multiple: false,
+      onlyTable: true,
+      fileTypes: ['audio']
+    }, col: 4},
+  ] },
+  { name: "Admin", settings: [
+    { name: 'admin title', label: 'Tiêu đề trang quản trị', type: 'string' },
+    { name: 'admin description', label: 'Mô tả trang quản trị', type: 'string' },
+    { name: 'admin logo', label: 'logo trang quản trị', type: 'file', details: {
+      multiple: false,
+      onlyTable: true,
+      fileTypes: ['image']
+    } },
+    { name: 'preview mode', label: 'Chế độ xem trước', type: 'bool' },
+  ] }
 ]
