@@ -69,6 +69,18 @@ export const formatBytes = (bytes?: number, decimals = 2) => {
   return `${parseFloat((bytes / Math.pow(k, i)).toFixed(dm))} ${sizes[i]}`
 }
 
+export const debounce = (func: Function, delay: number) => {
+  let timeoutId: any
+
+  return (...args: any) => {
+    clearTimeout(timeoutId)
+
+    timeoutId = setTimeout(() => {
+      func.apply(this, args)
+    }, delay)
+  };
+}
+
 export const formatDate = (date?: Date | string | null, options?: object) => {
   if (!date) return "Trống"
   return new Date(date).toLocaleDateString("en-US", options)

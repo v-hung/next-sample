@@ -2,17 +2,21 @@
 import { generatePaginationArray } from '@/lib/admin/pagination'
 import React, { TdHTMLAttributes, TableHTMLAttributes, useEffect, useState, HTMLAttributes, ThHTMLAttributes } from 'react'
 import { twMerge } from 'tailwind-merge'
+import Skeleton from './Skeleton'
 
 type TableType = Omit<TableHTMLAttributes<HTMLTableElement>, 'border'> & {
   border?: boolean,
   rounded?: boolean,
-  shadow?: boolean
+  shadow?: boolean,
+  loading?: boolean,
+  pagination?: React.ReactNode
 }
 
 export const Table = (props: TableType) => {
-  const {children, className, border, rounded, shadow, ...rest} = props
+  const {children, className, border, rounded, shadow, loading, pagination, ...rest} = props
 
-  const commonClass = `${border ? 'border dark:border-gray-700' : ''}
+  const commonClass = `relative overflow-hidden 
+    ${border ? 'border dark:border-gray-700' : ''}
     ${rounded ? 'rounded-lg' : ''}
     ${shadow ? 'shadow dark:shadow-gray-900' : ''}
   `
@@ -22,11 +26,19 @@ export const Table = (props: TableType) => {
       <div className="-m-1.5 overflow-x-auto">
         <div className="p-1.5 min-w-full inline-block align-middle">
           <div className={twMerge(commonClass, className)}>
-            <div className="overflow-hidden">
+            <div className={`${loading ? 'min-h-[150px]' : ''}`}>
               <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700" {...rest}>
                 {children}
               </table>
+
+              { loading
+                ? <div className="absolute top-0 left-0 w-full h-full grid place-items-center bg-white/90 z-10 animate-pulse">
+                    <span className="loader !text-gray-800"></span>
+                  </div>
+                : null
+              }
             </div>
+            { pagination }
           </div>
         </div>
       </div>
@@ -79,7 +91,7 @@ export const Pagination = (props: {
   className?: string,
   page: number,
   count: number,
-  rowsPerPageOptions: {label: string, value: number}[]
+  rowsPerPageOptions?: {label: string, value: number}[]
   rowsPerPage: number
   onPageChange: (page: number) => void
   onRowsPerPageChange: (rowsPerPage: number) => void
@@ -103,7 +115,7 @@ export const Pagination = (props: {
   }, [page, count, rowsPerPage])
 
   return (
-    <div className="py-1 px-4">
+    <div className="py-1 px-4 border-t">
       <nav className={twMerge(commonClass, props.className)}>
         <button disabled={page <= 1} type="button" className="p-2.5 inline-flex items-center gap-x-2 text-sm rounded-full text-gray-800 hover:bg-gray-100 disabled:opacity-50 disabled:pointer-events-none dark:text-white dark:hover:bg-white/10 dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600">
           <span aria-hidden="true">«</span>

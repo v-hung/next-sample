@@ -108,7 +108,7 @@ const AdminContentSampleCreateEdit: React.FC<SampleStateType> = ({
         <span>Trở lại</span>
       </div>
 
-      <section className="flex items-center space-x-4 mt-2">
+      <section className="flex items-center gap-4 mt-2">
         <div className='mr-auto'>
           <h3 className="text-2xl font-semibold">{name}</h3>
         </div>

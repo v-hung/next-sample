@@ -104,7 +104,7 @@ const ProfileContentAdmin: React.FC<Props> = ({defaultValue}) => {
                   </span>
                 }
               </div>
-              <FileInputAdmin details={{tableName:"admin", onlyTable:true}} defaultValue={defaultValue.image} onChange={(v) => setImage(v)} name='name' className='w-96' />
+              <FileInputAdmin details={{tableName:"admin", onlyTable:true}} defaultValue={defaultValue.image} onChange={(e) => setImage(e.target.value)} name='name' className='w-96' />
             </div>
             <div className='border-b pb-6 pr-8'>
               <div className="font-semibold">Mật khẩu</div>

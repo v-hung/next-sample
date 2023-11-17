@@ -1,5 +1,5 @@
 "use client"
-import React, { HTMLAttributes, useRef } from 'react'
+import React, { HTMLAttributes, useEffect, useRef } from 'react'
 import { motion, AnimatePresence } from "framer-motion";
 import { createPortal } from 'react-dom';
 import { twMerge } from 'tailwind-merge';
@@ -34,6 +34,10 @@ export const Modal: React.FC<State> = (props) => {
       onClose()
     }
   })
+
+  useEffect(() => {
+    document.body.style.overflow = open ? 'hidden' : 'initial'
+  }, [open])
 
   return <ModalContext.Provider value={{onClose, closeTitle}}>{
     createPortal(
@@ -72,7 +76,7 @@ export const Modal: React.FC<State> = (props) => {
 
                 { action
                   ? <div className="flex justify-end items-center gap-x-2 py-3 px-4 border-t dark:border-gray-700">
-                      <ButtonAdmin color='black'>{closeTitle}</ButtonAdmin>
+                      <ButtonAdmin color='white'>{closeTitle}</ButtonAdmin>
                       <ButtonAdmin onClick={onSubmit}>{submitTitle}</ButtonAdmin>
                     </div>
                   : null
@@ -92,7 +96,7 @@ export const ModalTitle = (props: HTMLAttributes<HTMLElement>) => {
 
   return (
     <div className={twMerge("flex justify-between items-center py-3 px-4 border-b border-gray-200 dark:border-gray-700", className)}>
-      <h3 className="font-bold text-gray-800 dark:text-white">
+      <h3 className="font-bold text-gray-800 dark:text-white" {...rest}>
         {children}
       </h3>
       <button type="button" className="flex justify-center items-center w-7 h-7 text-sm font-semibold rounded-full border border-transparent text-gray-800 hover:bg-gray-100 disabled:opacity-50 disabled:pointer-events-none dark:text-white dark:hover:bg-gray-700 dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600"

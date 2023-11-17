@@ -163,9 +163,8 @@ const UpdateSettingsPopup = ({
 
   const router = useRouter()
 
-  const handelDelete = async () => {
-
-    await usePromise({
+  const handelSubmit = () => {
+    usePromise({
       callback: async () => {
         await useAction(createEditSettings)
         
@@ -186,7 +185,7 @@ const UpdateSettingsPopup = ({
       </ModalContent>
       <ModalAction>
         <ButtonAdmin size='sm' color='white' onClick={() => setOpen(false)}>Hủy</ButtonAdmin>
-        <ButtonAdmin size='sm' onClick={handelDelete}>Tiếp tục</ButtonAdmin>
+        <ButtonAdmin size='sm' onClick={handelSubmit}>Tiếp tục</ButtonAdmin>
       </ModalAction>
     </Modal>
   )

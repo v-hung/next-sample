@@ -1,4 +1,5 @@
 import './globals.css';
+import './default.css';
 import React, { Suspense } from 'react';
 import useSettings from "@/stores/settings";
 import { findSettingByName } from '@/lib/admin/fields';
@@ -6,7 +7,10 @@ import RootLayout from '@/components/RootLayout';
 import { getSettingsData } from '@/actions/admin/settings';
 import { Inter } from 'next/font/google';
 
-const font = Inter({ subsets: ['latin'] })
+const font = Inter({
+  weight: ['400', '500', '600'],
+  subsets: ['latin'] 
+})
 
 const Layout = async ({ children }: {
   children: React.ReactNode

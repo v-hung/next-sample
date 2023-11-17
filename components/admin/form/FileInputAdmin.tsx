@@ -5,8 +5,11 @@ import AdminFileModal from './image/FileModal';
 import FilesSlide from './image/FileSlide';
 import { FileTypeState } from '@/actions/admin/sample';
 
-type Props = InputHTMLAttributes<HTMLInputElement> & {
+type Props = Omit<InputHTMLAttributes<HTMLInputElement>, 'value' | 'defaultValue' | 'onChange'> & {
   label?: string | null,
+  value?: File | null,
+  defaultValue?: File | null,
+  onChange?: React.ChangeEventHandler<Omit<HTMLInputElement, 'value'> & { value: File }>
   details: {
     multiple?: boolean,
     tableName: string,

@@ -15,7 +15,7 @@ import SwitchAdmin from '../form/SwitchAdmin';
 import FileIcon from '../form/image/FileIcon';
 import { Modal, ModalAction, ModalContent, ModalTitle } from '@/components/ui/Modal';
 import Backdrop from '@/components/ui/Backdrop';
-import { TBody, THead, Table, Td, Th, Tr } from '@/components/ui/Table';
+import { Pagination, TBody, THead, Table, Td, Th, Tr } from '@/components/ui/Table';
 import Checkbox from '@/components/ui/Checkbox';
 
 export type SampleStateType = {
@@ -41,32 +41,25 @@ const AdminContentSample: React.FC<SampleStateType> = ({
   const [isPending, startTransition] = useTransition()
 
   const page = +(searchParams?.get('page') || 1)
-  const per_page = +(searchParams?.get('per_page') || ROWS_PER_PAGES[0])
+  const perPage = +(searchParams?.get('per_page') || ROWS_PER_PAGES[0])
 
   const orderBy = searchParams?.get('order_by') || ORDER_BY
   const orderType = searchParams?.get('order_type') || ORDER_TYPE
 
-  // const [columnsShow, setColumnsShow] = useState<SampleColumnsType[]>(columns.filter(v => v.show))
 
-  // Avoid a layout jump when reaching the last page with empty rows.
-  const handleChangePage = (
-    event: React.MouseEvent<HTMLButtonElement> | null,
-    newPage: number,
-  ) => {
+  const handleChangePage = (page: number) => {
     let query = new URLSearchParams(searchParams?.toString())
 
-    query.set('page', (newPage + 1).toString())
+    query.set('page', (page + 1).toString())
         
     router.push(`?${query.toString()}`)
   }
 
-  const handleChangeRowsPerPage = (
-    event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
-  ) => {
+  const handleChangeRowsPerPage = (perPage: number) => {
     let query = new URLSearchParams(searchParams?.toString())
 
     query.delete('page')
-    query.set('per_page', (event.target.value || ROWS_PER_PAGES[0].toString()))
+    query.set('per_page', (perPage.toString() || ROWS_PER_PAGES[0].toString()))
         
     router.push(`?${query.toString()}`)
   }
@@ -219,8 +212,17 @@ const AdminContentSample: React.FC<SampleStateType> = ({
       </section>
 
       <section className='mt-8'>
-        <Table rounded border shadow className='bg-white'>
-          <THead>
+        <Table rounded border shadow className='bg-white'
+          pagination={<Pagination 
+            placement="right"
+            count={count} 
+            page={page}
+            rowsPerPage={perPage}
+            onRowsPerPageChange={handleChangeRowsPerPage}
+            onPageChange={handleChangePage}
+          />}
+        >
+          <THead gray={true} >
             <Tr>
               <Th style={{width: '0px'}}>
                 <Checkbox checked={checked.length == data.length} onChange={handleSelectAll} />
