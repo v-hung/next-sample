@@ -42,7 +42,7 @@ const RichTextAdmin: FC<Props> = (props) => {
   return (
     <ClientOnly className={className}>
       { label ? 
-        <label className="block text-sm font-medium mb-2 dark:text-white">
+        <label className="inline-block text-sm font-medium mb-2 dark:text-white">
           {label} { props.required && <span className="text-red-500">*</span> }
         </label> 
         : null 

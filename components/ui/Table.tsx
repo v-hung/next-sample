@@ -115,7 +115,7 @@ export const Pagination = (props: {
   }, [page, count, rowsPerPage])
 
   return (
-    <div className="py-1 px-4 border-t">
+    <div className="py-1 px-4 border-t border-gray-200">
       <nav className={twMerge(commonClass, props.className)}>
         <button disabled={page <= 1} type="button" className="p-2.5 inline-flex items-center gap-x-2 text-sm rounded-full text-gray-800 hover:bg-gray-100 disabled:opacity-50 disabled:pointer-events-none dark:text-white dark:hover:bg-white/10 dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600">
           <span aria-hidden="true">«</span>

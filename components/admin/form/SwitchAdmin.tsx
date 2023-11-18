@@ -13,17 +13,19 @@ const SwitchAdmin: FC<Props> = (props) => {
   return (
     <div className={className}>
       { label ? 
-        <label className="block text-sm font-medium mb-2 dark:text-white">
+        <label htmlFor={id} className="inline-block text-sm font-medium mb-2 dark:text-white">
           {label} { props.required && <span className="text-red-500">*</span> }
         </label> 
         : null 
       }
 
-      <input 
-        type="checkbox" id={id} 
-        className="relative w-[3.25rem] h-7 p-px bg-gray-100 border-transparent text-transparent rounded-full cursor-pointer transition-colors ease-in-out duration-200 focus:ring-sky-600 disabled:opacity-50 disabled:pointer-events-none checked:bg-none checked:text-sky-600 checked:border-sky-600 focus:checked:border-sky-600 dark:bg-gray-800 dark:border-gray-700 dark:checked:bg-sky-500 dark:checked:border-sky-500 dark:focus:ring-offset-gray-600 before:inline-block before:w-6 before:h-6 before:bg-white checked:before:bg-sky-200 before:translate-x-0 checked:before:translate-x-full before:rounded-full before:shadow before:transform before:ring-0 before:transition before:ease-in-out before:duration-200 dark:before:bg-gray-400 dark:checked:before:bg-sky-200" 
-        {...rest} />
-      <label htmlFor={id} className="sr-only">switch</label>
+      <div className="block relative w-[3.25rem] h-7">
+        <input
+          type="checkbox" id={id}
+          className="w-full h-full p-px bg-gray-100 border-transparent text-transparent rounded-full cursor-pointer transition-colors ease-in-out duration-200 focus:ring-sky-600 disabled:opacity-50 disabled:pointer-events-none checked:bg-none checked:text-sky-600 checked:border-sky-600 focus:checked:border-sky-600 dark:bg-gray-800 dark:border-gray-700 dark:checked:bg-sky-500 dark:checked:border-sky-500 dark:focus:ring-offset-gray-600"
+          {...rest} />
+          <span className={`absolute top-0.5 left-0.5 inline-block w-6 h-6 bg-white translate-x-0 rounded-full shadow transform ring-0 transition ease-in-out duration-200 dark:bg-gray-400 pointer-events-none ${props.checked ? 'bg-sky-200 translate-x-full dark:bg-sky-200' : ''}`}></span>
+      </div>
     </div>
   )
 }

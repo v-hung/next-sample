@@ -7,9 +7,10 @@ import AdminFileModalAddFolder from './FileModalAddFolder';
 import { getListFolderFile } from '@/actions/admin/upload';
 import { FileTypeState } from '@/actions/admin/sample';
 import FileIcon from './FileIcon';
-import { Modal } from '@/components/ui/Modal';
+import { Modal, ModalAction, ModalContent, ModalTitle } from '@/components/ui/Modal';
 import ButtonAdmin from '../ButtonAdmin';
 import { useAction, usePromise } from '@/lib/utils/promise';
+import Checkbox from '@/components/ui/Checkbox';
 
 type ModalType = {
   show: boolean,
@@ -186,18 +187,10 @@ const AdminFileModal: React.FC<ModalType> = ({
         onClose={() => setShow(false)}
         className='max-w-3xl'
       >
-        <div className="p-6 flex items-center justify-between">
-          <span className='text-xl font-semibold'>Danh sách tài sản</span>
-          <span 
-            className="w-8 h-8 rounded border p-1.5 bg-white hover:bg-gray-100 cursor-pointer flex items-center justify-center"
-            onClick={() => setShow(false)}
-          >
-            <span className="icon">close</span>
-          </span>
-        </div>
+        <ModalTitle>Danh sách tài sản</ModalTitle>
 
-        <div className="border-y">
-          <div className="px-6 flex items-center border-b">
+        <ModalContent className='overflow-hidden p-0 flex flex-col'>
+          <div className="flex-none px-6 flex items-center border-b">
             <div 
               className={`p-4 uppercase text-xs font-semibold border-b hover:bg-sky-100 cursor-pointer border-transparent ${page == 0 ? 'text-sky-600 !border-sky-600' : ''}`}
               onClick={() => setPage(0)}
@@ -224,14 +217,14 @@ const AdminFileModal: React.FC<ModalType> = ({
             </ButtonAdmin>
           </div>
 
-          <div hidden={page != 0}>
+          <div hidden={page != 0} className='flex-grow min-h-0 flex'>
             { loading
-              ? <div className="w-full p-6 grid place-items-center">
+              ? <div className="w-full h-full min-h-0 p-6 grid place-items-center">
                 <span className="icon animate-spin">
                   progress_activity
                 </span>
               </div>
-              : <div className="">
+              : <div className="w-full flex-grow min-h-0 flex flex-col">
                 { folderParents.length > 0
                   ? <div className="flex px-6 py-4 items-center bg-gray-100">
                     <span className="icon flex-none hover:bg-text-500 cursor-pointer"
@@ -250,7 +243,7 @@ const AdminFileModal: React.FC<ModalType> = ({
                   </div>
                   : null
                 }
-                <div className='overflow-y-auto max-h-[60vh] pb-6'>
+                <div className='flex-grow min-h-0 overflow-y-auto pb-6'>
                   { folders.length > 0
                     ? <div className="mt-6 px-6">
                       <p className="font-semibold text-base mb-2">Thư mục ({folders.length})</p>
@@ -282,7 +275,7 @@ const AdminFileModal: React.FC<ModalType> = ({
                             <div className="relative w-full h-24 bg-make-transparent group">
                               <FileIcon name={v.name} mime={v.mime} url={v.url} caption={v.caption} width={v.naturalWidth} height={v.naturalHeight} />
                               <div className="absolute top-2 left-2">
-                                <input type="checkbox" value={v.id} checked={isChecked(v.id)} onChange={(e) => handleCheck(e)} />
+                                <Checkbox value={v.id} checked={isChecked(v.id)} onChange={(e) => handleCheck(e)} />
                               </div>
                               <span
                                 className="absolute top-2 right-2 icon w-8 h-8 !text-[18px] rounded border p-1.5 bg-white hover:bg-gray-100 cursor-pointer hidden group-hover:block"
@@ -320,7 +313,7 @@ const AdminFileModal: React.FC<ModalType> = ({
                     <div className="relative w-full h-24 bg-make-transparent">
                     <FileIcon name={v.name} mime={v.mime} url={v.url} caption={v.caption} width={v.naturalWidth} height={v.naturalHeight} />
                       <div className="absolute top-2 left-2">
-                        <input type="checkbox" value={v.id} checked={isChecked(v.id)} onChange={(e) => handleCheck(e)} />
+                        <Checkbox value={v.id} checked={isChecked(v.id)} onChange={(e) => handleCheck(e)} />
                       </div>
                       <span
                         className="absolute top-2 right-2 icon w-8 h-8 !text-[18px] rounded border p-1.5 bg-white hover:bg-gray-100 cursor-pointer hidden group-hover:block"
@@ -339,9 +332,9 @@ const AdminFileModal: React.FC<ModalType> = ({
               : <div className='px-6 my-6'>Không có tài sản nào được chọn</div>
             }
           </div>
-        </div>
+        </ModalContent>
 
-        <div className="p-6 bg-gray-100 flex items-center space-x-4">
+        <ModalAction className="p-6 flex items-center space-x-4">
           <ButtonAdmin color='white' onClick={() => setShow(false)} size='sm'>
             Hủy bỏ
           </ButtonAdmin>
@@ -360,7 +353,7 @@ const AdminFileModal: React.FC<ModalType> = ({
           >
             Tiếp theo
           </ButtonAdmin>
-        </div>
+        </ModalAction>
       </Modal>
 
       <AdminFileAdd tableName={tableName} fileTypes={fileTypes} folderFileId={folderParentId} show={addModal} setShow={setAddModal} setData={setDataUpload} />

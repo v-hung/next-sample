@@ -13,7 +13,7 @@ const SelectAdmin: FC<Props> = (props) => {
   return (
     <div className={className}>
       { label ? 
-        <label htmlFor={id} className="block text-sm font-medium mb-2 dark:text-white">
+        <label htmlFor={id} className="inline-block text-sm font-medium mb-2 dark:text-white">
           {label} { props.required && <span className="text-red-500">*</span> }
         </label> 
         : null 

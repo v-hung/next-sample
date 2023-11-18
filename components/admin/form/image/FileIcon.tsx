@@ -14,10 +14,9 @@ const FileIcon = ({
         ? <Image 
             src={url} 
             alt={caption || name}
-            width={width || 300}
-            height={height || 300}
-            className={twMerge('w-full h-full object-contain', className)} 
-            sizes="(max-width: 768px) 50vw, (max-width: 1200px) 70vw, 100vw"
+            width={300}
+            height={300}
+            className={twMerge('w-full h-full object-contain', className)}
           />
         : mime.startsWith('audio') ? <div className={twMerge('w-full h-full grid place-items-center', className)} >
           <span className="icon !text-4xl text-amber-600">audio_file</span>

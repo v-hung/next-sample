@@ -117,7 +117,7 @@ const AdminFileAdd= memo(({
           </span>
         </div>
 
-        <div className="py-6 pt-0 border-y">
+        <div className="flex-grow min-h-0 py-6 pt-0 border-y">
           { isAddFiles
             ? <>
               <div className="px-6 pt-6 flex items-center justify-between">
@@ -170,7 +170,7 @@ const AdminFileAdd= memo(({
           }
         </div>
 
-        <div className="p-6 bg-gray-100 flex items-center">
+        <div className="p-6 bg-gray-100 flex items-center relative">
           <ButtonAdmin variant="outline" size='sm' color='white' onClick={() => setShow(false)}>
             Hủy bỏ
           </ButtonAdmin>

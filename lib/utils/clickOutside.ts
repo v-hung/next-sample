@@ -4,12 +4,15 @@ const useClickOutside = (ref: any, cb: (e: Event) => void) => {
   useEffect(() => {
     function handleClickOutside(event: Event) {
       if (ref.current && !ref.current.contains(event.target) && !event.defaultPrevented) {
+        event.stopPropagation()
         cb(event)
       }
     }
-    document.addEventListener("mousedown", handleClickOutside, false);
+    document.addEventListener("click", handleClickOutside, false)
+    document.addEventListener('blur', handleClickOutside, false)
     return () => {
-      document.removeEventListener("mousedown", handleClickOutside, false);
+      document.removeEventListener("click", handleClickOutside, false)
+      document.removeEventListener("blur", handleClickOutside, false)
     };
   }, [ref]);
 }

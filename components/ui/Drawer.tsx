@@ -1,12 +1,12 @@
 "use client"
-import React, { HTMLAttributes, useEffect, useRef } from 'react'
-import { motion, AnimatePresence } from "framer-motion";
+import React, { HTMLAttributes, MouseEvent, Suspense, useEffect, useRef } from 'react'
+import { motion, AnimatePresence, HTMLMotionProps } from "framer-motion";
 import { createPortal } from 'react-dom';
 import { twMerge } from 'tailwind-merge';
 import ButtonAdmin from '../admin/form/ButtonAdmin';
 import { useClickOutside } from '@/lib/utils/clickOutside';
 
-type State = {
+export type DrawerProps = Omit<HTMLMotionProps<'div'>, 'children' | 'className'> & {
   anchor?: 'left' | 'right'
   open: boolean
   onClose?: () => void,
@@ -17,26 +17,35 @@ type State = {
   contentClass?: string,
   closeTitle?: string,
   submitTitle?: string,
-  action?: boolean
+  action?: boolean,
+  keepMounted?: boolean
 }
 
-export const Drawer: React.FC<State> = (props) => {
+export const Drawer: React.FC<DrawerProps> = (props) => {
   if (typeof window === 'undefined') {
     return null
   }
 
   const {open, onClose, children, action = false, anchor = 'left', 
-    title, onSubmit, className, contentClass,
+    title, onSubmit, className, contentClass, keepMounted,
     closeTitle = 'Close', submitTitle = 'Continue', ...rest
   } = props
 
-  const ref = useRef<HTMLDivElement>()
+  const ref = useRef<HTMLDivElement>(null)
 
-  useClickOutside(ref, () => {
-    if (typeof onClose !== "undefined") {
+  // useClickOutside(ref, () => {
+  //   if (typeof onClose !== "undefined") {
+  //     onClose()
+  //   }
+  // })
+
+  const handleBackgroundClick = (e: MouseEvent<HTMLDivElement>) => {
+    if ((e.target as HTMLDivElement).classList.contains("cs-backdrop") && typeof onClose != "undefined") {
+      e.preventDefault()
+      e.stopPropagation()
       onClose()
     }
-  })
+  }
 
   useEffect(() => {
     document.body.style.overflow = open ? 'hidden' : 'initial'
@@ -45,22 +54,23 @@ export const Drawer: React.FC<State> = (props) => {
   return (
     <DrawerContext.Provider value={{onClose}}>{
       createPortal(
-        <AnimatePresence>
-          {open && (
+        <AnimatePresence mode='wait'>
+          {(open || keepMounted) && (
             <motion.div
               initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
+              animate={open ? { opacity: 1, display: 'block' } : { opacity: 0, transitionEnd: {display: 'none'}}}
               exit={{ opacity: 0 }}
-              className='fixed top-0 left-0 w-full h-screen bg-black/30 z-[60]'
+              className='fixed top-0 left-0 w-full h-screen bg-black/30 z-[60] cs-backdrop'
+              onClick={handleBackgroundClick }
             >
               <motion.div
                 ref={ref}
                 initial={{ x: anchor == 'left' ? '-100%' : '100%' }}
-                animate={{ x: 0 }}
+                animate={open ? { x: 0, display: 'flex' }: { x: anchor == 'left' ? '-100%' : '100%', transitionEnd: { display: 'none'}}}
                 exit={{ x: anchor == 'left' ? '-100%' : '100%' }}
                 transition={{ type: 'tween' }}
                 className={twMerge(`max-w-xs w-full h-full flex flex-col bg-white border-s dark:bg-gray-800 dark:border-gray-700 ${anchor == 'right' ? 'float-right' : ''}`, className)}
-                {...rest as any}
+                {...rest}
               >
                 { title 
                   ? <div className="flex justify-between items-center py-3 px-4 border-b dark:border-gray-700">
@@ -133,7 +143,6 @@ export const DrawerAction = (props: HTMLAttributes<HTMLElement>) => {
   )
 }
 
-
 /**
  * context modal
  */
@@ -154,3 +163,5 @@ export const useDrawerContext = () => {
 
   return context
 }
+
+export default Drawer

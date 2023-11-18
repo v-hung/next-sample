@@ -68,10 +68,10 @@ const FileInputAdmin: React.FC<Props> = ({
   return (
     <div className={className}>
       { label
-        ? <p className="text-sm font-medium mb-1 capitalize">{label} { required && <span className="text-red-500">*</span> }</p>
+        ? <p className="inline-block text-sm font-medium mb-2 dark:text-white">{label} { required && <span className="text-red-500">*</span> }</p>
         : null
       }
-      <div className={`h-40 border rounded bg-white ${className}`}>
+      <div className="h-40 border rounded bg-white">
         <input type="hidden" name={name} value={id} className='sr-only' required={required} />
         <div className="w-full h-full flex flex-col justify-center items-center cursor-pointer"
           onClick={handelShowModal}

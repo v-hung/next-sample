@@ -37,7 +37,7 @@ const MenuAdmin = ({
   
   return (
     <div 
-      className='fixed h-full transition-all bg-white border-r z-50' 
+      className='fixed h-full transition-all bg-white border-r z-[51]' 
       style={{width: isHover ? adminMenu?.width : (adminMenu?.open ? adminMenu?.width : "60px")}}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}

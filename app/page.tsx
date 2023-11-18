@@ -1,33 +1,42 @@
 "use client"
+import { Viewer } from '@photo-sphere-viewer/core'
+import React, { useEffect, useRef } from 'react'
+import "@photo-sphere-viewer/core/index.css"
+import { EquirectangularTilesAdapter } from '@photo-sphere-viewer/equirectangular-tiles-adapter'
 
-import ButtonAdmin from "@/components/admin/form/ButtonAdmin"
-import DatePickerAdmin from "@/components/admin/form/DatePickerAdmin"
-import InputAdmin from "@/components/admin/form/InputAdmin"
-import RichTextAdmin from "@/components/admin/form/RichTextAdmin"
-import SelectAdmin from "@/components/admin/form/SelectAdmin"
-import SlugInputAdmin from "@/components/admin/form/SlugInputAdmin"
-import SwitchAdmin from "@/components/admin/form/SwitchAdmin"
-import Collapsed from "@/components/ui/Collapsed"
-import Drawer from "@/components/ui/Drawer"
-import Dropdown, { Divide, MenuItem, MenuTitle } from "@/components/ui/Dropdown"
-import { Modal } from "@/components/ui/Modal"
-import useAlerts from "@/stores/alerts"
-import Link from "next/link"
-import { useState } from "react"
+const page = () => {
+  const viewerHTML = useRef<HTMLDivElement>(null)
 
-export default function Home() {
+  useEffect(() => {
+    if (!viewerHTML.current) return
 
-  const [open, setOpen] = useState(false)
+    const viewer = new Viewer({
+      container: viewerHTML.current,
+      adapter: EquirectangularTilesAdapter,
+      // panorama:  `/_next/image?url=%2Fstorage%2Fasdfb.webp&w=4048&q=75`,
+      panorama: {
+        width: 6656,
+        cols: 8,
+        rows: 4,
+        baseUrl: `asset/img/abcd-min 1.png`,
+        // baseUrl: `/_next/image?url=%2Fstorage%2Fasdfb.webp&w=4048&q=75`,
+        tileUrl: (col: any, row: any) => {
+          const num = row * 16 + col + 1;
+          return `sphere-tiles/image_part_${('000' + num).slice(-3)}.jpg`;
+        },
+      },
+    })
+
+    return () => {
+      if(viewer) {
+        viewer?.destroy()
+      }
+    }
+  }, [])
 
   return (
-    <div className="p-4 max-w-sm pl-12">
-      <ButtonAdmin onClick={() => setOpen(!open)}>Click</ButtonAdmin>
-      {/* <Modal open={open} onClose={() => setOpen(false)} action >
-        <div className="w-full h-[200vh]"></div>
-      </Modal> */}
-      <Drawer open={open} onClose={() => setOpen(false)}>
-        <div className="w-full h-[200vh]"></div>
-      </Drawer>
-    </div>
+    <div id="viewer" ref={viewerHTML}  className={`w-full h-screen`} />
   )
 }
+
+export default page

@@ -22,7 +22,7 @@ export const MANAGER_LINKS: LinkState[] = [
     name: "Bảng điều khiển",
     path: "/admin"
   }, 
-  ...TABLES_SAMPLE.filter(v => !["users", "roles", "settings"].includes(v.slug)).map(v => ({
+  ...TABLES_SAMPLE.filter(v => v.slug && !["users", "roles", "settings"].includes(v.slug)).map(v => ({
     icon: v.icon,
     name: v.name,
     path: '/admin/' + v.slug,

@@ -4,15 +4,17 @@ import Checkbox from '@/components/ui/Checkbox'
 import { PermissionsOnRoles } from '@prisma/client'
 import React, { useEffect, useState, useRef, forwardRef, useImperativeHandle, memo, useCallback, useMemo } from 'react'
 
+type ItemType = {
+  permissionKey: string,
+  permissionTableName: string,
+}
+
 type Props = {
   label?: string | null,
   name?: string
   required?: boolean | null,
   defaultValue?: PermissionsOnRoles[],
-  value?: {
-    permissionKey: string,
-    permissionTableName: string,
-  }[],
+  value?: ItemType[],
   onChange?: (data: any) => void
   className?: string,
 }
@@ -47,13 +49,29 @@ const PermissionsInputAdmin: React.FC<Props> = ({
 
     onChange?.(syntheticEvent)
   }, [])
-  
-  const childs = useRef<any[]>([])
 
   const setChecked = (e: React.MouseEvent<HTMLButtonElement>, check: boolean) => {
     e.preventDefault()
     e.stopPropagation()
-    childs.current.forEach(v => v.forwardSetChecked(check))
+
+    const newValue = check ? TABLES_SAMPLE.reduce<ItemType[]>((pre, cur) => {
+      const item: ItemType[] = permissionKeys.map(key => ({
+        permissionKey: key,
+        permissionTableName: cur.tableName
+      }))
+
+      pre.push(...item)
+
+      return pre
+    }, []) : []
+
+    const syntheticEvent: any = {
+      target: {
+        value: newValue
+      },
+    };
+
+    onChange?.(syntheticEvent)
   }
 
   const tablesName = TABLES_SAMPLE.map(v => v.tableName)
@@ -65,7 +83,7 @@ const PermissionsInputAdmin: React.FC<Props> = ({
   return (
     <div className={className}>
       { label
-        ? <p className="block text-sm font-medium mb-2 dark:text-white">{label} { required && <span className="text-red-500">*</span> }</p>
+        ? <p className="inline-block text-sm font-medium mb-2 dark:text-white">{label} { required && <span className="text-red-500">*</span> }</p>
         : null
       }
       {/* <input type="hidden" name={name} value={JSON.stringify(data)} /> */}
@@ -75,7 +93,7 @@ const PermissionsInputAdmin: React.FC<Props> = ({
         <button className='text-blue-500' onClick={(e) => setChecked(e, false)}>Bỏ chọn tất cả</button>
       </div>
 
-      <div className="grid grid-flow-col auto-cols-max gap-4 mt-4">
+      <div className="flex flex-wrap mt-4 -mx-4">
         {tablesName.map((tableName, index) =>
           <RoleItems 
             key={tableName} 
@@ -89,7 +107,7 @@ const PermissionsInputAdmin: React.FC<Props> = ({
   )
 }
 
-const RoleItems = memo(({
+const RoleItems = ({
   tableName, value, setValue
 }: {
   tableName: string, value: string[], setValue: (data: string[]) => void
@@ -109,15 +127,17 @@ const RoleItems = memo(({
   }
 
   return (
-    <div className='flex flex-col space-y-2'>
-      <Checkbox label={tableName} checked={value.length == permissionKeys.length} onChange={handleSelectAll} />
-      <div className="ml-6 flex flex-col space-y-1">
-        {permissionKeys.map(v =>
-          <Checkbox key={`${tableName}-${v}`} label={`${v} ${tableName}`} value={v} checked={value.includes(v)} onChange={handleSelect} />
-        )}
+    <div className="px-4 mb-6">
+      <div className='flex flex-col space-y-2'>
+        <Checkbox label={tableName} checked={value.length == permissionKeys.length} onChange={handleSelectAll} />
+        <div className="ml-6 flex flex-col space-y-1">
+          {permissionKeys.map(v =>
+            <Checkbox key={`${tableName}-${v}`} label={`${v} ${tableName}`} value={v} checked={value.includes(v)} onChange={handleSelect} />
+          )}
+        </div>
       </div>
     </div>
   )
-})
+}
 
-export default memo(PermissionsInputAdmin)
+export default PermissionsInputAdmin

@@ -1,12 +1,12 @@
 "use client"
-import React, { HTMLAttributes, useEffect, useRef } from 'react'
-import { motion, AnimatePresence } from "framer-motion";
+import React, { HTMLAttributes, MouseEvent, useEffect, useRef } from 'react'
+import { motion, AnimatePresence, HTMLMotionProps } from "framer-motion";
 import { createPortal } from 'react-dom';
 import { twMerge } from 'tailwind-merge';
 import ButtonAdmin from '../admin/form/ButtonAdmin';
 import { useClickOutside } from '@/lib/utils/clickOutside';
 
-type State = HTMLAttributes<HTMLDivElement> & {
+type State = Omit<HTMLMotionProps<'div'>, 'children'> & {
   open: boolean
   onClose?: () => void,
   action?: boolean,
@@ -15,7 +15,8 @@ type State = HTMLAttributes<HTMLDivElement> & {
   contentClass?: string,
   className?: string,
   closeTitle?: string,
-  submitTitle?: string
+  submitTitle?: string,
+  children?: React.ReactNode
 }
 
 export const Modal: React.FC<State> = (props) => {
@@ -27,13 +28,15 @@ export const Modal: React.FC<State> = (props) => {
     return null
   }
 
-  const ref = useRef<HTMLDivElement>()
+  const ref = useRef<HTMLDivElement>(null)
 
-  useClickOutside(ref, () => {
-    if (typeof onClose !== "undefined") {
+  const handleBackgroundClick = (e: MouseEvent<HTMLDivElement>) => {
+    if ((e.target as HTMLDivElement).classList.contains("cs-backdrop") && typeof onClose != "undefined") {
+      e.preventDefault()
+      e.stopPropagation()
       onClose()
     }
-  })
+  }
 
   useEffect(() => {
     document.body.style.overflow = open ? 'hidden' : 'initial'
@@ -47,7 +50,8 @@ export const Modal: React.FC<State> = (props) => {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className='w-full h-full fixed top-0 start-0 z-[60] overflow-x-hidden overflow-y-auto flex items-center justify-center bg-black/30 py-8'
+            className='w-full h-full fixed top-0 start-0 z-[60] overflow-x-hidden overflow-y-auto flex items-center justify-center bg-black/30 py-8 cs-backdrop'
+            onClick={handleBackgroundClick}
           >
               <motion.div
                 ref={ref}
@@ -55,7 +59,7 @@ export const Modal: React.FC<State> = (props) => {
                 animate={{ scale: 1, opacity: 1 }}
                 exit={{ scale: 0.5, opacity: 0 }}
                 className={twMerge('w-full max-w-sm max-h-full flex flex-col bg-white border shadow-sm rounded-xl dark:bg-gray-800 dark:border-gray-700 dark:shadow-slate-700/[.7]', className)}
-                {...rest as any}
+                {...rest}
               >
                 { title
                   ? <div className="flex justify-between items-center py-3 px-4 border-b dark:border-gray-700">
