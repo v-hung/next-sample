@@ -18,7 +18,8 @@ export type DrawerProps = Omit<HTMLMotionProps<'div'>, 'children' | 'className'>
   closeTitle?: string,
   submitTitle?: string,
   action?: boolean,
-  keepMounted?: boolean
+  keepMounted?: boolean,
+  loading?: boolean
 }
 
 export const Drawer: React.FC<DrawerProps> = (props) => {
@@ -27,7 +28,7 @@ export const Drawer: React.FC<DrawerProps> = (props) => {
   }
 
   const {open, onClose, children, action = false, anchor = 'left', 
-    title, onSubmit, className, contentClass, keepMounted,
+    title, onSubmit, className, contentClass, keepMounted, loading,
     closeTitle = 'Close', submitTitle = 'Continue', ...rest
   } = props
 
@@ -40,7 +41,7 @@ export const Drawer: React.FC<DrawerProps> = (props) => {
   // })
 
   const handleBackgroundClick = (e: MouseEvent<HTMLDivElement>) => {
-    if ((e.target as HTMLDivElement).classList.contains("cs-backdrop") && typeof onClose != "undefined") {
+    if ((e.target as HTMLDivElement).classList.contains("cs-backdrop") && typeof onClose != "undefined" && loading == false) {
       e.preventDefault()
       e.stopPropagation()
       onClose()
@@ -52,7 +53,7 @@ export const Drawer: React.FC<DrawerProps> = (props) => {
   }, [open])
 
   return (
-    <DrawerContext.Provider value={{onClose}}>{
+    <DrawerContext.Provider value={{onClose, loading}}>{
       createPortal(
         <AnimatePresence mode='wait'>
           {(open || keepMounted) && (
@@ -127,9 +128,18 @@ export const DrawerTitle = (props: HTMLAttributes<HTMLDivElement>) => {
 
 export const DrawerContent = (props: HTMLAttributes<HTMLElement>) => {
   const {className, children, ...rest} = props
+
+  const { loading } = useDrawerContext()
+
   return (
-    <div className={twMerge("flex-grow min-h-0 p-4 overflow-y-auto", className)} {...rest}>
-      {children}
+    <div className="relative flex-grow min-h-0">
+      <div className={twMerge(`h-full p-4 overflow-y-auto`, className)} {...rest}>
+        {children}
+      </div>
+      { loading
+        ? <div className="absolute w-full h-full top-0 left-0 bg-white/80 animate-pulse z-10"></div>
+        : null
+      }
     </div>
   )
 }
@@ -149,7 +159,8 @@ export const DrawerAction = (props: HTMLAttributes<HTMLElement>) => {
 
 type ContextType = {
   onClose?: () => void,
-  closeTitle?: string
+  closeTitle?: string,
+  loading?: boolean
 } | null
 
 const DrawerContext = React.createContext<ContextType>(null);

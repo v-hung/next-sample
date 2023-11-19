@@ -30,14 +30,6 @@ export const addEditScene = async ({
       throw "Forbidden";
     }
 
-    const sceneBySlug = await db.scene.findFirst({
-      where: {
-        slug
-      }
-    })
-
-    if (sceneBySlug) throw "Slug đã tồn tại"
-
     const image = await db.file.findUnique({
       where: {
         id: imageId,
@@ -49,7 +41,15 @@ export const addEditScene = async ({
 
     // create
     if (!id) {
-      if (!image || image.url) throw "Ảnh không tồn tại"
+      const sceneBySlug = await db.scene.findFirst({
+        where: {
+          slug
+        }
+      })
+  
+      if (sceneBySlug) throw "Slug đã tồn tại"
+
+      if (!image || !image.url) throw "Ảnh không tồn tại"
 
       let uuid = v4()
 
@@ -99,9 +99,9 @@ export const addEditScene = async ({
         }
       })
 
-      if (!image || image.url) throw "Ảnh không tồn tại"
-
       if (scene?.imageId != imageId) {
+        if (!image || image.url) throw "Ảnh không tồn tại"
+        
         await createImageForScene(image.url, id)
       }
 
@@ -529,7 +529,7 @@ async function createImageForScene (imageUrl: string, uuid: string) {
   })
 
   // save image low
-  // await imageSharp.clone().resize({ width: 512, height: 256 }).webp({ quality: 60 }).toFile(`./storage/tiles/${uuid}/low.webp`)
+  await imageSharp.clone().resize({ width: 512, height: 256 }).webp({ quality: 60 }).toFile(`./storage/tiles/${uuid}/low.webp`)
 
   // create fisheye image
   await new Promise(res => res(equirectangularToFisheye(imageSharp.clone(), 256, `./storage/tiles/${uuid}/fisheye.webp`)))

@@ -103,7 +103,7 @@ export const saveSettings = async(data : {name: string, value: string}[]) => {
       throw "Forbidden";
     }
 
-    await db.$transaction(data.map(({name, value}) => db.setting.update({
+    await db.$transaction(data.filter(v => v.value != '').map(({name, value}) => db.setting.update({
       where: {
         name
       },
@@ -156,5 +156,6 @@ export const getSettingsData = async () => {
   const settings = await db.setting.findMany()
 
   const data = await getValueSettings(settings)
+
   return data
 }

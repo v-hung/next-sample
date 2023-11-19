@@ -34,6 +34,7 @@ const SceneAddModal = ({
     if (scene && (scene.name != name 
       || scene.slug != slugName
       || scene.audio?.id != audio?.id
+      || scene.image?.id != image?.id
       || scene.group?.id != group?.id
       || scene.description?.replace(/[^a-zA-Z0-9]/g, '') != description?.replace(/[^a-zA-Z0-9]/g, '')
       || scene.publish != (publish ? 'publish' : 'draft')
@@ -92,6 +93,7 @@ const SceneAddModal = ({
     if (scene) {
       setName(scene.name)
       setSlugName(scene.slug)
+      setImage(scene.image || undefined)
       setAudio(scene.audio || undefined)
       setGroup(scene.group)
       setDescription(scene.description || '')
@@ -151,10 +153,11 @@ const SceneAddModal = ({
         open={open}
         keepMounted
         onClose={onCloseModal}
+        loading={loading}
         className="max-w-3xl"
       >
         <DrawerTitle>{!scene ? 'Thêm' : 'Sửa'} điểm chụp <span className="text-blue-600">{scene?.name}</span></DrawerTitle>
-        <DrawerContent className="flex flex-col gap-4">
+        <DrawerContent className="flex flex-col gap-4 relative">
           <InputAdmin label="Tiêu đề" name="name" value={name} onChange={handelChangeName} placeholder="Vd: bán đảo Bắc Hà" required={true} />
           <InputAdmin label="Slug" name="slug" value={slugName} onChange={handelChangeSlugName} required={true} />
           <div className="flex gap-6">
@@ -166,8 +169,10 @@ const SceneAddModal = ({
           <SwitchAdmin label="Xuất bản" checked={publish} onChange={(e) => setPublish(e.target.checked)} name="publish" />
         </DrawerContent>
         <DrawerAction>
-          <ButtonAdmin variant="text" color='black' onClick={onCloseModal}>Hủy</ButtonAdmin>
-          <ButtonAdmin onClick={handelSubmit}>Tiếp tục</ButtonAdmin>
+          <ButtonAdmin variant="text" color='black' disabled={loading} onClick={onCloseModal}>Hủy</ButtonAdmin>
+          <ButtonAdmin onClick={handelSubmit} disabled={loading} startIcon={
+            loading ? <span className="icon w-4 h-4 animate-spin">progress_activity</span> : null
+          }>Tiếp tục</ButtonAdmin>
         </DrawerAction>
       </DrawerLazy>
 
@@ -184,13 +189,6 @@ const SceneAddModal = ({
           <ButtonAdmin color='red' onClick={changeHasCloseModal}>Đóng</ButtonAdmin>
         </ModalAction>
       </Modal>
-
-      <Backdrop
-        open={loading}
-        className="grid place-items-center"
-      >
-        <span className="icon animate-spin">progress_activity</span>
-      </Backdrop>
     </>
   )
 }

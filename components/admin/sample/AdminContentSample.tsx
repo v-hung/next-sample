@@ -188,27 +188,24 @@ const AdminContentSample: React.FC<SampleStateType> = ({
           Thêm bản ghi mới
         </ButtonAdmin>
 
-        <div className="relative">
-          
-          <Dropdown renderItem={(rest) => (
-            <button {...rest} className="flex space-x-2 p-2 pr-2 bg-white border rounded shadow">
-              <span className="icon icon-fill">
-                settings
-              </span>
-              <span className="icon">
-                arrow_drop_down
-              </span>
-            </button>
-          )}>
-            {columns.map(column =>
-              <MenuItem key={column.name}>
-                <SwitchAdmin label={column.label} 
-                  onChange={(e) => handelChangeColumnShowField(e, column.name)} 
-                  checked={columnShowFields.includes(column.name)} className='block w-full'/>
-              </MenuItem>
-            )}
-          </Dropdown>
-        </div>
+        <Dropdown renderItem={(rest) => (
+          <button {...rest} className="flex space-x-2 p-2 pr-2 bg-white border rounded shadow">
+            <span className="icon icon-fill">
+              settings
+            </span>
+            <span className="icon">
+              arrow_drop_down
+            </span>
+          </button>
+        )} className='z-10' >
+          {columns.map(column =>
+            <MenuItem key={column.name}>
+              <SwitchAdmin endLabel={column.label}
+                onChange={(e) => handelChangeColumnShowField(e, column.name)} 
+                checked={columnShowFields.includes(column.name)}/>
+            </MenuItem>
+          )}
+        </Dropdown>
       </section>
 
       <section className='mt-8'>

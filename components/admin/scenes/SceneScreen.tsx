@@ -16,6 +16,7 @@ import InfoHotSpot from './hotspots/InfoHotSpot';
 import InfoHotSpot2 from './hotspots/InfoHotSpot2';
 import useSettings from '@/stores/settings';
 import useAdminScene from '@/stores/admin/admin_scene';
+import { nextLink } from '@/lib/utils/hepler';
 
 const AdminSceneScreen = ({
   scenes, sceneId, setSceneId, tabCurrentHotspot, setTabCurrentHotspot,
@@ -79,11 +80,11 @@ const AdminSceneScreen = ({
   async function switchScene(scene: SceneDataState) {
     viewer?.setPanorama({
       width: scene.faceSize,
-      cols: 16,
-      rows: 8,
-      baseUrl: `/storage/tiles/${scene.id}/low.jpg`,
+      cols: 8,
+      rows: 4,
+      baseUrl: `/storage/tiles/${scene.id}/low.webp`,
       tileUrl: (col: number, row: number) => {
-        return `/storage/tiles/${scene.id}/${row}_${col}.jpg`
+        return `/storage/tiles/${scene.id}/${row}_${col}.webp`
       },
     }, {
       position: {
@@ -210,11 +211,11 @@ const AdminSceneScreen = ({
       touchmoveTwoFingers: true,
       panorama: {
         width: currentScene?.faceSize,
-        cols: 16,
-        rows: 8,
-        baseUrl: `/storage/tiles/${currentScene?.id}/low.jpg`,
+        cols: 8,
+        rows: 4,
+        baseUrl: `/storage/tiles/${currentScene?.id}/low.webp`,
         tileUrl: (col: number, row: number) => {
-          return `/storage/tiles/${currentScene?.id}/${row}_${col}.jpg`
+          return `/storage/tiles/${currentScene?.id}/${row}_${col}.webp`
         },
       },
     })

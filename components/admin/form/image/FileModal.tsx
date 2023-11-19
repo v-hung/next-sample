@@ -219,11 +219,11 @@ const AdminFileModal: React.FC<ModalType> = ({
 
           <div hidden={page != 0} className='flex-grow min-h-0 flex'>
             { loading
-              ? <div className="w-full h-full min-h-0 p-6 grid place-items-center">
-                <span className="icon animate-spin">
-                  progress_activity
-                </span>
-              </div>
+              ? <div className="w-full h-full min-h-0 p-6 grid place-items-center bg-white/80 animate-pulse">
+                  <span className="icon animate-spin">
+                    progress_activity
+                  </span>
+                </div>
               : <div className="w-full flex-grow min-h-0 flex flex-col">
                 { folderParents.length > 0
                   ? <div className="flex px-6 py-4 items-center bg-gray-100">

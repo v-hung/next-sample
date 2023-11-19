@@ -15,7 +15,6 @@ const FilesSlide = ({files}: {files: File[]}) => {
     if (swiperEl.current) {
       swiper.current = new Swiper(swiperEl.current, {
         slidesPerView: 1,
-        loop: true,
         // navigation: {
         //   nextEl: '.swiper-button-next',
         //   prevEl: '.swiper-button-prev',
@@ -57,10 +56,9 @@ const FilesSlide = ({files}: {files: File[]}) => {
                ? <Image 
                   src={v.url} 
                   alt={v.caption || v.name}
-                  width={v.naturalWidth || 300}
-                  height={v.naturalHeight || 300}
-                  className='my-1 w-full flex-grow min-h-0 object-contain' 
-                  sizes="(max-width: 768px) 50vw, (max-width: 1200px) 70vw, 100vw"
+                  width={300}
+                  height={300}
+                  className='my-1 w-full flex-grow min-h-0 object-contain'
                 />
                 : v.mime.startsWith('audio') ? <div className={`w-full h-full grid place-items-center`} >
                   <span className="icon !text-4xl text-amber-600">audio_file</span>

@@ -1,5 +1,5 @@
 "use client"
-import React, {FC, InputHTMLAttributes, useId} from 'react'
+import React, {FC, InputHTMLAttributes, memo, useId} from 'react'
 import { twMerge } from "tailwind-merge";
 
 type Props = InputHTMLAttributes<HTMLInputElement> & {
@@ -40,10 +40,9 @@ const InputAdmin: FC<Props> = (props) => {
           </div>
           : null
         }
-        
       </div>
     </div>
   )
 }
 
-export default InputAdmin
+export default memo(InputAdmin)

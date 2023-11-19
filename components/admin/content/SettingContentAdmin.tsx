@@ -91,7 +91,10 @@ const SettingContentAdmin: FC<State> = ({
       loading: loading,
       setLoading: setLoading,
       callback: async () => {
-        await useAction(() => saveSettings(listDataValue))
+        await useAction(() => saveSettings(listDataValue.map(v => ({
+          name: v.name,
+          value: typeof v.value == "object" ? v.value?.id || '' : v.value
+        }))))
         router.refresh()
       }
     })

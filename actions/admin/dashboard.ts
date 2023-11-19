@@ -68,6 +68,9 @@ export const getAccessHistory = async (currentDate: Date = new Date()) => {
           lte: currentDate,
           gte: threeMonthsAgo
         }
+      },
+      orderBy: {
+        accessTime: 'asc'
       }
     })
 
@@ -82,7 +85,7 @@ export const getAccessHistory = async (currentDate: Date = new Date()) => {
       }
     });
 
-    const accessByDateArray = Array.from(accessByDateMap, ([date, count]) => ({ date, count }));
+    const accessByDateArray = Array.from(accessByDateMap, ([date, count]) => ({ date, count }))
 
     return {data : accessByDateArray}
   } catch (error) {

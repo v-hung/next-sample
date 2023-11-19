@@ -17,6 +17,7 @@ export type SampleStateType = {
   columns: SampleColumnsType[],
 }
 
+// million-ignore
 const AdminContentSampleCreateEdit: React.FC<SampleStateType> = ({
   data, name, columns, tableName, tablesName
 }) => {

@@ -22,6 +22,7 @@ export type SceneDataState =  (Omit<Scene, 'levels' | 'initialViewParameters'> &
   initialViewParameters: InitialViewParametersState;
   infoHotspots: InfoHotspot[];
   linkHotspots: LinkHotspot[];
+  image: File | null,
   audio: File | null,
   group: GroupScene | null
 })
@@ -31,6 +32,7 @@ const getData = async () => {
     include: {
       infoHotspots: true,
       linkHotspots: true,
+      image: true,
       audio: true,
       group: true
     },

@@ -25,12 +25,6 @@ const AdminChartDevice = () => {
       callback: async () => {
         const { counts } = await useAction(getAccessDevice)
   
-        console.log({
-          mobile: Number(counts.mobile),
-          tablet: Number(counts.tablet),
-          pc: Number(counts.pc)
-        })
-  
         setData({
           mobile: Number(counts.mobile),
           tablet: Number(counts.tablet),
@@ -117,23 +111,25 @@ const ChartTwo = memo(({
     }
   }, [])
 
-  return <>
-    <canvas ref={chartEl} ></canvas>
-    <div className="flex-col justify-self-center ml-6">
-      <div className="flex items-center space-x-2">
-        <span className="w-2 h-2 rounded-full bg-sky-500"></span>
-        <span>{getPercent('mobile')}% thiết bị di động</span>
-      </div>
-      <div className="flex items-center space-x-2">
-        <span className="w-2 h-2 rounded-full bg-teal-500"></span>
-        <span>{getPercent('tablet')}% máy tính bảng</span>
-      </div>
-      <div className="flex items-center space-x-2">
-        <span className="w-2 h-2 rounded-full bg-red-500"></span>
-        <span>{getPercent('pc')}% máy tính để bàn</span>
+  return (
+    <div className="w-full h-full flex justify-center items-center">
+      <canvas ref={chartEl} ></canvas>
+      <div className="flex flex-col justify-self-center ml-6">
+        <div className="flex items-center space-x-2">
+          <span className="w-2 h-2 rounded-full bg-sky-500"></span>
+          <span>{getPercent('mobile')}% thiết bị di động</span>
+        </div>
+        <div className="flex items-center space-x-2">
+          <span className="w-2 h-2 rounded-full bg-teal-500"></span>
+          <span>{getPercent('tablet')}% máy tính bảng</span>
+        </div>
+        <div className="flex items-center space-x-2">
+          <span className="w-2 h-2 rounded-full bg-red-500"></span>
+          <span>{getPercent('pc')}% máy tính để bàn</span>
+        </div>
       </div>
     </div>
-  </>
+  )
 })
 
 export default AdminChartDevice

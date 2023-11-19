@@ -9,6 +9,7 @@ import { useAction, usePromise } from "@/lib/utils/promise";
 import Skeleton from "@/components/ui/Skeleton";
 import { getAccessHistory } from "@/actions/admin/dashboard";
 
+// million-ignore
 const AdminChartHistory = () => {
   const [loading, setLoading] = useState(false)
   const [data, setData] = useState<{date: string, count: number}[]>([])

@@ -109,3 +109,9 @@ export const parseDataInString = (str?: string | null) => {
     return str
   }
 }
+
+type WidthImageType = 16 | 32 | 48 | 64 | 96 | 128 | 256 | 384 | 640 | 750 | 828 | 1080 | 1200 | 1920 | 2048 | 3840
+
+export const nextLink = (url: string, w: WidthImageType, q?: number) => {
+  return `/_next/image?url=${encodeURIComponent(url)}&w=${w}&q=${q || 75}`
+}

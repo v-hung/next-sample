@@ -1,4 +1,4 @@
-import { SceneDataState } from "@/app/admin/(admin)/scenes/page"
+import { SceneProps } from "@/app/(web)/layout"
 import { Viewer } from "@photo-sphere-viewer/core"
 import { GroupScene } from "@prisma/client"
 import { create } from "zustand"
@@ -6,7 +6,7 @@ import { create } from "zustand"
 type State = {
   start: boolean,
   viewer?: Viewer,
-  scenes: SceneDataState[],
+  scenes: SceneProps[],
   groups: GroupScene[]
   videoShow?: string,
   showListScene: boolean
@@ -15,7 +15,7 @@ type State = {
 type Actions = {
   setStart: (data: boolean) => void
   setViewer: (data: Viewer) => void,
-  setScenes:( data: SceneDataState[]) => void,
+  setScenes:( data: SceneProps[]) => void,
   setGroups:( data: GroupScene[]) => void,
   setVideoShow: (data: string | undefined) => void
   setShowListScene: (data?: boolean) => void

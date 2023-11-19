@@ -3,8 +3,16 @@ import { useCallback, useState } from 'react'
 import ListScene from '../scenes/ListScene'
 import SceneAddModal from '../scenes/SceneAddModal'
 import AdminSceneControl from '../scenes/SceneControl'
-import AdminSceneScreen from '../scenes/SceneScreen'
+// import AdminSceneScreen from '../scenes/SceneScreen'
+import dynamic from 'next/dynamic'
 import { SceneDataState } from '@/app/admin/(admin)/scenes/page'
+
+const AdminSceneScreen = dynamic(
+  () => import('../scenes/SceneScreen'),
+  {
+    loading: () => <p className='px-2 py-1 text-sm'>Đang tải...</p>,
+  }
+)
 
 const SceneContentAdmin = ({
   scenes

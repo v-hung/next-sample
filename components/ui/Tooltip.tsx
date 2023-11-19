@@ -5,7 +5,9 @@ import React, { HTMLAttributes, useState } from 'react'
 type Props = {
   children?: React.ReactNode,
   placement?: Placement,
-  title: string
+  title: string,
+  className?: string,
+  onClick?: () => void
 }
 
 const Tooltip = (props: Props) => {
@@ -31,7 +33,7 @@ const Tooltip = (props: Props) => {
   const focus = useFocus(context);
   const dismiss = useDismiss(context);
   // Role props for screen readers
-  const role = useRole(context, { role: "tooltip" });
+  const role = useRole(context, { role: "tooltip" })
 
   // Merge all the interactions into prop getters
   const { getReferenceProps, getFloatingProps } = useInteractions([
@@ -43,14 +45,14 @@ const Tooltip = (props: Props) => {
 
   return (
     <>
-      <span ref={refs.setReference} {...getReferenceProps()}>
+      <span ref={refs.setReference} {...getReferenceProps()} className={props.className} onClick={props.onClick}>
         {props.children}
       </span>
 
       <FloatingPortal>
         {isOpen && (
           <div
-            className="w-max inline-block py-1 px-2 bg-gray-900 text-xs font-medium text-white rounded shadow-sm dark:bg-slate-700"
+            className="w-max inline-block py-1 px-2 bg-gray-900 text-xs font-medium text-white rounded shadow-sm dark:bg-slate-700 absolute z-50"
             ref={refs.setFloating}
             style={floatingStyles}
             {...getFloatingProps()}

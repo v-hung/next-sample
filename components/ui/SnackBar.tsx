@@ -6,7 +6,7 @@ const SnackBar = () => {
   const { alerts } = useAlerts()
 
   return (
-    <div className="fixed top-0 right-0 bottom-0 w-full max-w-3xl flex flex-col space-y-4 items-end z-50 pointer-events-none p-4">
+    <div className="fixed top-0 right-0 bottom-0 w-full max-w-3xl flex flex-col space-y-4 items-end z-[100] pointer-events-none p-4">
       <AnimatePresence>
         {alerts.map((item) => (
           <Item key={item.id} alert={item} />
