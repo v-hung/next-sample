@@ -47,9 +47,6 @@ const getData = async () => {
     db.scene.findMany({
       where: {
         publish: 'publish',
-        groupId: {
-          not: null
-        }
       },
       include: {
         infoHotspots: true,
@@ -92,7 +89,9 @@ const getData = async () => {
     }
   })
 
-  return { scenes: scenesGroup, groups: groupsData }
+  const scenesNonGroup = scenesData.filter(v => !v.groupId)
+
+  return { scenes: scenesGroup, scenesNonGroup, groups: groupsData }
 }
 
 const layout = async ({children}: {children: ReactNode}) => {
@@ -107,10 +106,10 @@ const layout = async ({children}: {children: ReactNode}) => {
     }
   }
 
-  const {scenes, groups} = await getData()
+  const {scenes, scenesNonGroup, groups} = await getData()
 
   return (
-    <SceneContent defaultScenes={scenes} defaultGroups={groups} children={children} />
+    <SceneContent scenes={scenes} scenesNonGroup={scenesNonGroup} groups={groups} children={children} />
   )
 }
 

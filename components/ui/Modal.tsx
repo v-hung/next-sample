@@ -1,34 +1,33 @@
 "use client"
-import React, { HTMLAttributes, MouseEvent, useEffect, useRef } from 'react'
+import React, { FormEvent, HTMLAttributes, MouseEvent, useEffect, useRef } from 'react'
 import { motion, AnimatePresence, HTMLMotionProps } from "framer-motion";
 import { createPortal } from 'react-dom';
 import { twMerge } from 'tailwind-merge';
 import ButtonAdmin from '../admin/form/ButtonAdmin';
 import { useClickOutside } from '@/lib/utils/clickOutside';
 
-type State = Omit<HTMLMotionProps<'div'>, 'children'> & {
+type State = Omit<HTMLMotionProps<'form'>, 'children'> & {
   open: boolean
   onClose?: () => void,
   action?: boolean,
   title?: string,
-  onSubmit?: () => void,
   contentClass?: string,
-  className?: string,
   closeTitle?: string,
   submitTitle?: string,
-  children?: React.ReactNode
+  children?: React.ReactNode,
+  loading?: boolean
 }
 
 export const Modal: React.FC<State> = (props) => {
-  const {open, onClose, children, action = false, title, onSubmit, className, contentClass,
-    closeTitle = 'Close', submitTitle = 'Continue', ...rest
+  const {open, onClose, children, action = false, title, className, contentClass,
+    closeTitle = 'Close', submitTitle = 'Continue', loading, onSubmit, ...rest
   } = props
 
   if (typeof window === 'undefined') {
     return null
   }
 
-  const ref = useRef<HTMLDivElement>(null)
+  const ref = useRef<HTMLFormElement>(null)
 
   const handleBackgroundClick = (e: MouseEvent<HTMLDivElement>) => {
     if ((e.target as HTMLDivElement).classList.contains("cs-backdrop") && typeof onClose != "undefined") {
@@ -42,7 +41,15 @@ export const Modal: React.FC<State> = (props) => {
     document.body.style.overflow = open ? 'hidden' : 'initial'
   }, [open])
 
-  return <ModalContext.Provider value={{onClose, closeTitle}}>{
+  const handelSubmit = (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault()
+
+    if (typeof onSubmit == "function") {
+      onSubmit(e)
+    }
+  }
+
+  return <ModalContext.Provider value={{onClose, closeTitle, loading}}>{
     createPortal(
       <AnimatePresence>
         {open && (
@@ -53,13 +60,14 @@ export const Modal: React.FC<State> = (props) => {
             className='w-full h-full fixed top-0 start-0 z-[60] overflow-x-hidden overflow-y-auto flex items-center justify-center bg-black/30 py-8 cs-backdrop'
             onClick={handleBackgroundClick}
           >
-              <motion.div
+              <motion.form
                 ref={ref}
                 initial={{ scale: 0.5, opacity: 0 }}
                 animate={{ scale: 1, opacity: 1 }}
                 exit={{ scale: 0.5, opacity: 0 }}
-                className={twMerge('w-full max-w-sm max-h-full flex flex-col bg-white border shadow-sm rounded-xl dark:bg-gray-800 dark:border-gray-700 dark:shadow-slate-700/[.7]', className)}
+                className={twMerge('w-full max-w-sm max-h-full flex flex-col bg-white border shadow-sm rounded-xl dark:bg-gray-800 dark:border-gray-700 dark:shadow-slate-700/[.7] overflow-hidden', className)}
                 {...rest}
+                onSubmit={handelSubmit}
               >
                 { title
                   ? <div className="flex justify-between items-center py-3 px-4 border-b dark:border-gray-700">
@@ -70,7 +78,7 @@ export const Modal: React.FC<State> = (props) => {
                         onClick={onClose}
                       >
                         <span className="sr-only">{closeTitle}</span>
-                        <svg className="flex-shrink-0 w-4 h-4" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+                        <span className="icon">close</span>
                       </button>
                     </div>
                   : null
@@ -81,11 +89,11 @@ export const Modal: React.FC<State> = (props) => {
                 { action
                   ? <div className="flex justify-end items-center gap-x-2 py-3 px-4 border-t dark:border-gray-700">
                       <ButtonAdmin color='white'>{closeTitle}</ButtonAdmin>
-                      <ButtonAdmin onClick={onSubmit}>{submitTitle}</ButtonAdmin>
+                      <ButtonAdmin type='submit'>{submitTitle}</ButtonAdmin>
                     </div>
                   : null
                 }
-              </motion.div>
+              </motion.form>
           </motion.div>
         )}
       </AnimatePresence>,
@@ -115,9 +123,19 @@ export const ModalTitle = (props: HTMLAttributes<HTMLElement>) => {
 
 export const ModalContent = (props: HTMLAttributes<HTMLElement>) => {
   const {className, children, ...rest} = props
+
+  const { loading } = useModalContext()
+
   return (
-    <div className={twMerge("flex-grow p-4 overflow-y-auto", className)} {...rest}>
-      {children}
+    <div className="relative flex-grow min-h-0 flex flex-col">
+      <div className={twMerge("flex-grow min-h-0 w-full p-4 overflow-y-auto", className)} {...rest}>
+        {children}
+      </div>
+
+      { loading
+        ? <div className="absolute w-full h-full top-0 left-0 bg-white/80 animate-pulse z-10"></div>
+        : null
+      }
     </div>
   )
 }
@@ -137,7 +155,8 @@ export const ModalAction = (props: HTMLAttributes<HTMLElement>) => {
 
 type ContextType = {
   onClose?: () => void,
-  closeTitle?: string
+  closeTitle?: string,
+  loading?: boolean
 } | null
 
 const ModalContext = React.createContext<ContextType>(null);

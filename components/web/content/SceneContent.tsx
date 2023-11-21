@@ -17,10 +17,12 @@ import { createAccess } from "@/actions/access"
 // })
 
 const SceneContent = ({
-  defaultScenes = [], defaultGroups = [], children
+  scenes = [], groups = [], children,
+  scenesNonGroup = []
 }: {
-  defaultScenes: SceneProps[],
-  defaultGroups: GroupScene[],
+  scenes: SceneProps[],
+  scenesNonGroup: SceneProps[]
+  groups: GroupScene[],
   children: React.ReactNode
 }) => {
   const {findSettingByName} = useSettings()
@@ -30,8 +32,11 @@ const SceneContent = ({
   const willMount = useRef(true)
 
   if (willMount.current) {
-    setScenes(defaultScenes)
-    setGroups(defaultGroups)
+    // setScenes(scenes)
+    // setGroups(groups)
+    useScene.setState({
+      scenes, scenesNonGroup,  groups
+    })
     willMount.current = false
   }
 
@@ -52,7 +57,7 @@ const SceneContent = ({
         }`}
       </style>
 
-      { defaultScenes.length > 0
+      { scenes.length > 0 || scenesNonGroup.length > 0
         ? <ScenesScreen />
         : <div className="fixed w-full h-screen top-0 left-0 grid place-items-center">
           Không có bối cảnh nào

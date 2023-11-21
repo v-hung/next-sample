@@ -1,36 +1,117 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+## Bắt đầu
 
-## Getting Started
+**Môi trường, yêu cầu :**&#x20;
 
-First, run the development server:
+* nodejs (nên sử dụng node v18)
+* pm2: trình quản lý môi trường sản xuất cho node
+* Cở sở dữ liệu: mysql
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+**Cài đặt :**
+
+Cài đặt nodejs, có thể cài trực tiếp hoặc sử dụng [nvm ](https://github.com/nvm-sh/nvm)hoặc [fnm](https://github.com/Schniz/fnm).&#x20;
+
+Sau đó tiếp tục cài pm2 trên toàn cầu bằng lệnh.
+
+`npm i -g pm2`
+
+Cài cài package cục bộ trong dự án (giống compoer install), và build project.
+
+`npm i` && `npm run build`
+
+**Sản xuất :**&#x20;
+
+Chỉnh sửa file .env (Đường dẫn và bảng CSDL). Chỉnh sửa file package.json
+
+> VD:  "start2": "next start -p 3001". Đổi port 3001 thành cổng sử dụng trong dự án
+> Lưu ý:   Mỗi dự án phải chạy 1 cổng riêng biệt
+
+Cấu hình file pm2 (nếu không chạy một scipt khác thì không cần thiết).
+
+```json
+{
+  "apps": [
+    {
+      "name": "sample",
+      "script": "npm",
+      "args": "run start2" // run start2 in package.json
+    }
+  ]
+}
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Chạy lệnh `pm2 start pm2.json` để chạy dự án.
 
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
+**Cấu hình nginx :**
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+Thêm `proxy_pass http://103.57.220.122:{port}` vào file nginx.conf và `client_max_body_size 100M` nếu cần thiết
 
-## Learn More
+Nếu sử dụng Direct Admin thì đường dẫn file nginx.còn sẽ là `/usr/local/directadmin/data/users/[user]/nginx.conf`
 
-To learn more about Next.js, take a look at the following resources:
+VD: Một file cấu hình nginx.conf
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+```json
+server
+{
+	listen 103.57.220.122:80;
+	server_name vr360.kennatech.vn www.vr360.kennatech.vn ;
+	access_log /var/log/nginx/domains/vr360.kennatech.vn.log;
+	access_log /var/log/nginx/domains/vr360.kennatech.vn.bytes bytes;
+	error_log /var/log/nginx/domains/vr360.kennatech.vn.error.log;
+	root /home/media360/domains/vr360.kennatech.vn/public_html;
+	index index.php index.html index.htm;
+	include /usr/local/directadmin/data/users/media360/nginx_php.conf;
+	location /
+	{
+    client_max_body_size 100M;
+		# access_log off;
+		proxy_buffering off;
+		proxy_pass http://103.57.220.122:5173;
+		proxy_set_header X-Client-IP      $remote_addr;
+		proxy_set_header X-Accel-Internal /nginx_static_files;
+		proxy_set_header Host             $host;
+		proxy_set_header X-Forwarded-For  $proxy_add_x_forwarded_for;
+		proxy_hide_header Upgrade;
+    return 301 https://vr360.kennatech.vn$request_uri;
+	}
+	location /nginx_static_files/
+	{
+		# access_log  /var/log/nginx/access_log_proxy;
+		alias       /home/media360/domains/vr360.kennatech.vn/public_html/;
+		internal;
+	}
+	include /etc/nginx/webapps.conf;
+}
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+server
+{
+	listen 103.57.220.122:443 ssl http2;
+	server_name vr360.kennatech.vn www.vr360.kennatech.vn ;
+	access_log /var/log/nginx/domains/vr360.kennatech.vn.log;
+	access_log /var/log/nginx/domains/vr360.kennatech.vn.bytes bytes;
+	error_log /var/log/nginx/domains/vr360.kennatech.vn.error.log;
+	root /home/media360/domains/vr360.kennatech.vn/private_html;
+	index index.php index.html index.htm;
+	ssl_certificate /usr/local/directadmin/data/users/media360/domains/vr360.kennatech.vn.cert.combined;
+	ssl_certificate_key /usr/local/directadmin/data/users/media360/domains/vr360.kennatech.vn.key;
+	include /usr/local/directadmin/data/users/media360/nginx_php.conf;
+	location /
+	{
+    client_max_body_size 100M;
+		# access_log off;
+		proxy_buffering off;
+		proxy_pass http://103.57.220.122:5173;
+		proxy_set_header X-Client-IP      $remote_addr;
+		proxy_set_header X-Accel-Internal /nginx_static_files;
+		proxy_set_header Host             $host;
+		proxy_set_header X-Forwarded-For  $proxy_add_x_forwarded_for;
+		proxy_hide_header Upgrade;
+	}
+	location /nginx_static_files/
+	{
+		# access_log  /var/log/nginx/access_log_proxy;
+		alias       /home/media360/domains/vr360.kennatech.vn/private_html/;
+		internal;
+	}
+	include /etc/nginx/webapps.ssl.conf;
+}
+```

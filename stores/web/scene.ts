@@ -7,6 +7,7 @@ type State = {
   start: boolean,
   viewer?: Viewer,
   scenes: SceneProps[],
+  scenesNonGroup: SceneProps[],
   groups: GroupScene[]
   videoShow?: string,
   showListScene: boolean
@@ -38,6 +39,7 @@ const useScene = create<State & Actions>(set => ({
   }),
   
   scenes: [],
+  scenesNonGroup: [],
   setScenes: (data) => set({
     scenes: data
   }),

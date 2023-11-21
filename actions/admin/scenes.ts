@@ -78,7 +78,7 @@ export const addEditScene = async ({
         data: {
           ...dataCreate,
           initialViewParameters: JSON.stringify(dataCreate.initialViewParameters),
-          sort: count ? +count : 9999
+          sort: count ? +count : 0
         }
       })
 

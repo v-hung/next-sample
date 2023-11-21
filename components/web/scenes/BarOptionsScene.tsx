@@ -351,7 +351,7 @@ const BarOptionsScene = memo(({
           <div className="!ml-auto"></div>
 
           <div className="relative w-20 h-20 sm:w-32 sm:h-32 select-none pointer-events-auto">
-            <Tooltip title={sceneAudioCheck ? 'Tắt giọng đọc': 'Mở giọng đọc'} placement="top">
+            <Tooltip title={sceneAudioCheck ? 'Tắt giọng đọc': 'Mở giọng đọc'} placement="top" className="block">
               <button className="w-full h-full rounded-full"
                 onClick={() => toggleSceneAudio()}
               >

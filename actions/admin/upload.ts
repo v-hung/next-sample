@@ -255,7 +255,8 @@ export const uploadFiles = async ({
     let res: any[] = []
     for (let file of files) {
       // check file
-      const extension = path.extname(file.name)
+      const fileName = Buffer.from(file.name, 'binary').toString('utf8')
+      const extension = path.extname(fileName)
       const mimeName = mime.lookup(extension)
 
       if (!isFileTypeAllowed(file.type) || !mimeName) {
@@ -275,7 +276,7 @@ export const uploadFiles = async ({
 
       // upload image
       if (mimeName.startsWith('image/')) {
-        if (Object.keys(sharpCompress).findIndex(v => `.${v}` == extension) < 0) {
+        if (Object.keys(sharpCompress).findIndex(v => `.${v}` == extension || (v == "jpeg" && extension == "jpg")) < 0) {
           let name = v4() + extension
           let fileUrl = `./storage/${tableName}/${name}`
   
@@ -286,7 +287,7 @@ export const uploadFiles = async ({
           await fsPromise.writeFile(fileUrl, fileBuffer)
   
           res.push({
-            name: file.name,
+            name: fileName,
             naturalWidth: width,
             naturalHeight: height,
             size: file.size,
@@ -311,7 +312,7 @@ export const uploadFiles = async ({
           let { format, size, width, height } = fileSave
       
           res.push({
-            name: file.name,
+            name: fileName,
             naturalWidth: width,
             naturalHeight: height,
             size: size,
@@ -330,7 +331,7 @@ export const uploadFiles = async ({
         await fsPromise.writeFile(fileUrl, fileBuffer)
 
         res.push({
-          name: file.name,
+          name: fileName,
           size: file.size,
           mime: mimeName,
           url: fileUrl.slice(1)

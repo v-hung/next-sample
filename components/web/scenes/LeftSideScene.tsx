@@ -21,7 +21,7 @@ const LeftSideScene = memo(({
   sceneSlug?: string, currentScene?: SceneProps
 }) => {
   const router = useRouter()
-  const { scenes, showListScene, groups, start } = useScene()
+  const { scenes, scenesNonGroup, showListScene, groups, start } = useScene()
   const { findSettingByName } = useSettings()
 
   let listScene = useRef(null)
@@ -46,7 +46,7 @@ const LeftSideScene = memo(({
     setShowSceneDemo(false)
   }
 
-  const clickSceneTitle = (group: GroupScene) => {
+  const clickGroupScene = (group: GroupScene) => {
     if (showGroupScene) {
       setGroupSelect(group.id)
     }
@@ -64,7 +64,7 @@ const LeftSideScene = memo(({
     }
   }
 
-  const clickGroupScene = (slug: string) => {
+  const clickSceneTitle = (slug: string) => {
     router.push(`/${slug}`)
     setShowGroupScene(false)
     setShowSceneDemo(false)
@@ -114,7 +114,7 @@ const LeftSideScene = memo(({
         }
       </AnimatePresence>
 
-      <div className="absolute top-0 left-0 w-full h-full p-6 pointer-events-none overflow-hidden select-none flex flex-col z-10">
+      <div className="absolute top-0 left-0 w-full h-full p-6 pb-12 pointer-events-none overflow-hidden select-none flex flex-col z-10">
         <div className="flex-none md:pl-6 lg:pl-12 mb-12">
           <AnimatePresence>
             { start && showListScene
@@ -167,7 +167,7 @@ const LeftSideScene = memo(({
                             ? sceneFilter.map(v =>
                               <div key={v.id} className={`flex py-0.5 md:py-2 space-x-2 items-center cursor-pointer pointer-events-auto
                                 hover:text-teal-300 ${sceneSlug == v.slug ? 'text-teal-300' : ''}`}
-                                onClick={() => clickGroupScene(v.slug)}
+                                onClick={() => clickSceneTitle(v.slug)}
                                 onMouseEnter={() => enterSceneTitle(v, 'scene')}
                               >
                                 <span className="flex-grow" style={{textShadow: "rgb(0, 0, 0) 1px 1px 4px"}}>{v.name}</span>
@@ -191,19 +191,19 @@ const LeftSideScene = memo(({
                       <div className="flex flex-col text-white"
                         onMouseLeave={() => leaveSceneTitle()}
                       >
-                        {/* { new Array(5).fill(0).map((v,i) =>
-                          <div key={i} className="flex py-1 space-x-2 items-center cursor-pointer group transition-all duration-[0.4s] origin-left hover:scale-[1.2] pointer-events-auto"
-                            onMouseEnter={() => enterSceneTitle(v)}
-                            onClick={() => clickSceneTitle(v)}
-                          >
-                            <div className={`w-1 h-7 md:h-9 bg-white group-hover:bg-sky-600 ${currentScene?.groupId == v ? '!bg-sky-600' : ''}`}></div>
-                            <span className="group-hover:text-teal-300" style={{textShadow: "rgb(0, 0, 0) 1px 1px 4px"}}>{v}</span>
-                          </div>
-                        )} */}
                         { groups.map(v =>
                           <div key={v.id} className="flex py-1 space-x-2 items-center cursor-pointer group transition-all duration-[0.4s] origin-left hover:scale-[1.2] pointer-events-auto"
                             onMouseEnter={() => enterSceneTitle(v)}
-                            onClick={() => clickSceneTitle(v)}
+                            onClick={() => clickGroupScene(v)}
+                          >
+                            <div className={`w-1 h-7 md:h-9 bg-white group-hover:bg-sky-600 ${currentScene?.groupId == v.id ? '!bg-sky-600' : ''}`}></div>
+                            <span className="group-hover:text-teal-300" style={{textShadow: "rgb(0, 0, 0) 1px 1px 4px"}}>{v.name}</span>
+                          </div>
+                        )}
+                        { scenesNonGroup.map(v =>
+                          <div key={`${v.id}-scene`} className="flex py-1 space-x-2 items-center cursor-pointer group transition-all duration-[0.4s] origin-left hover:scale-[1.2] pointer-events-auto"
+                            onMouseEnter={() => enterSceneTitle(v, 'scene')}
+                            onClick={() => clickSceneTitle(v.slug)}
                           >
                             <div className={`w-1 h-7 md:h-9 bg-white group-hover:bg-sky-600 ${currentScene?.groupId == v.id ? '!bg-sky-600' : ''}`}></div>
                             <span className="group-hover:text-teal-300" style={{textShadow: "rgb(0, 0, 0) 1px 1px 4px"}}>{v.name}</span>

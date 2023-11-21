@@ -14,6 +14,7 @@ import { InfoHotspot, LinkHotspot } from "@prisma/client"
 import { usePathname, useRouter } from "next/navigation"
 import { useEffect, useRef, useState } from "react"
 import { renderToString } from "react-dom/server"
+import dynamic from "next/dynamic"
 
 import "@photo-sphere-viewer/core/index.css"
 import "@photo-sphere-viewer/markers-plugin/index.css"
@@ -28,7 +29,6 @@ const VideoShowScene = dynamic(() => import("./VideoShowScene"))
 
 import "./tinymce.css";
 import { SceneProps } from "@/app/(web)/layout"
-import dynamic from "next/dynamic"
 
 const ScenesScreen = () => {
   const router = useRouter()
@@ -38,7 +38,7 @@ const ScenesScreen = () => {
   const { findSettingByName } = useSettings()
   const logo = findSettingByName('site logo')
 
-  const { start, scenes, viewer, setViewer, videoShow, setVideoShow } = useScene()
+  const { start, scenes, scenesNonGroup, viewer, setViewer, videoShow, setVideoShow } = useScene()
 
   const [sceneSlug, setSceneSlug] = useState<string | undefined>(pathname?.split('/')[1])
   const viewerHTML = useRef<HTMLDivElement>(null)
@@ -46,12 +46,12 @@ const ScenesScreen = () => {
   const autoRotate = useRef<AutorotatePlugin>()
 
   const [currentScene, setCurrentScene] = useState<SceneProps | undefined>(
-    sceneSlug ? scenes.find(v => v.slug == sceneSlug) || scenes[0] : scenes[0]
+    sceneSlug ? [...scenes, ...scenesNonGroup].find(v => v.slug == sceneSlug) || [...scenes, ...scenesNonGroup][0] : [...scenes, ...scenesNonGroup][0]
   )
 
   useEffect(() => {
     const slug = pathname?.split('/')[1]
-    const tempScene = scenes.find(v => v.slug == slug) || scenes[0]
+    const tempScene = [...scenes, ...scenesNonGroup].find(v => v.slug == slug) || [...scenes, ...scenesNonGroup][0]
 
     setSceneSlug(slug)
     setCurrentScene(tempScene)
@@ -70,7 +70,7 @@ const ScenesScreen = () => {
     switchScene(scene)
   }
 
-  const findSceneDataById = (id: string) => scenes.find(v => v.id == id)
+  const findSceneDataById = (id: string) => [...scenes, ...scenesNonGroup].find(v => v.id == id)
 
   async function switchScene(scene: SceneProps) {
     toggleAutoRotate(false)
@@ -321,11 +321,6 @@ const ScenesScreen = () => {
 
     markersPlugin.current = tempViewer.getPlugin(MarkersPlugin) as MarkersPlugin
     autoRotate.current = tempViewer.getPlugin(AutorotatePlugin) as AutorotatePlugin
-
-    // if (scenes.length > 0) {
-    //   createLinkHotspotElements(currentScene?.linkHotspots || [])
-    //   createInfoHotspotElements(currentScene?.infoHotspots || [])
-    // }
 
     markersPlugin.current.addEventListener('select-marker', ({ marker }) => {
       if (marker.data?.type == "link" && marker.data?.target) {

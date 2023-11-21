@@ -52,7 +52,7 @@ const Tooltip = (props: Props) => {
       <FloatingPortal>
         {isOpen && (
           <div
-            className="w-max inline-block py-1 px-2 bg-gray-900 text-xs font-medium text-white rounded shadow-sm dark:bg-slate-700 absolute z-50"
+            className="w-max inline-block py-1 px-2 bg-gray-900 text-xs font-medium text-white rounded shadow-sm dark:bg-slate-700 absolute z-[60]"
             ref={refs.setFloating}
             style={floatingStyles}
             {...getFloatingProps()}

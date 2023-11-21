@@ -32,7 +32,7 @@ export async function POST(request: NextRequest): Promise<any> {
     let name = v4() + "." + metadata.format
     let fileUrl = `./storage/tiny-mce/${name}`
   
-    if (Object.keys(sharpCompress).findIndex(v => v == metadata.format) < 0) {
+    if (Object.keys(sharpCompress).findIndex(v => v == metadata.format || (v == "jpeg" && metadata.format == "jpg")) < 0) {
       throw "Không phải định dạng ảnh"
     }
   
