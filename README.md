@@ -20,6 +20,9 @@ Cài cài package cục bộ trong dự án (giống compoer install), và build
 
 **Sản xuất :**&#x20;
 
+Copy nội dung project sang folder sản xuất (public_html) bằng hit hoặc zip file. 
+(Lưu ý: git không bao gôm folder ./storage vì nặng, nên tải nên sau)
+
 Chỉnh sửa file .env (Đường dẫn và bảng CSDL). Chỉnh sửa file package.json
 
 > VD:  "start2": "next start -p 3001". Đổi port 3001 thành cổng sử dụng trong dự án
