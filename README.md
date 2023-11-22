@@ -2,7 +2,8 @@
 
 **Môi trường, yêu cầu :**&#x20;
 
-* nodejs (nên sử dụng node v18)
+* nodejs (nên sử dụng node v18). Nếu server không hỗ trợ cài nodev16 có thể hạ cấp 
+nextjs xuống 13.5.6 hoặc sử dụng docker thay cho pm2
 * pm2: trình quản lý môi trường sản xuất cho node
 * Cở sở dữ liệu: mysql
 
@@ -22,6 +23,8 @@ Cài cài package cục bộ trong dự án (giống compoer install), và build
 
 Copy nội dung project sang folder sản xuất (public_html) bằng hit hoặc zip file. 
 (Lưu ý: git không bao gôm folder ./storage vì nặng, nên tải nên sau)
+
+Import CSDL sang CSDL mới, nếu không có tạo CSDL mẫu bằng lệnh `npm run seed`
 
 Chỉnh sửa file .env (Đường dẫn và bảng CSDL). Chỉnh sửa file package.json
 
