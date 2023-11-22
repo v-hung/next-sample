@@ -6,8 +6,9 @@ import { InitialViewParametersState, LevelsState, SceneDataState } from '../admi
 import { getSettingsData } from '@/actions/admin/settings';
 import { getAdmin } from '@/actions/admin/admin';
 import PreviewWithAuth from '@/components/web/content/PreviewWithAuth';
-import SceneContent from '@/components/web/content/SceneContent';
-import { createAccess } from '@/actions/access';
+import dynamic from 'next/dynamic';
+// import SceneContent from '@/components/web/content/SceneContent';
+const SceneContent = dynamic(() => import("@/components/web/content/SceneContent"), { ssr: false });
 
 export async function generateMetadata(): Promise<Metadata> {
   const settings = await getSettingsData()

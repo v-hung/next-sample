@@ -22,7 +22,7 @@ const SceneContent = ({
 }) => {
   const {findSettingByName} = useSettings()
 
-  const  {start, setStart, setScenes, setGroups} = useScene()
+  const  {start, setStart} = useScene()
 
   const willMount = useRef(true)
 

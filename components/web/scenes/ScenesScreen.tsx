@@ -19,9 +19,6 @@ import dynamic from "next/dynamic"
 import "@photo-sphere-viewer/core/index.css"
 import "@photo-sphere-viewer/markers-plugin/index.css"
 import styles from "./scenes.module.css";
-// import LeftSideScene from "./LeftSideScene"
-// import BarOptionsScene from "./BarOptionsScene"
-// import VideoShowScene from "./VideoShowScene"
 
 const LeftSideScene = dynamic(() => import("./LeftSideScene"))
 const BarOptionsScene = dynamic(() => import("./BarOptionsScene"))
@@ -250,42 +247,42 @@ const ScenesScreen = () => {
     fisheye: { start: 2, end: 0 },
   })
 
-  // function intro() {
-  //   autoRotate.current?.stop();
-  //   // markersPlugin?.hideAllMarkers()
+  const intro = () => {
+    autoRotate.current?.stop();
+    // markersPlugin?.hideAllMarkers()
 
-  //   new utils.Animation({
-  //     properties: animatedValues.current,
-  //     duration: 2500,
-  //     easing: "inOutQuad",
-  //     onTick: (properties) => {
-  //       viewer?.setOption("fisheye", properties.fisheye);
-  //       viewer?.rotate({ yaw: properties.yaw, pitch: properties.pitch });
-  //       viewer?.zoom(properties.zoom);
-  //     },
-  //   }).then(() => {
-  //     createLinkHotspotElements(currentScene?.linkHotspots || [])
-  //     createInfoHotspotElements(currentScene?.infoHotspots || [])
+    new utils.Animation({
+      properties: animatedValues.current,
+      duration: 2500,
+      easing: "inOutQuad",
+      onTick: (properties) => {
+        viewer?.setOption("fisheye", properties.fisheye);
+        viewer?.rotate({ yaw: properties.yaw, pitch: properties.pitch });
+        viewer?.zoom(properties.zoom);
+      },
+    }).then(() => {
+      createLinkHotspotElements(currentScene?.linkHotspots || [])
+      createInfoHotspotElements(currentScene?.infoHotspots || [])
 
-  //     autoRotate.current?.setOptions({
-  //       autorotatePitch: currentScene?.initialViewParameters.pitch,
-  //       autostartDelay: 1000,
-  //       autostartOnIdle: true,
-  //     });
-  //     autoRotate.current?.start();
+      autoRotate.current?.setOptions({
+        autorotatePitch: currentScene?.initialViewParameters.pitch,
+        autostartDelay: 1000,
+        autostartOnIdle: true,
+      });
+      autoRotate.current?.start();
 
-  //     // markersPlugin?.showAllMarkers()
-  //   });
-  // }
-
-  // useEffect(() => {
-  //   if (start) {
-  //     intro()
-  //   }
-  // }, [start])
+      // markersPlugin?.showAllMarkers()
+    });
+  }
 
   useEffect(() => {
-    if (!viewerHTML.current) return
+    if (start) {
+      intro()
+    }
+  }, [start])
+
+  useEffect(() => {
+    if (!viewerHTML.current || typeof window == "undefined") return
 
     const tempViewer = new Viewer({
       container: viewerHTML.current,
@@ -295,7 +292,7 @@ const ScenesScreen = () => {
         [AutorotatePlugin, {
           autostartDelay: null,
           autostartOnIdle: false,
-          autorotatePitch: currentScene?.initialViewParameters.pitch,
+          autorotatePitch: currentScene?.initialViewParameters?.pitch,
           autorotateSpeed: '0.2rpm',
         }],
         MarkersPlugin
@@ -306,7 +303,7 @@ const ScenesScreen = () => {
       defaultZoomLvl: animatedValues.current.zoom.start,
       fisheye: animatedValues.current.fisheye.start,
 
-      // touchmoveTwoFingers: true,
+      touchmoveTwoFingers: true,
       panorama: {
         width: currentScene?.faceSize || 8192,
         cols: 8,
@@ -348,9 +345,9 @@ const ScenesScreen = () => {
     <>
       <div id="viewer" ref={viewerHTML}  className={`w-full h-screen ${styles.viewer}`} />
       
-      {/* <LeftSideScene sceneSlug={sceneSlug} currentScene={currentScene} />
+      <LeftSideScene sceneSlug={sceneSlug} currentScene={currentScene} />
       <BarOptionsScene autoRotateCheck={autoRotateCheck} toggleAutoRotate={toggleAutoRotate} currentScene={currentScene} />
-      <VideoShowScene /> */}
+      <VideoShowScene />
     </>
   )
 }
