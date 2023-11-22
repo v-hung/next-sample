@@ -24,6 +24,7 @@ model Account {
   user               User      @relation(fields: [userId], references: [id])
 
   @@unique([providerId, providerAccountId])
+  @@map("accounts")
 }
 
 model Session {
@@ -35,6 +36,8 @@ model Session {
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
   user         User     @relation(fields: [userId], references: [id])
+
+  @@map("sessions")
 }
 
 model User {
@@ -48,6 +51,8 @@ model User {
   updatedAt     DateTime  @updatedAt
   accounts      Account[]
   sessions      Session[]
+
+  @@map("users")
 }
 
 model VerificationRequest {
@@ -59,6 +64,8 @@ model VerificationRequest {
   updatedAt  DateTime @updatedAt
 
   @@unique([identifier, token])
+
+  @@map("verificati_on_requests")
 }
 
 model Admin {
@@ -82,6 +89,8 @@ model Admin {
   publish   String   @default("publish") // or draft
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  @@map("admins")
 }
 
 model Role {
@@ -94,6 +103,8 @@ model Role {
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  @@map("roles")
 }
 
 model Permission {
@@ -107,6 +118,7 @@ model Permission {
 
   // id        String @id @default(cuid())
   @@id([key, tableName])
+  @@map("permissions")
 }
 
 model PermissionsOnRoles {
@@ -121,6 +133,7 @@ model PermissionsOnRoles {
   updatedAt DateTime @updatedAt
 
   @@id([roleId, permissionKey, permissionTableName])
+  @@map("permissions_on_roles")
 }
 
 model FolderFile {
@@ -139,6 +152,8 @@ model FolderFile {
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  @@map("folder_files")
 }
 
 model File {
@@ -167,6 +182,8 @@ model File {
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  @@map("files")
 }
 
 model GroupSetting {
@@ -179,6 +196,8 @@ model GroupSetting {
   updatedAt DateTime @updatedAt
 
   settings Setting[]
+
+  @@map("group_settings")
 }
 
 model Setting {
@@ -196,6 +215,8 @@ model Setting {
 
   groupId String
   group   GroupSetting @relation(fields: [groupId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  @@map("settings")
 }
 
 model AdminHistory {
@@ -211,6 +232,8 @@ model AdminHistory {
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  @@map("admin_histories")
 }
 
 model AccessHistory {
@@ -221,6 +244,8 @@ model AccessHistory {
 
   accessTime  DateTime @default(now())
   timeToLeave DateTime @default(now())
+
+  @@map("access_histories")
 }
 
 model GroupScene {
@@ -233,6 +258,8 @@ model GroupScene {
   publish   String   @default("publish") // or draft
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  @@map("group_scenes")
 }
 
 model Scene {
@@ -261,6 +288,8 @@ model Scene {
   publish   String   @default("publish") // or draft
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  @@map("scenes")
 }
 
 model InfoHotspot {
@@ -279,6 +308,8 @@ model InfoHotspot {
   
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  @@map("info_hotspots")
 }
 
 model LinkHotspot {
@@ -294,4 +325,6 @@ model LinkHotspot {
   
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  @@map("link_hotspots")
 }

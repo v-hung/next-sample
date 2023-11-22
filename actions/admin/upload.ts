@@ -276,7 +276,32 @@ export const uploadFiles = async ({
 
       // upload image
       if (mimeName.startsWith('image/')) {
-        if (Object.keys(sharpCompress).findIndex(v => `.${v}` == extension || (v == "jpeg" && extension == "jpg")) < 0) {
+        if (Object.keys(sharpCompress).findIndex(v => `.${v}` == extension || extension == ".jpg") >= 0) {
+          let fileData = sharp(await file.arrayBuffer(), { animated: true })
+          
+          let metadata = await fileData.metadata()
+          
+          let name = v4() + "." + metadata.format
+          let fileUrl = `./storage/${tableName}/${name}`
+      
+          //@ts-ignore
+          let fileSave = await fileData[metadata.format || "jpeg"](sharpCompress[metadata.format || "jpeg"]).toFile(fileUrl)
+            .then((data: any) => {
+              return data
+            })
+      
+          let { size, width, height } = fileSave
+      
+          res.push({
+            name: fileName,
+            naturalWidth: width,
+            naturalHeight: height,
+            size: size,
+            mime: mimeName,
+            url: fileUrl.slice(1)
+          })
+        }
+        else {
           let name = v4() + extension
           let fileUrl = `./storage/${tableName}/${name}`
   
@@ -291,31 +316,6 @@ export const uploadFiles = async ({
             naturalWidth: width,
             naturalHeight: height,
             size: file.size,
-            mime: mimeName,
-            url: fileUrl.slice(1)
-          })
-        }
-        else {
-          let fileData = sharp(await file.arrayBuffer(), { animated: true })
-          
-          let metadata = await fileData.metadata()
-          
-          let name = v4() + "." + metadata.format
-          let fileUrl = `./storage/${tableName}/${name}`
-      
-          //@ts-ignore
-          let fileSave = await fileData[metadata.format || "png"](sharpCompress[metadata.format || "png"]).toFile(fileUrl)
-            .then((data: any) => {
-              return data
-            })
-      
-          let { format, size, width, height } = fileSave
-      
-          res.push({
-            name: fileName,
-            naturalWidth: width,
-            naturalHeight: height,
-            size: size,
             mime: mimeName,
             url: fileUrl.slice(1)
           })

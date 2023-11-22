@@ -29,7 +29,7 @@ const Item = ({alert} : {alert: ALertType}) => {
 
   return (
     <motion.div {...animations} style={{ position: isPresent ? "static" : "absolute" }} layout>
-      <div className={`flex items-center space-x-2 border text-sm rounded-lg p-4 
+      <div className={`flex items-center space-x-2 border text-sm rounded-lg px-4 py-3
         ${alert.type == 'error' ? 'bg-yellow-100 border-yellow-200 text-yellow-800 dark:bg-yellow-800/10 dark:border-yellow-900 dark:text-yellow-500' 
         : 'bg-green-100 border-green-200 text-green-800 dark:bg-green-800/10 dark:border-green-900 dark:text-green-500'}
       `} role="alert">

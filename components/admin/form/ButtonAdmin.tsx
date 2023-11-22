@@ -27,7 +27,7 @@ const ButtonAdmin = forwardRef<HTMLButtonElement, Props>((props, ref ) => {
   const Tag: any = LinkComponent || tag || 'button'
 
   return (
-    <Tag ref={ref} href={href} className={twMerge(commonClass, className)} {...rest}>
+    <Tag ref={ref} href={href} className={twMerge(commonClass, className)} type="button" {...rest}>
       { typeof startIcon === "string" ? <span className='icon w-4 h-4 text-lg'>{startIcon}</span> : startIcon }
       {children}
       { typeof endIcon === "string" ? <span className='icon w-4 h-4'>{endIcon}</span> : endIcon }

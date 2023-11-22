@@ -19,6 +19,11 @@ Cài cài package cục bộ trong dự án (giống compoer install), và build
 
 `npm i` && `npm run build`
 
+**Sửa lỗi :**
+
+Sử dụng trên VPS hay hosting mà báo lỗi `npm ERR! /usr/bin/env: node: Permission denied`. 
+Hãy chạy lệnh `chown -R root:root .` cho thư mục public_html để cấp quyền 
+
 **Sản xuất :**&#x20;
 
 Copy nội dung project sang folder sản xuất (public_html) bằng hit hoặc zip file. 

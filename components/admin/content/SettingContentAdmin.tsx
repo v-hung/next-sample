@@ -18,6 +18,7 @@ type State = {
   GROUPS: GroupSettingSampleType[]
 }
 
+// million-ignore
 const SettingContentAdmin: FC<State> = ({
   groupSettings, canDelete, canCreate, canEdit, GROUPS
 }) => {
@@ -93,7 +94,7 @@ const SettingContentAdmin: FC<State> = ({
       callback: async () => {
         await useAction(() => saveSettings(listDataValue.map(v => ({
           name: v.name,
-          value: typeof v.value == "object" ? v.value?.id || '' : v.value
+          value: typeof v.value == "object" ? v.value?.id || '' : v.value.toString()
         }))))
         router.refresh()
       }

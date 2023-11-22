@@ -108,7 +108,7 @@ export const saveSettings = async(data : {name: string, value: string}[]) => {
         name
       },
       data: {
-        value
+        value: value
       }
     })))
 
