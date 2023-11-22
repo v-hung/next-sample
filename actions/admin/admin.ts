@@ -18,6 +18,8 @@ export type AdminType = Omit<Admin, "password"> & {
 } | null
 
 export const getAdmin = async (request?: NextRequest) => {
+  const cookieTokenAdmin = cookies().get('token-admin')?.value
+  
   try {
     let cookie = null
 
@@ -25,7 +27,7 @@ export const getAdmin = async (request?: NextRequest) => {
       cookie = request.headers.get('authorization')?.split(' ')[1] || request.cookies.get('token-admin')?.value
     }
     else {
-      cookie = cookies().get('token-admin')?.value
+      cookie = cookieTokenAdmin
     }
 
     let adminId = null

@@ -241,47 +241,48 @@ const ScenesScreen = () => {
     }
   }
 
-  // start in tro
-  useEffect(() => {
-    if (start) {
-      intro()
-    }
-  }, [start])
+  // intro and default animated values
 
-  let animatedValues = {
-    pitch: { start: -Math.PI / 2, end: currentScene?.initialViewParameters.pitch || 0.2 },
-    yaw: { start: ((currentScene?.initialViewParameters.yaw || 0) - 5), end: currentScene?.initialViewParameters.yaw || 0 },
-    zoom: { start: 0, end: currentScene?.initialViewParameters.zoom || 50 },
+  const animatedValues = useRef({
+    pitch: { start: -Math.PI / 2, end: currentScene?.initialViewParameters?.pitch || 0.2 },
+    yaw: { start: ((currentScene?.initialViewParameters?.yaw || 0) - 5), end: currentScene?.initialViewParameters?.yaw || 0 },
+    zoom: { start: 0, end: currentScene?.initialViewParameters?.zoom || 50 },
     fisheye: { start: 2, end: 0 },
-  }
+  })
 
-  function intro() {
-    autoRotate.current?.stop();
-    // markersPlugin?.hideAllMarkers()
+  // function intro() {
+  //   autoRotate.current?.stop();
+  //   // markersPlugin?.hideAllMarkers()
 
-    new utils.Animation({
-      properties: animatedValues,
-      duration: 2500,
-      easing: "inOutQuad",
-      onTick: (properties) => {
-        viewer?.setOption("fisheye", properties.fisheye);
-        viewer?.rotate({ yaw: properties.yaw, pitch: properties.pitch });
-        viewer?.zoom(properties.zoom);
-      },
-    }).then(() => {
-      createLinkHotspotElements(currentScene?.linkHotspots || [])
-      createInfoHotspotElements(currentScene?.infoHotspots || [])
+  //   new utils.Animation({
+  //     properties: animatedValues.current,
+  //     duration: 2500,
+  //     easing: "inOutQuad",
+  //     onTick: (properties) => {
+  //       viewer?.setOption("fisheye", properties.fisheye);
+  //       viewer?.rotate({ yaw: properties.yaw, pitch: properties.pitch });
+  //       viewer?.zoom(properties.zoom);
+  //     },
+  //   }).then(() => {
+  //     createLinkHotspotElements(currentScene?.linkHotspots || [])
+  //     createInfoHotspotElements(currentScene?.infoHotspots || [])
 
-      autoRotate.current?.setOptions({
-        autorotatePitch: currentScene?.initialViewParameters.pitch,
-        autostartDelay: 1000,
-        autostartOnIdle: true,
-      });
-      autoRotate.current?.start();
+  //     autoRotate.current?.setOptions({
+  //       autorotatePitch: currentScene?.initialViewParameters.pitch,
+  //       autostartDelay: 1000,
+  //       autostartOnIdle: true,
+  //     });
+  //     autoRotate.current?.start();
 
-      // markersPlugin?.showAllMarkers()
-    });
-  }
+  //     // markersPlugin?.showAllMarkers()
+  //   });
+  // }
+
+  // useEffect(() => {
+  //   if (start) {
+  //     intro()
+  //   }
+  // }, [start])
 
   useEffect(() => {
     if (!viewerHTML.current) return
@@ -300,10 +301,10 @@ const ScenesScreen = () => {
         MarkersPlugin
       ],
 
-      defaultPitch: animatedValues.pitch.start,
-      defaultYaw: animatedValues.yaw.start,
-      defaultZoomLvl: animatedValues.zoom.start,
-      fisheye: animatedValues.fisheye.start,
+      defaultPitch: animatedValues.current.pitch.start,
+      defaultYaw: animatedValues.current.yaw.start,
+      defaultZoomLvl: animatedValues.current.zoom.start,
+      fisheye: animatedValues.current.fisheye.start,
 
       // touchmoveTwoFingers: true,
       panorama: {
@@ -340,7 +341,6 @@ const ScenesScreen = () => {
 
     return () => {
       tempViewer?.destroy()
-      markersPlugin.current?.clearMarkers()
     }
   }, [])
 
@@ -348,9 +348,9 @@ const ScenesScreen = () => {
     <>
       <div id="viewer" ref={viewerHTML}  className={`w-full h-screen ${styles.viewer}`} />
       
-      <LeftSideScene sceneSlug={sceneSlug} currentScene={currentScene} />
+      {/* <LeftSideScene sceneSlug={sceneSlug} currentScene={currentScene} />
       <BarOptionsScene autoRotateCheck={autoRotateCheck} toggleAutoRotate={toggleAutoRotate} currentScene={currentScene} />
-      <VideoShowScene />
+      <VideoShowScene /> */}
     </>
   )
 }

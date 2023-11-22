@@ -5,10 +5,11 @@ import { headers } from "next/headers"
 import { v4 } from "uuid";
 
 export const createAccess = async () => {
+  const headersInstance = headers()
+  const userAgent = headersInstance.get('user-agent')
+  const forwarded = headersInstance.get('x-forwarded-for')
+
   try {
-    const headersInstance = headers()
-    const userAgent = headersInstance.get('user-agent')
-    const forwarded = headersInstance.get('x-forwarded-for')
     const ip = typeof forwarded == "string" ? forwarded.split(/, /)[0] : null
     let deviceType = 'PC'
 

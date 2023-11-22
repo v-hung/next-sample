@@ -1,20 +1,15 @@
 "use client"
 
 import { GroupScene } from "@prisma/client"
-import { Children, useEffect, useRef, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import useSettings from "@/stores/settings"
 import Image from "next/image"
 import useScene from "@/stores/web/scene"
 import { motion } from "framer-motion"
 import { SceneProps } from "@/app/(web)/layout"
 import ScenesScreen from "../scenes/ScenesScreen"
-import dynamic from "next/dynamic"
 import { useAction } from "@/lib/utils/promise"
 import { createAccess } from "@/actions/access"
-
-// const ScenesScreen = dynamic(() => import("../scenes/ScenesScreen"), {
-//   loading: () => <p className="px-2 py-1 text-sm">Đang tải...</p>
-// })
 
 const SceneContent = ({
   scenes = [], groups = [], children,
@@ -32,8 +27,6 @@ const SceneContent = ({
   const willMount = useRef(true)
 
   if (willMount.current) {
-    // setScenes(scenes)
-    // setGroups(groups)
     useScene.setState({
       scenes, scenesNonGroup,  groups
     })
