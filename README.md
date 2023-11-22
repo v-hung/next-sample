@@ -58,6 +58,8 @@ Thêm `proxy_pass http://103.57.220.122:{port}` vào file nginx.conf và `client
 
 Nếu sử dụng Direct Admin thì đường dẫn file nginx.còn sẽ là `/usr/local/directadmin/data/users/[user]/nginx.conf`
 
+Chạy lại ngnix sau khi chỉnh sửa `sudo systemctl reload nginx` hoặc `sudo systemctl restart nginx`
+
 VD: Một file cấu hình nginx.conf
 
 ```json
