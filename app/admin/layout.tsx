@@ -3,7 +3,9 @@ import { findSettingByName } from '@/lib/admin/fields';
 import { Metadata, ResolvingMetadata } from 'next';
 import React from 'react';
 
-export async function generateMetadata(): Promise<Metadata> {
+export async function generateMetadata(
+  parent?: ResolvingMetadata
+): Promise<Metadata> {
   const settings = await getSettingsData()
 
   const title = findSettingByName(settings, "admin title")

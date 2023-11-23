@@ -6,11 +6,15 @@ import { InitialViewParametersState, LevelsState, SceneDataState } from '../admi
 import { getSettingsData } from '@/actions/admin/settings';
 import { getAdmin } from '@/actions/admin/admin';
 import PreviewWithAuth from '@/components/web/content/PreviewWithAuth';
-import dynamic from 'next/dynamic';
-// import SceneContent from '@/components/web/content/SceneContent';
-const SceneContent = dynamic(() => import("@/components/web/content/SceneContent"), { ssr: false });
+import SceneContent from '@/components/web/content/SceneContent';
+// import dynamic from 'next/dynamic';
+// const SceneContent = dynamic(() => import("@/components/web/content/SceneContent"), { ssr: false });
 
-export async function generateMetadata(): Promise<Metadata> {
+export const dynamic = 'force-dynamic'
+
+export async function generateMetadata(
+  parent?: ResolvingMetadata
+): Promise<Metadata> {
   const settings = await getSettingsData()
 
   const siteTitle = findSettingByName(settings, "site title")
@@ -44,6 +48,7 @@ export async function generateMetadata(): Promise<Metadata> {
 export type SceneProps = Omit<SceneDataState, 'image'>
 
 const getData = async () => {
+  "use server"
   const [scenes, groups] = await Promise.all([
     db.scene.findMany({
       where: {
@@ -94,6 +99,7 @@ const getData = async () => {
 
   return { scenes: scenesGroup, scenesNonGroup, groups: groupsData }
 }
+
 
 const layout = async ({children}: {children: ReactNode}) => {
   const settings = await getSettingsData()

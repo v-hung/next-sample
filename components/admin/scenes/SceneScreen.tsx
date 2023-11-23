@@ -127,7 +127,7 @@ const AdminSceneScreen = ({
       else {
         html = renderToString(LinkHotSpot({
           title: findSceneDataById(hotspot.target)?.name || "", 
-          image: `/storage/tiles/${hotspot.target}/fisheye.png`,
+          image: `/storage/tiles/${hotspot.target}/fisheye.webp`,
           logo: logo?.url
         }))
       }

@@ -81,7 +81,7 @@ const HotspotAddModal = ({
           hotspotType: tabCurrentHotspot,
           yaw: data ? data.yaw : (coordinates.yaw || ''),
           pitch: data ? data.pitch : (coordinates.pitch || ''),
-          target,
+          target: target?.id,
           type,
           title,
           description,
@@ -99,17 +99,19 @@ const HotspotAddModal = ({
       <Modal
         open={open}
         onClose={handleClose}
+        className='max-w-xl'
+        onSubmit={handelSubmit}
       >
-        <ModalTitle>{data ? 'Sửa' : 'Thêm'} điểm nóng mới</ModalTitle>
-        <ModalContent>
+        <ModalTitle className='border-b-0 pb-0'>{data ? 'Sửa' : 'Thêm'} điểm nóng mới</ModalTitle>
+        <ModalContent className='p-0 flex flex-col'>
           <Tabs value={tabCurrentHotspot} setValue={setTabCurrentHotspot}>
-            <TabList>
+            <TabList className='flex-none pt-0 px-4'>
               <Tab value="link">Liên kết</Tab>
               <Tab value="info">Thông tin</Tab>
             </TabList>
 
-            <TabContent value="link">
-              <div className="mt-4 rounded bg-gray-50 p-4 flex flex-col space-y-4">
+            <TabContent value="link" className='flex-grow min-h-0 overflow-scroll'>
+              <div className="rounded bg-gray-50 p-6 flex flex-col space-y-4">
                 <InputAdmin disabled label="Tọa độ" value={JSON.stringify(data ? {yaw: data.yaw, pitch: data.pitch} : coordinates)} />
                 <RelationInputAdmin 
                   label='Chọn điểm chụp' 
@@ -119,15 +121,15 @@ const HotspotAddModal = ({
                   onChange={(e) => setTarget(e.target.value)}
                 />
                 <SelectAdmin label='loại' required value={type} onChange={e => setType(e.target.value)}>
-                  <option value="1" selected>Cơ bản</option>
+                  <option value="1">Cơ bản</option>
                   <option value="2">Trên cao</option>
                   <option value="3">Mặt đất</option>
                   <option value="4">Thông tin</option>
                 </SelectAdmin>
               </div>
             </TabContent>
-            <TabContent value="info">
-              <div className="mt-4 rounded bg-gray-50 p-4 flex flex-col space-y-4">
+            <TabContent value="info" className='flex-grow min-h-0 overflow-scroll'>
+              <div className="rounded bg-gray-50 p-6 flex flex-col space-y-4">
                 <InputAdmin disabled label="Tọa độ" value={JSON.stringify(data ? {yaw: data.yaw, pitch: data.pitch} : coordinates)} />
                 <InputAdmin 
                   label='Tiêu đề' 
@@ -137,7 +139,7 @@ const HotspotAddModal = ({
                   onChange={(e) => setTitle(e.target.value)}
                 />
                 <SelectAdmin label='loại' name='type' required value={type} onChange={e => setType(e.target.value)}>
-                  <option value="1" selected>Cơ bản</option>
+                  <option value="1">Cơ bản</option>
                   <option value="2">Video</option>
                 </SelectAdmin>
 
@@ -168,7 +170,7 @@ const HotspotAddModal = ({
           <ButtonAdmin disabled={loading} color='white' onClick={() => setOpen(false)}>
             Hủy bỏ
           </ButtonAdmin>
-          <ButtonAdmin disabled={loading} className='!ml-auto' startIcon={loading ? "progress_activity" : null} >Tiếp tục</ButtonAdmin>
+          <ButtonAdmin type='submit' disabled={loading} className='!ml-auto' startIcon={loading ? "progress_activity" : null} >Tiếp tục</ButtonAdmin>
         </ModalAction>
       </Modal>
     </>

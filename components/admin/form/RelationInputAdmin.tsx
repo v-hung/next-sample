@@ -71,6 +71,8 @@ const RelationInputAdmin: FC<Props> = (props) => {
     }
 
     onChange?.(syntheticEvent)
+
+    setOpen(false)
   }
 
   const [labelValue, setLabelValue] = useState('')

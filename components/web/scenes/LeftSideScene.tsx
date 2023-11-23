@@ -11,6 +11,8 @@ import { motion, AnimatePresence } from "framer-motion"
 import Link from "next/link";
 import { SceneProps } from "@/app/(web)/layout";
 import { useClickOutside } from "@/lib/utils/clickOutside";
+import SimpleBar from 'simplebar-react';
+import 'simplebar-react/dist/simplebar.min.css';
 // import SimpleBar from 'simplebar';
 // import 'simplebar/dist/simplebar.css';
 // import ResizeObserver from 'resize-observer-polyfill';
@@ -114,7 +116,7 @@ const LeftSideScene = memo(({
         }
       </AnimatePresence>
 
-      <div className="absolute top-0 left-0 w-full h-full p-6 pb-12 pointer-events-none overflow-hidden select-none flex flex-col z-10">
+      <div className="absolute top-0 left-0 w-full h-full p-6 pb-20 pointer-events-none overflow-hidden select-none flex flex-col z-10">
         <div className="flex-none md:pl-6 lg:pl-12 mb-12">
           <AnimatePresence>
             { start && showListScene
@@ -152,14 +154,14 @@ const LeftSideScene = memo(({
                 className="flex-grow min-h-0 w-full max-w-[280px] relative text-sm md:text-base"
               >
                 <AnimatePresence>
-                  {showGroupScene
+                  { showGroupScene
                     ? <motion.div
                       initial={{ x: -280 }}
                       animate={{ x: 0 }}
                       exit={{ x: -280 }}
                       className="w-full h-full flex flex-col"
                     >
-                      <div className="w-full pointer-events-auto overflow-y-auto">
+                      <SimpleBar className="w-full h-full pointer-events-auto">
                         <div className="flex flex-col text-white divide-y divide-black/20"
                           onMouseLeave={() => leaveSceneTitle()}
                         >
@@ -178,15 +180,24 @@ const LeftSideScene = memo(({
                             )
                             : <div className="py-0.5 md:py-2">Không có bối cảnh nào</div>
                           }
+                          { scenesNonGroup.map(v =>
+                            <div key={`${v.id}-scene`} className="flex py-1 space-x-2 items-center cursor-pointer group transition-all duration-[0.4s] origin-left hover:scale-[1.2] pointer-events-auto"
+                              onMouseEnter={() => enterSceneTitle(v, 'scene')}
+                              onClick={() => clickSceneTitle(v.slug)}
+                            >
+                              <div className={`w-1 h-7 md:h-9 bg-white group-hover:bg-sky-600 ${currentScene?.groupId == v.id ? '!bg-sky-600' : ''}`}></div>
+                              <span className="group-hover:text-teal-300" style={{textShadow: "rgb(0, 0, 0) 1px 1px 4px"}}>{v.name}</span>
+                            </div>
+                          )}
                         </div>
-                      </div>
+                      </SimpleBar>
                     </motion.div>
                     : null
                   }
                 </AnimatePresence>
 
                 <div className={`w-full h-full absolute top-0 left-0 transition-all ease-linear flex flex-col ${showGroupScene ? '!left-[300px]' : ''}`}>
-                  <div className="w-full overflow-x-hidden overflow-y-auto pointer-events-auto">
+                  <SimpleBar className="w-full h-full pointer-events-auto">
                     <div ref={listScene} className="w-full overflow-hidden">
                       <div className="flex flex-col text-white"
                         onMouseLeave={() => leaveSceneTitle()}
@@ -211,7 +222,7 @@ const LeftSideScene = memo(({
                         )}
                       </div>
                     </div>
-                  </div>
+                  </SimpleBar>
                 </div>
               </motion.div>
             : null

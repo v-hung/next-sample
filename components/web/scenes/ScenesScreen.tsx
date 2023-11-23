@@ -134,7 +134,7 @@ const ScenesScreen = () => {
       else {
         html = renderToString(LinkHotSpot({
           title: scene?.name || "", 
-          image: `/storage/tiles/${hotspot.target}/fisheye.png`,
+          image: `/storage/tiles/${hotspot.target}/fisheye.webp`,
           logo: logo?.url
         }))
       }
