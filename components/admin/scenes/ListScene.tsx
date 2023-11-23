@@ -4,7 +4,7 @@ import { SceneDataState } from '@/app/admin/(admin)/scenes/page'
 import { removeAccents } from '@/lib/utils/hepler';
 import { useAction, usePromise } from '@/lib/utils/promise';
 import { useRouter } from 'next/navigation'
-import { Dispatch, SetStateAction, useEffect, useRef, useState } from 'react'
+import { Dispatch, SetStateAction, memo, useEffect, useRef, useState } from 'react'
 import Sortable from 'sortablejs';
 import InputAdmin from '../form/InputAdmin';
 import ButtonAdmin from '../form/ButtonAdmin';
@@ -124,4 +124,4 @@ const ListScene = ({
   )
 }
 
-export default ListScene
+export default memo(ListScene)

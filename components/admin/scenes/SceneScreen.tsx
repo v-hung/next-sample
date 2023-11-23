@@ -1,7 +1,6 @@
 "use client"
-import { Dispatch, MouseEvent, SetStateAction, useEffect, useRef, useState } from 'react'
+import { Dispatch, MouseEvent, SetStateAction, memo, useEffect, useRef, useState } from 'react'
 import { renderToString } from 'react-dom/server';
-import HotspotAddModal from './HotspotAddModal'
 import { Viewer } from "@photo-sphere-viewer/core";
 import { EquirectangularTilesAdapter } from "@photo-sphere-viewer/equirectangular-tiles-adapter";
 import { AutorotatePlugin } from "@photo-sphere-viewer/autorotate-plugin";
@@ -17,6 +16,12 @@ import InfoHotSpot2 from './hotspots/InfoHotSpot2';
 import useSettings from '@/stores/settings';
 import useAdminScene from '@/stores/admin/admin_scene';
 import { nextLink } from '@/lib/utils/hepler';
+import HotspotAddModal from './HotspotAddModal'
+// import HotspotAdvancedModal from './HotspotAdvancedModal';
+// import dynamic from 'next/dynamic';
+// import Loading from '@/components/ui/Loading';
+
+// const HotspotAddModal = dynamic(() => import('./HotspotAddModal'), { loading: () => <Loading /> })
 
 const AdminSceneScreen = ({
   scenes, sceneId, setSceneId, tabCurrentHotspot, setTabCurrentHotspot,
@@ -284,4 +289,4 @@ const AdminSceneScreen = ({
   )
 }
 
-export default AdminSceneScreen
+export default memo(AdminSceneScreen)

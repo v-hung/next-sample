@@ -6,13 +6,10 @@ import AdminSceneControl from '../scenes/SceneControl'
 // import AdminSceneScreen from '../scenes/SceneScreen'
 import dynamic from 'next/dynamic'
 import { SceneDataState } from '@/app/admin/(admin)/scenes/page'
+import Loading from '@/components/ui/Loading'
 
-const AdminSceneScreen = dynamic(
-  () => import('../scenes/SceneScreen'),
-  {
-    loading: () => <p className='px-2 py-1 text-sm'>Đang tải...</p>,
-  }
-)
+const AdminSceneScreen = dynamic(() => import('../scenes/SceneScreen'), { loading: () => <Loading /> })
+const HotspotAdvancedModal = dynamic(() => import('../scenes/HotspotAdvancedModal'), { loading: () => <Loading /> })
 
 const SceneContentAdmin = ({
   scenes
@@ -40,7 +37,7 @@ const SceneContentAdmin = ({
         <div className="flex-none w-80 h-full bg-white">
           <ListScene scenes={scenes} setOpenModalAdd={handelOpenModalAddScene} sceneId={sceneId} setSceneId={setSceneId} />
         </div>
-        <div className="flex-grow min-w-0 h-full relative">
+        <div className="flex-grow min-w-0 h-full relative overflow-hidden">
           <AdminSceneScreen 
             tabCurrentHotspot={tabCurrentHotspot} 
             setTabCurrentHotspot={setTabCurrentHotspot} 
@@ -52,6 +49,7 @@ const SceneContentAdmin = ({
             openHotspotModal={openHotspotModal}
             setOpenHotspotModal={setOpenHotspotModal}
           />
+
           <AdminSceneControl 
             tabCurrentHotspot={tabCurrentHotspot} 
             setTabCurrentHotspot={setTabCurrentHotspot}
@@ -64,6 +62,8 @@ const SceneContentAdmin = ({
             openHotspotModal={openHotspotModal}
             setOpenHotspotModal={setOpenHotspotModal}
           />
+
+          <HotspotAdvancedModal />
         </div>
       </div>
 

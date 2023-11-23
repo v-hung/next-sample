@@ -21,10 +21,8 @@ const Tooltip = (props: Props) => {
     whileElementsMounted: autoUpdate,
     middleware: [
       offset(5),
-      flip({
-        fallbackAxisSideDirection: "start"
-      }),
-      shift({ padding: 10 })
+      flip(),
+      shift({ padding: 1 })
     ]
   })
 

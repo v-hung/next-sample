@@ -2,7 +2,7 @@
 
 import { File, GroupScene, Scene } from "@prisma/client";
 import { useRouter } from "next/navigation";
-import { Dispatch, SetStateAction, useEffect, useState } from "react";
+import { Dispatch, SetStateAction, memo, useEffect, useState } from "react";
 import slugify from "slugify";
 import { SceneDataState } from "@/app/admin/(admin)/scenes/page";
 import { useAction, usePromise } from "@/lib/utils/promise";
@@ -193,4 +193,4 @@ const SceneAddModal = ({
   )
 }
 
-export default SceneAddModal
+export default memo(SceneAddModal)

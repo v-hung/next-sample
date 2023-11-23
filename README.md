@@ -42,7 +42,7 @@ Cấu hình file pm2 (nếu không chạy một scipt khác thì không cần th
 {
   "apps": [
     {
-      "name": "sample",
+      "name": "sample", // rename sample to project name
       "script": "npm",
       "args": "run start2" // run start2 in package.json
     }

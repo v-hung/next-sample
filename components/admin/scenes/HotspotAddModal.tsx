@@ -1,7 +1,7 @@
 "use client"
 
 import { useRouter } from 'next/navigation';
-import { Dispatch, FormEvent, SetStateAction, useEffect, useState } from 'react'
+import { Dispatch, FormEvent, SetStateAction, memo, useEffect, useState } from 'react'
 import { SceneDataState } from '@/app/admin/(admin)/scenes/page';
 import { useAction, usePromise } from '@/lib/utils/promise';
 import { createEditHotspot } from '@/actions/admin/scenes';
@@ -177,4 +177,4 @@ const HotspotAddModal = ({
   )
 }
 
-export default HotspotAddModal
+export default memo(HotspotAddModal)

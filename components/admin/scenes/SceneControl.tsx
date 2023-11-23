@@ -3,10 +3,11 @@ import { SceneDataState } from '@/app/admin/(admin)/scenes/page'
 import { useAction, usePromise } from '@/lib/utils/promise'
 import useAdminScene from '@/stores/admin/admin_scene'
 import { useRouter } from 'next/navigation'
-import React, { Dispatch, MouseEvent, SetStateAction, useEffect, useState } from 'react'
+import React, { Dispatch, MouseEvent, SetStateAction, memo, useEffect, useState } from 'react'
 import ButtonAdmin from '../form/ButtonAdmin'
 import { Modal, ModalAction, ModalContent, ModalTitle } from '@/components/ui/Modal'
 import Dropdown, { Divide, MenuItem } from '@/components/ui/Dropdown'
+import Tooltip from '@/components/ui/Tooltip'
 
 const AdminSceneControl = ({
   scenes, sceneId, setSceneId, setOpenModalAdd, tabCurrentHotspot, setTabCurrentHotspot,
@@ -187,24 +188,30 @@ const AdminSceneControl = ({
 
       <div className="absolute bottom-0 left-0 right-0 bg-black/50 text-white select-none z-10 h-10">
         <div className="absolute left-0 top-0 flex-none flex divide-x divide-transparent">
-          <span className="icon w-10 h-10 p-2 bg-sky-600 cursor-pointer"
-            onClick={() => setOpenModalAdd(currentScene)}
-          >
-            <span className="icon">edit</span>
-          </span> 
-          <span className="icon w-10 h-10 p-2 bg-red-600 cursor-pointer"
-            onClick={() => setOpenDeleteModal(true)}
-          >
-            <span className="icon">delete</span>
-          </span>
+          <Tooltip title='Chỉnh sửa điểm chụp'>
+            <span className="icon w-10 h-10 p-2 bg-sky-600 cursor-pointer"
+              onClick={() => setOpenModalAdd(currentScene)}
+            >
+              <span className="icon">edit</span>
+            </span>
+          </Tooltip> 
+          <Tooltip title='Xóa điểm chụp'>
+            <span className="icon w-10 h-10 p-2 bg-red-600 cursor-pointer"
+              onClick={() => setOpenDeleteModal(true)}
+            >
+              <span className="icon">delete</span>
+            </span>
+          </Tooltip>
         </div> 
         <div className="text-center p-2">{currentScene?.name}</div> 
-          <div className="absolute right-0 top-0 flex-none flex divide-x divide-transparent">
+        <div className="absolute right-0 top-0 flex-none flex divide-x divide-transparent">
+          <Tooltip title='Lưu tọa độ điểm chụp'>
             <button type="submit" className="icon w-10 h-10 p-2 bg-blue-500 hover:bg-blue-400 cursor-pointer"
               onClick={handelUpdateInitial}
             >
               <span className="icon">save</span>
             </button>
+          </Tooltip>
         </div>
       </div>
 
@@ -241,4 +248,4 @@ const AdminSceneControl = ({
   )
 }
 
-export default AdminSceneControl
+export default memo(AdminSceneControl)

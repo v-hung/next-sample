@@ -284,6 +284,7 @@ model Scene {
 
   infoHotspots InfoHotspot[]
   linkHotspots LinkHotspot[]
+  advancedHotspots AdvancedHotspot[]
 
   publish   String   @default("publish") // or draft
   createdAt DateTime @default(now())
@@ -327,4 +328,20 @@ model LinkHotspot {
   updatedAt DateTime @updatedAt
 
   @@map("link_hotspots")
+}
+
+model AdvancedHotspot {
+  id          String  @id @default(uuid()) 
+  position    String
+  layer       String
+  title       String?
+  type        String?
+
+  sceneId String
+  scene   Scene  @relation(fields: [sceneId], references: [id])
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("advanced_hotspots")
 }
