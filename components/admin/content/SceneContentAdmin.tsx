@@ -63,7 +63,7 @@ const SceneContentAdmin = ({
             setOpenHotspotModal={setOpenHotspotModal}
           />
 
-          <HotspotAdvancedModal />
+          <HotspotAdvancedModal sceneId={sceneId} />
         </div>
       </div>
 

@@ -12,7 +12,7 @@ const LinkHotSpot3 = ({
     <div className={`absolute top-0 left-0 w-0 h-0 cursor-pointer`}>
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 group">
         <div className="relative w-24 md:w-32 group overflow-hidden">
-          <Image src="/images/arrow.png" alt="arrow" width={300} height={300} className="w-full" />
+          <Image src="/asset/img/arrow.png" alt="arrow" width={300} height={300} className="w-full" />
         </div>
 
         { title

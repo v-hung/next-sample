@@ -180,6 +180,8 @@ model File {
   sceneAudios Scene[]
   SceneImages Scene[] @relation("image")
 
+  advancedHotspots AdvancedHotspot[]
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
@@ -332,10 +334,13 @@ model LinkHotspot {
 
 model AdvancedHotspot {
   id          String  @id @default(uuid()) 
-  position    String
-  layer       String
-  title       String?
+  position    String  @db.Text
+  title       String
   type        String?
+  description String? @db.Text
+
+  layerId String?
+  layer   File?  @relation(fields: [layerId], references: [id])
 
   sceneId String
   scene   Scene  @relation(fields: [sceneId], references: [id])

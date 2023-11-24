@@ -9,7 +9,7 @@ export const usePromise = async ({
   always?: boolean,
   setLoading?: React.Dispatch<React.SetStateAction<boolean>>,
   setError?: React.Dispatch<React.SetStateAction<string>>,
-  callback: () => Promise<void>,
+  callback: () => Promise<void> | void,
   successTitle?: string,
   showSuccessTitle?: boolean
 }) => {

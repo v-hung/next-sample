@@ -6,7 +6,7 @@ import { useRouter } from 'next/navigation'
 import React, { Dispatch, MouseEvent, SetStateAction, memo, useEffect, useState } from 'react'
 import ButtonAdmin from '../form/ButtonAdmin'
 import { Modal, ModalAction, ModalContent, ModalTitle } from '@/components/ui/Modal'
-import Dropdown, { Divide, MenuItem } from '@/components/ui/Dropdown'
+import Dropdown, { Divide, MenuItem, MenuTitle } from '@/components/ui/Dropdown'
 import Tooltip from '@/components/ui/Tooltip'
 
 const AdminSceneControl = ({
@@ -27,7 +27,7 @@ const AdminSceneControl = ({
   const router = useRouter()
 
   // list hotspot in scene
-
+  // const {} = useAdminScene()
   const [currentScene, setCurrentScene] = useState<SceneDataState | null>(scenes.find(v => v.id == sceneId) || null)
 
   useEffect(() => {
@@ -144,42 +144,72 @@ const AdminSceneControl = ({
             </ButtonAdmin>
           )}
         >
-          {currentScene?.linkHotspots.map((v,i)=>
-            <MenuItem key={i}>
-              <div className="hover:bg-gray-100 dark:hover:bg-gray-600 w-full text-left flex items-center text-base font-semibold gap-2 cursor-auto">
-                <span className="flex-none icon">my_location</span>
-                <span className="flex-grow min-w-0 whitespace-pre-wrap text-sm">{findSceneDataById(v.target)?.name}</span> 
-                <span className="flex-none icon p-1 hover:text-sky-600 cursor-pointer"
-                  onClick={() => handelOpenEditHotspotModal(v, 'link')}
-                >edit</span>
-                <span className="flex-none icon p-1 hover:text-red-600 cursor-pointer"
-                  onClick={() => handelOpenHotspotModal(v, 'link')}
-                >delete</span>
-              </div>
-            </MenuItem>
-          )}
-
-          { (currentScene?.linkHotspots.length || 0) > 0 && (currentScene?.infoHotspots.length || 0) > 0
-           ? <Divide />
-           : null
+          { currentScene?.linkHotspots.length != 0
+          ? <>
+              <MenuTitle>Điểm nóng liên kết</MenuTitle>
+              {currentScene?.linkHotspots.map((v,i)=>
+                <MenuItem key={i}>
+                  <div className="hover:bg-gray-100 dark:hover:bg-gray-600 w-max max-w-md text-left flex items-center text-base font-semibold gap-2 cursor-auto">
+                    <span className="flex-none icon">my_location</span>
+                    <span className="flex-grow min-w-0 whitespace-pre-wrap text-sm">{findSceneDataById(v.target)?.name}</span> 
+                    <span className="flex-none icon p-1 hover:text-sky-600 cursor-pointer"
+                      onClick={() => handelOpenEditHotspotModal(v, 'link')}
+                    >edit</span>
+                    <span className="flex-none icon p-1 hover:text-red-600 cursor-pointer"
+                      onClick={() => handelOpenHotspotModal(v, 'link')}
+                    >delete</span>
+                  </div>
+                </MenuItem>
+              )}
+              <Divide />
+            </>
+            : null
           }
-          
-          {currentScene?.infoHotspots.map((v,i)=>
-            <MenuItem key={i}>
-              <div className="hover:bg-gray-100 dark:hover:bg-gray-600 w-full text-left flex items-center text-base font-semibold gap-2 cursor-auto">
-                <span className="flex-none icon">info</span>
-                <span className="flex-grow min-w-0 whitespace-pre-wrap text-sm">{v.title}</span> 
-                <span className="flex-none icon p-1 hover:text-sky-600 cursor-pointer"
-                  onClick={() => handelOpenEditHotspotModal(v, 'info')}
-                >edit</span>
-                <span className="flex-none icon p-1 hover:text-red-600 cursor-pointer"
-                  onClick={() => handelOpenHotspotModal(v, 'info')}
-                >delete</span>
-              </div>
-            </MenuItem>
-          )}
 
-          { !currentScene || (currentScene?.linkHotspots.length == 0 && currentScene?.infoHotspots.length == 0)
+          { currentScene?.infoHotspots.length != 0
+          ? <>
+              <MenuTitle>Điểm nóng thông tin</MenuTitle>
+              {currentScene?.linkHotspots.map((v,i)=>
+                <MenuItem key={i}>
+                  <div className="hover:bg-gray-100 dark:hover:bg-gray-600 w-max max-w-md text-left flex items-center text-base font-semibold gap-2 cursor-auto">
+                    <span className="flex-none icon">info</span>
+                    <span className="flex-grow min-w-0 whitespace-pre-wrap text-sm">{findSceneDataById(v.target)?.name}</span> 
+                    <span className="flex-none icon p-1 hover:text-sky-600 cursor-pointer"
+                      onClick={() => handelOpenEditHotspotModal(v, 'info')}
+                    >edit</span>
+                    <span className="flex-none icon p-1 hover:text-red-600 cursor-pointer"
+                      onClick={() => handelOpenHotspotModal(v, 'info')}
+                    >delete</span>
+                  </div>
+                </MenuItem>
+              )}
+              <Divide />
+            </>
+            : null
+          }
+
+          { currentScene?.advancedHotspots.length != 0
+          ? <>
+              <MenuTitle>Điểm nóng nâng cao</MenuTitle>
+              {currentScene?.advancedHotspots.map((v,i)=>
+                <MenuItem key={i}>
+                  <div className="hover:bg-gray-100 dark:hover:bg-gray-600 w-max max-w-md text-left flex items-center text-base font-semibold gap-2 cursor-auto">
+                    <span className="flex-none icon">info</span>
+                    <span className="flex-grow min-w-0 whitespace-pre-wrap text-sm">{v.title}</span> 
+                    <span className="flex-none icon p-1 hover:text-sky-600 cursor-pointer"
+                      onClick={() => handelOpenEditHotspotModal(v, 'info')}
+                    >edit</span>
+                    <span className="flex-none icon p-1 hover:text-red-600 cursor-pointer"
+                      onClick={() => handelOpenHotspotModal(v, 'info')}
+                    >delete</span>
+                  </div>
+                </MenuItem>
+              )}
+            </>
+            : null
+          }
+
+          { !currentScene || (currentScene?.linkHotspots.length == 0 && currentScene?.infoHotspots.length == 0 && currentScene?.advancedHotspots.length == 0)
            ? <MenuItem>Không có điểm nóng nào</MenuItem>
            : null
           }
@@ -205,6 +235,13 @@ const AdminSceneControl = ({
         </div> 
         <div className="text-center p-2">{currentScene?.name}</div> 
         <div className="absolute right-0 top-0 flex-none flex divide-x divide-transparent">
+          <Tooltip title='Thêm điểm nóng nâng cao'>
+            <button type="submit" className="icon w-10 h-10 p-2 bg-green-500 hover:bg-green-400 cursor-pointer"
+              onClick={() => useAdminScene.setState({isAdvancedHotspotModal: true})}
+            >
+              <span className="icon">add_location_alt</span>
+            </button>
+          </Tooltip>
           <Tooltip title='Lưu tọa độ điểm chụp'>
             <button type="submit" className="icon w-10 h-10 p-2 bg-blue-500 hover:bg-blue-400 cursor-pointer"
               onClick={handelUpdateInitial}

@@ -13,7 +13,7 @@ const LinkHotSpot2 = ({
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 group">
         <div className="relative w-24 h-24 md:w-28 md:h-24 group overflow-hidden">
           <div className="absolute w-[200%] top-[60%] left-[68%] -translate-x-1/2 -translate-y-1/2">
-            <Anim src="/lotties/helicopter.json" />
+            <Anim src="/asset/lotties/helicopter.json" />
             {/* <lottie-player src="/lotties/helicopter.json" autoplay loop /> */}
           </div>
         </div>

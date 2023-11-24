@@ -426,7 +426,59 @@ export const createEditHotspot = async ({
   }
 }
 
-export const deleteHotspot = async ({id, type}: {id: string, type: 'link' | 'info'}) => {
+export const createEditAdvancedHotspot = async ({
+  id, sceneId, type, layerId, title, position
+}: {
+  id?: string, sceneId: string, type: 'layer' | 'polygon',
+  position: { id: string, yaw: number, pitch: number }[],
+  title: string, layerId?: string
+}) => {
+  const user = await getAdmin()
+  if (!user) throw "Authorization"
+
+  try {
+    const data = {
+      sceneId,
+      type,
+      title,
+      layerId,
+      position: JSON.stringify(position)
+    }
+
+    if (!id) {
+      await db.advancedHotspot.create({
+        data: {
+          ...data,
+          id,
+        }
+      })
+    }
+    else {
+      await db.advancedHotspot.update({
+        where: {
+          id
+        },
+        data
+      })
+    }
+
+    return { success: true }
+  } 
+  catch(error) {
+    await createHistoryAdmin({
+      action: id ? 'Cập nhập' : 'Tạo mới',
+      title: id ? 'Chỉnh sửa điểm nóng nâng cao' : 'Thêm mới điểm nóng nâng cao',
+      adminId: user.id,
+      status: 'error',
+      tableName: 'advancedHotspot'
+    }).catch(e => {})
+
+    console.log({error})
+    return { error: (typeof error === "string" && error != "") ? error : 'Có lỗi xảy ra vui lòng thử lại sau' }
+  }
+}
+
+export const deleteHotspot = async ({id, type}: {id: string, type: 'link' | 'info' | 'advanced'}) => {
   const user = await getAdmin()
   if (!user) throw "Authorization"
 
@@ -444,6 +496,14 @@ export const deleteHotspot = async ({id, type}: {id: string, type: 'link' | 'inf
       if (!checkPermissions(user.role.permissions, "infoHotspot", "delete")) throw "Forbidden"
 
       await db.infoHotspot.delete({
+        where: {
+          id: id
+        }
+      })
+    } else if (type == "advanced") {
+      if (!checkPermissions(user.role.permissions, "infoHotspot", "delete")) throw "Forbidden"
+
+      await db.advancedHotspot.delete({
         where: {
           id: id
         }

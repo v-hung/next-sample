@@ -1,6 +1,6 @@
 import { checkPermissions } from '@/lib/admin/fields'
 import db from '@/lib/admin/db'
-import { File, GroupScene, InfoHotspot, LinkHotspot, Scene } from '@prisma/client'
+import { AdvancedHotspot, File, GroupScene, InfoHotspot, LinkHotspot, Scene } from '@prisma/client'
 import React from 'react'
 import { getAdmin } from '@/actions/admin/admin'
 import SceneContentAdmin from '@/components/admin/content/SceneContentAdmin'
@@ -22,6 +22,7 @@ export type SceneDataState =  (Omit<Scene, 'levels' | 'initialViewParameters'> &
   initialViewParameters: InitialViewParametersState;
   infoHotspots: InfoHotspot[];
   linkHotspots: LinkHotspot[];
+  advancedHotspots: (AdvancedHotspot & {layer: File | null})[]
   image: File | null,
   audio: File | null,
   group: GroupScene | null
@@ -32,6 +33,11 @@ const getData = async () => {
     include: {
       infoHotspots: true,
       linkHotspots: true,
+      advancedHotspots: {
+        include: {
+          layer: true
+        }
+      },
       image: true,
       audio: true,
       group: true

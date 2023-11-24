@@ -350,7 +350,7 @@ const BarOptionsScene = memo(({
 
           <div className="!ml-auto"></div>
 
-          <div className="relative w-20 h-20 sm:w-32 sm:h-32 select-none pointer-events-auto">
+          {/* <div className="relative w-20 h-20 sm:w-32 sm:h-32 select-none pointer-events-auto">
             <Tooltip title={sceneAudioCheck ? 'Tắt giọng đọc': 'Mở giọng đọc'} placement="top" className="block">
               <button className="w-full h-full rounded-full"
                 onClick={() => toggleSceneAudio()}
@@ -372,7 +372,7 @@ const BarOptionsScene = memo(({
                 info_i
               </span>
             </Tooltip>
-          </div>
+          </div> */}
 
           <div className="flex flex-col space-y-2 select-none">
             <div id="gallery" className={`flex flex-col space-y-2 opacity-0 invisible translate-y-11 transition-all 

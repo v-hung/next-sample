@@ -7,6 +7,7 @@ import { FileTypeState } from '@/actions/admin/sample';
 
 type Props = Omit<InputHTMLAttributes<HTMLInputElement>, 'value' | 'defaultValue' | 'onChange'> & {
   label?: string | null,
+  caption?: string,
   value?: File | null,
   defaultValue?: File | null,
   onChange?: React.ChangeEventHandler<Omit<HTMLInputElement, 'value'> & { value: File }>
@@ -21,6 +22,7 @@ type Props = Omit<InputHTMLAttributes<HTMLInputElement>, 'value' | 'defaultValue
 const FileInputAdmin: React.FC<Props> = ({
   name,
   label,
+  caption,
   required = false,
   defaultValue,
   className,
@@ -51,21 +53,6 @@ const FileInputAdmin: React.FC<Props> = ({
     setShowModal((state) => state = !state)
   }
 
-  // console.log(value, files)
-
-  // useEffect(() => {
-  //   const syntheticEvent: any = {
-  //     target: {
-  //       value: multiple ? files : files.length > 0 ? files[0] : null
-  //     },
-  //   }
-    
-  //   if (JSON.stringify(syntheticEvent.target.value) !== JSON.stringify(value)) {
-  //     console.log(value, syntheticEvent.target.value)
-  //     // onChange?.(syntheticEvent)
-  //   }
-  // }, [files])
-
   const handelChangeFile = useCallback((data: File[]) => {
     const syntheticEvent: any = {
       target: {
@@ -82,7 +69,12 @@ const FileInputAdmin: React.FC<Props> = ({
         ? <p className="inline-block text-sm font-medium mb-2 dark:text-white">{label} { required && <span className="text-red-500">*</span> }</p>
         : null
       }
-      <div className="h-40 border rounded bg-white">
+      { caption
+        ? <p className="block text-xs mb-2 dark:text-white">{caption}</p>
+        : null
+      }
+      <div className="h-40 border rounded bg-white relative">
+        <input type="text" className='sr-only' value={JSON.stringify(value)} required={required} />
         <div className="w-full h-full flex flex-col justify-center items-center cursor-pointer"
           onClick={handelShowModal}
         >

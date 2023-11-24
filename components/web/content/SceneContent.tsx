@@ -77,15 +77,16 @@ const SceneContent = ({
             height={1080}
             priority={true}
             loading="eager"
-            className="w-full h-full object-cover"
+            className="w-full h-full object-cover cursor-pointer"
+            onClick={(e) => setStartCompleted(true)}
           />
 
-          <div className="absolute w-full h-full left-0 top-0 flex flex-col items-center justify-center gap-8">
+          {/* <div className="absolute w-full h-full left-0 top-0 flex flex-col items-center justify-center gap-8">
             <button 
               className="!rounded-full !bg-gradient-to-r !from-cyan-500 !to-blue-500 px-6 py-3 text-white md:text-lg shadow" 
               onClick={(e) => setStartCompleted(true)}
             >Bắt đầu tham quan</button>
-          </div>
+          </div> */}
         </motion.div>
         : null
       }

@@ -4,11 +4,11 @@ import { renderToString } from 'react-dom/server';
 import { Viewer } from "@photo-sphere-viewer/core";
 import { EquirectangularTilesAdapter } from "@photo-sphere-viewer/equirectangular-tiles-adapter";
 import { AutorotatePlugin } from "@photo-sphere-viewer/autorotate-plugin";
-import { MarkersPlugin } from "@photo-sphere-viewer/markers-plugin";
+import { MarkerConfig, MarkersPlugin } from "@photo-sphere-viewer/markers-plugin";
 import "@photo-sphere-viewer/core/index.css"
 import "@photo-sphere-viewer/markers-plugin/index.css"
 import { SceneDataState } from '@/app/admin/(admin)/scenes/page';
-import { InfoHotspot, LinkHotspot } from '@prisma/client';
+import { AdvancedHotspot, File, InfoHotspot, LinkHotspot } from '@prisma/client';
 import LinkHotSpot4 from './hotspots/LinkHotSpot4';
 import LinkHotSpot from './hotspots/LinkHotSpot';
 import InfoHotSpot from './hotspots/InfoHotSpot';
@@ -43,13 +43,13 @@ const AdminSceneScreen = ({
   const logo = findSettingByName('site logo')
 
   const viewerHTML = useRef<HTMLDivElement>(null)
-  const {viewer, setViewer} = useAdminScene()
+  const {viewer, setViewer, addPosition, position, isAdvancedHotspotModal } = useAdminScene()
+
   // const viewer = useRef<Viewer>()
   const markersPlugin = useRef<MarkersPlugin>()
   const autoRotate = useRef<AutorotatePlugin>()
 
   const [currentScene, setCurrentScene] = useState<SceneDataState | undefined>(scenes.find(v => v.id == sceneId))
-  const [autoRotateCheck, setAutoRotateCheck] = useState(false)
 
   useEffect(() => {
     setCurrentScene(scenes.find(v => v.id == sceneId))
@@ -77,6 +77,7 @@ const AdminSceneScreen = ({
       markersPlugin.current?.clearMarkers()
       createLinkHotspotElements(tempCurrentScene.linkHotspots)
       createInfoHotspotElements(tempCurrentScene.infoHotspots)
+      createAdvancedHotspotElements(tempCurrentScene.advancedHotspots)
     }
   }
 
@@ -118,12 +119,12 @@ const AdminSceneScreen = ({
 
       if (hotspot?.type == "2") {
         tooltip = findSceneDataById(hotspot.target)?.name || ""
-        image = '/images/flycam.png'
+        image = '/asset/img/flycam.png'
         size = { width: 96, height: 96 }
       }
       else if (hotspot?.type == "3") {
         tooltip = findSceneDataById(hotspot.target)?.name || ""
-        image = '/images/arrow.png'
+        image = '/asset/img/arrow.png'
         size = { width: 96, height: 96 }
       }
       else if (hotspot?.type == "4") {
@@ -185,12 +186,92 @@ const AdminSceneScreen = ({
           video: hotspot.video
         },
         tooltip: tooltip
-      });
+      })
     })
   }
 
-  // add hostpost modal
+  function createAdvancedHotspotElements(hotspots: (AdvancedHotspot & {layer: File | null})[]) {
+    hotspots.forEach(hotspot => {
+      if (hotspot.type == "layer") {
+        if (!hotspot.layer) return
+
+        const file = hotspot.layer
+
+        markersPlugin.current?.addMarker({
+          id: hotspot.id,
+          [file.mime.startsWith('image/') ? 'imageLayer' : 'videoLayer']: file.url,
+          position: JSON.parse(hotspot.position),
+          tooltip: {
+            content: hotspot.title
+          },
+        })
+      }
+      else {
+        markersPlugin.current?.addMarker({
+          id: hotspot.id,
+          className: 'marker-polygon',
+          position: JSON.parse(hotspot.position).map((v: any) => [v.yaw, v.pitch]),
+          svgStyle: {
+            stroke: 'rgba(2, 132, 199, 0.8)',
+            strokeWidth: '2px',
+            strokeLinejoin: 'round',
+            fill: 'rgba(2, 133, 199, 0.1)',
+          },
+          tooltip: {
+            content: hotspot.title
+          },
+        })
+      }
+    })
+  }
+
+  // add hotspot modal
   const [coordinatesAdd , setCoordinatesAdd ] = useState({ yaw: 0, pitch: 0 })
+
+  // hotspot advanced
+  const isAdvancedHotspotMarker = useRef(false)
+
+  const createDataMakerConfig = (): MarkerConfig => {
+    return {
+      id: 'advancedHotspot',
+      polygon: position.map(v => [v.yaw, v.pitch]),
+      svgStyle: {
+        stroke: 'rgba(2, 132, 199, 0.8)',
+        strokeWidth: '2px',
+        strokeLinejoin: 'round',
+        fill: 'rgba(2, 133, 199, 0.1)',
+        pointerEvents: 'none'
+      }
+    }
+  }
+
+  useEffect(() => {
+    if (isAdvancedHotspotModal && position.length > 0) {
+      markersPlugin.current?.addMarker(createDataMakerConfig())
+      isAdvancedHotspotMarker.current = true
+    }
+    else if (!isAdvancedHotspotModal && position.length > 0){
+      markersPlugin.current?.removeMarker("advancedHotspot")
+      isAdvancedHotspotMarker.current = false
+    }
+  }, [isAdvancedHotspotModal])
+
+  useEffect(() => {
+    if (!isAdvancedHotspotModal) return
+    
+    if (position.length == 0 && isAdvancedHotspotMarker.current) {
+      markersPlugin.current?.removeMarker("advancedHotspot")
+      isAdvancedHotspotMarker.current = false
+    }
+    else if (position.length > 0 && !isAdvancedHotspotMarker.current) {
+      markersPlugin.current?.addMarker(createDataMakerConfig())
+      isAdvancedHotspotMarker.current = true
+    }
+    else if (position.length > 0 && isAdvancedHotspotMarker.current){
+      markersPlugin.current?.updateMarker(createDataMakerConfig())
+    }
+  }, [position])
+
 
   useEffect(() => {
     if (!viewerHTML.current) return
@@ -230,10 +311,9 @@ const AdminSceneScreen = ({
     markersPlugin.current = tempViewer.getPlugin(MarkersPlugin) as MarkersPlugin
     autoRotate.current = tempViewer.getPlugin(AutorotatePlugin) as AutorotatePlugin
 
-    // if (scenes.length > 0) {
-      createLinkHotspotElements(currentScene?.linkHotspots || [])
-      createInfoHotspotElements(currentScene?.infoHotspots || [])
-    // }
+    createLinkHotspotElements(currentScene?.linkHotspots || [])
+    createInfoHotspotElements(currentScene?.infoHotspots || [])
+    createAdvancedHotspotElements(currentScene?.advancedHotspots || [])
 
     markersPlugin.current.addEventListener('select-marker', ({ marker }) => {
       if (marker.data?.type == "link" && marker.data?.target) {
@@ -249,13 +329,20 @@ const AdminSceneScreen = ({
     })
 
     tempViewer.addEventListener('dblclick', ({ data }) => {
-      setCoordinatesAdd({
-        yaw: data.yaw,
-        pitch: data.pitch
-      })
+      const isAdvancedHotspotModal = useAdminScene.getState().isAdvancedHotspotModal
 
-      setEditHotspotModal(null)
-      setOpenHotspotModal(true)
+      if (isAdvancedHotspotModal) {
+        addPosition(data)
+      }
+      else {
+        setCoordinatesAdd({
+          yaw: data.yaw,
+          pitch: data.pitch
+        })
+  
+        setEditHotspotModal(null)
+        setOpenHotspotModal(true)
+      }
     })
 
     isMounted.current = true
@@ -270,6 +357,11 @@ const AdminSceneScreen = ({
 
   return (
     <>
+      <style jsx global>{`
+        .psv-container {
+          cursor: auto !important;
+        }
+      `}</style>
       { scenes.length > 0
         ? <div ref={viewerHTML} className='w-full h-full'></div>
         : <div className="w-full h-full grid place-items-center">Không có điểm chụp nào</div>
