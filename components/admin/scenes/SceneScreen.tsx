@@ -7,7 +7,7 @@ import { AutorotatePlugin } from "@photo-sphere-viewer/autorotate-plugin";
 import { MarkerConfig, MarkersPlugin } from "@photo-sphere-viewer/markers-plugin";
 import "@photo-sphere-viewer/core/index.css"
 import "@photo-sphere-viewer/markers-plugin/index.css"
-import { SceneDataState } from '@/app/admin/(admin)/scenes/page';
+import { AdvancedHotspotType, SceneDataState } from '@/app/admin/(admin)/scenes/page';
 import { AdvancedHotspot, File, InfoHotspot, LinkHotspot } from '@prisma/client';
 import LinkHotSpot4 from './hotspots/LinkHotSpot4';
 import LinkHotSpot from './hotspots/LinkHotSpot';
@@ -166,6 +166,9 @@ const AdminSceneScreen = ({
         tooltip = hotspot.title ?? ''
         html = renderToString(InfoHotSpot2())
       }
+      else if (hotspot?.type == "3") {
+        html = renderToString(LinkHotSpot4({title: hotspot.title ?? ''}))
+      }
       else {
         tooltip = hotspot.title ?? ''
         content = hotspot.description ?? ''
@@ -190,7 +193,7 @@ const AdminSceneScreen = ({
     })
   }
 
-  function createAdvancedHotspotElements(hotspots: (AdvancedHotspot & {layer: File | null})[]) {
+  function createAdvancedHotspotElements(hotspots: AdvancedHotspotType[]) {
     hotspots.forEach(hotspot => {
       if (hotspot.type == "layer") {
         if (!hotspot.layer) return
@@ -200,7 +203,7 @@ const AdminSceneScreen = ({
         markersPlugin.current?.addMarker({
           id: hotspot.id,
           [file.mime.startsWith('image/') ? 'imageLayer' : 'videoLayer']: file.url,
-          position: JSON.parse(hotspot.position),
+          position: hotspot.position as any,
           tooltip: {
             content: hotspot.title
           },
@@ -210,12 +213,12 @@ const AdminSceneScreen = ({
         markersPlugin.current?.addMarker({
           id: hotspot.id,
           className: 'marker-polygon',
-          position: JSON.parse(hotspot.position).map((v: any) => [v.yaw, v.pitch]),
+          polygon: hotspot.position.map(v => [v.yaw, v.pitch]) as any,
           svgStyle: {
             stroke: 'rgba(2, 132, 199, 0.8)',
             strokeWidth: '2px',
             strokeLinejoin: 'round',
-            fill: 'rgba(2, 133, 199, 0.1)',
+            fill: 'rgba(2, 133, 199, 0.2)',
           },
           tooltip: {
             content: hotspot.title
@@ -234,12 +237,12 @@ const AdminSceneScreen = ({
   const createDataMakerConfig = (): MarkerConfig => {
     return {
       id: 'advancedHotspot',
-      polygon: position.map(v => [v.yaw, v.pitch]),
+      polygon: position.map(v => [v.yaw, v.pitch]) as [number, number][],
       svgStyle: {
         stroke: 'rgba(2, 132, 199, 0.8)',
         strokeWidth: '2px',
         strokeLinejoin: 'round',
-        fill: 'rgba(2, 133, 199, 0.1)',
+        fill: 'rgba(2, 133, 199, 0.2)',
         pointerEvents: 'none'
       }
     }

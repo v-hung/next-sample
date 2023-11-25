@@ -152,16 +152,12 @@ export const GROUP_SETTINGS: GroupSettingSampleType[] = [
       onlyTable: true,
       fileTypes: ['image']
     }, col: 4},
-    { name: 'so do', label: 'Sơ đồ', type: 'file', details: {
-      multiple: false,
-      onlyTable: true,
-      fileTypes: ['image']
-    }, col: 4 },
     { name: 'main audio', label: 'Nhạc nền', type: 'file', details: {
       multiple: false,
       onlyTable: true,
       fileTypes: ['audio']
     }, col: 4},
+    { name: 'so do', label: 'Sơ đồ (google map)', type: 'string', col: 4 },
   ] },
   { name: "Admin", settings: [
     { name: 'admin title', label: 'Tiêu đề trang quản trị', type: 'string' },

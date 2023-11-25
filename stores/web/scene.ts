@@ -10,7 +10,8 @@ type State = {
   scenesNonGroup: SceneProps[],
   groups: GroupScene[]
   videoShow?: string,
-  showListScene: boolean
+  showListScene: boolean,
+  googleMap?: boolean
 }
 
 type Actions = {

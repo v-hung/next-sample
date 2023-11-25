@@ -2,6 +2,7 @@
 
 import Anim from "./Anim";
 
+// million-ignore
 const LinkHotSpot2 = ({
   title
 }: {
@@ -19,7 +20,7 @@ const LinkHotSpot2 = ({
         </div>
 
         { title
-          ? <div className="opacity-0 absolute left-1/2 bottom-1/2 -translate-x-1/2 px-4 py-1 transition-all duration-500 rounded whitespace-nowrap text-white group-hover:bg-stone-700 group-hover:bottom-[calc(100%+1rem)] group-hover:opacity-100 text-sm md:text-base">{title}</div>
+          ? <div className="opacity-0 absolute left-1/2 bottom-1/2 -translate-x-1/2 px-4 py-1 transition-all duration-500 rounded whitespace-nowrap text-white group-hover:bg-stone-700 group-hover:bottom-[calc(100%+1rem)] group-hover:opacity-100 text-xs md:text-sm">{title}</div>
           : null
         }
       </div>

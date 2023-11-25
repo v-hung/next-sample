@@ -2,6 +2,7 @@
 
 import Image from "next/image"
 
+// million-ignore
 const LinkHotSpot3 = ({
   title
 }: {

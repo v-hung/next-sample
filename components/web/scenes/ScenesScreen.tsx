@@ -26,6 +26,8 @@ const VideoShowScene = dynamic(() => import("./VideoShowScene"))
 
 import "./tinymce.css";
 import { SceneProps } from "@/app/(web)/layout"
+import { AdvancedHotspotType } from "@/app/admin/(admin)/scenes/page"
+import GoogleMap from "./GoogleMap"
 
 const ScenesScreen = () => {
   const router = useRouter()
@@ -100,6 +102,7 @@ const ScenesScreen = () => {
       // markersPlugin.current?.clearMarkers()
       createLinkHotspotElements(scene.linkHotspots)
       createInfoHotspotElements(scene.infoHotspots)
+      createAdvancedHotspotElements(scene.advancedHotspots)
 
       if (autoRotateCheck) {
         toggleAutoRotate(true)
@@ -167,6 +170,10 @@ const ScenesScreen = () => {
         tooltip = hotspot.title ?? ''
         html = renderToString(InfoHotSpot2())
       }
+      else if (hotspot?.type == "3") {
+        html = renderToString(LinkHotSpot4({title: hotspot.title ?? ''}))
+        content = hotspot.description ?? ''
+      }
       else {
         tooltip = hotspot.title ?? ''
         content = hotspot.description ?? ''
@@ -188,6 +195,41 @@ const ScenesScreen = () => {
         },
         tooltip: tooltip
       });
+    })
+  }
+
+  function createAdvancedHotspotElements(hotspots: AdvancedHotspotType[]) {
+    hotspots.forEach(hotspot => {
+      if (hotspot.type == "layer") {
+        if (!hotspot.layer) return
+
+        const file = hotspot.layer
+
+        markersPlugin.current?.addMarker({
+          id: hotspot.id,
+          [file.mime.startsWith('image/') ? 'imageLayer' : 'videoLayer']: file.url,
+          position: hotspot.position as any,
+          tooltip: {
+            content: hotspot.title
+          },
+        })
+      }
+      else {
+        markersPlugin.current?.addMarker({
+          id: hotspot.id,
+          className: 'marker-polygon',
+          polygon: hotspot.position.map(v => [v.yaw, v.pitch]) as any,
+          svgStyle: {
+            stroke: 'rgba(2, 132, 199, 0.8)',
+            strokeWidth: '2px',
+            strokeLinejoin: 'round',
+            fill: 'rgba(2, 133, 199, 0.2)',
+          },
+          tooltip: {
+            content: hotspot.title
+          },
+        })
+      }
     })
   }
 
@@ -263,6 +305,7 @@ const ScenesScreen = () => {
     }).then(() => {
       createLinkHotspotElements(currentScene?.linkHotspots || [])
       createInfoHotspotElements(currentScene?.infoHotspots || [])
+      createAdvancedHotspotElements(currentScene?.advancedHotspots || [])
 
       autoRotate.current?.setOptions({
         autorotatePitch: currentScene?.initialViewParameters.pitch,
@@ -348,6 +391,7 @@ const ScenesScreen = () => {
       <LeftSideScene sceneSlug={sceneSlug} currentScene={currentScene} />
       <BarOptionsScene autoRotateCheck={autoRotateCheck} toggleAutoRotate={toggleAutoRotate} currentScene={currentScene} />
       <VideoShowScene />
+      <GoogleMap />
     </>
   )
 }

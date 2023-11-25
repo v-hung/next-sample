@@ -57,6 +57,11 @@ const getData = async () => {
       include: {
         infoHotspots: true,
         linkHotspots: true,
+        advancedHotspots: {
+          include: {
+            layer: true
+          }
+        },
         audio: true,
         group: true
       },
@@ -79,6 +84,10 @@ const getData = async () => {
       ...v,
       levels: JSON.parse(v.levels) as LevelsState,
       initialViewParameters: JSON.parse(v.initialViewParameters) as InitialViewParametersState,
+      advancedHotspots: v.advancedHotspots.map(v2 => ({
+        ...v2,
+        position: JSON.parse(v2.position) as {yaw: number, pitch: number}[]
+      }))
     }
   })
 

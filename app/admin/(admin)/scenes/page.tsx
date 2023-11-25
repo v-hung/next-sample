@@ -17,12 +17,17 @@ export type InitialViewParametersState = {
   zoom: number
 }
 
+export type AdvancedHotspotType = Omit<AdvancedHotspot, 'position'> & {
+  layer: File | null,
+  position: {yaw: number, pitch: number}[]
+}
+
 export type SceneDataState =  (Omit<Scene, 'levels' | 'initialViewParameters'> & {
   levels: LevelsState;
   initialViewParameters: InitialViewParametersState;
   infoHotspots: InfoHotspot[];
   linkHotspots: LinkHotspot[];
-  advancedHotspots: (AdvancedHotspot & {layer: File | null})[]
+  advancedHotspots: AdvancedHotspotType[]
   image: File | null,
   audio: File | null,
   group: GroupScene | null
@@ -52,6 +57,10 @@ const getData = async () => {
       ...v,
       levels: JSON.parse(v.levels) as LevelsState,
       initialViewParameters: JSON.parse(v.initialViewParameters) as InitialViewParametersState,
+      advancedHotspots: v.advancedHotspots.map(v2 => ({
+        ...v2,
+        position: JSON.parse(v2.position) as {yaw: number, pitch: number}[]
+      }))
     }
   })
 

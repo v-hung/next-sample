@@ -44,7 +44,7 @@ export const Modal: React.FC<State> = (props) => {
   const handelSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault()
 
-    if (typeof onSubmit == "function") {
+    if (typeof onSubmit == "function" && !loading) {
       onSubmit(e)
     }
   }

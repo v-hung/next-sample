@@ -792,7 +792,7 @@ div.mce-footnotes li>a.mce-footnotes-backlink {
   overflow-y: auto;
   background-color: #fff;
   font-size: 14px;
-  @apply border-l border-solid border-gray-300;
+  @apply border-l border-solid border-gray-300 pt-8;
 }
 
 .psv-panel-content * {

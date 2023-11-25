@@ -15,6 +15,10 @@
   max-width: 100%;
 }
 
+.viewer :global(.marker-polygon) {
+  @apply !opacity-0 transition-opacity hover:!opacity-100;
+}
+
 /* leftside */
 .leftside :global(.simplebar-scrollbar::before) {
   background-color: white;

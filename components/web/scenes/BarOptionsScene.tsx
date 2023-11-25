@@ -7,17 +7,19 @@ import useSettings from "@/stores/settings";
 import { memo, useEffect, useRef, useState } from "react";
 import { GroupScene } from "@prisma/client";
 import { motion, AnimatePresence } from "framer-motion"
-//@ts-ignore
-import PhotoSwipeLightbox from 'photoswipe/lightbox';
-import 'photoswipe/style.css';
 import Image from "next/image";
 import Link from "next/link";
 import dynamic from 'next/dynamic'
 import { SceneProps } from "@/app/(web)/layout";
 import Tooltip from "@/components/ui/Tooltip";
+import Loading from "@/components/ui/Loading";
+
+//@ts-ignore
+// import PhotoSwipeLightbox from 'photoswipe/lightbox';
+// import 'photoswipe/style.css';
 
 const DynamicShareModal = dynamic(() => import('../ShareModal'), {
-  loading: () => <p className="px-2 py-1 text-sm">Đang tải...</p>
+  loading: () => <Loading />
 })
 
 const BarOptionsScene = memo(({
@@ -27,9 +29,8 @@ const BarOptionsScene = memo(({
   toggleAutoRotate: (data?: boolean) => void,
   currentScene?: SceneProps
 }) => {
-  const router = useRouter()
   const { viewer, scenes, showListScene, setShowListScene, groups, start, videoShow } = useScene()
-  const { findSettingByName } = useSettings()
+  const findSettingByName = useSettings(state => state.findSettingByName)
 
   const mainAudio = useRef<HTMLAudioElement>(null)
   const sceneAudio = useRef<HTMLAudioElement>(null)
@@ -228,13 +229,13 @@ const BarOptionsScene = memo(({
       // toggleSceneAudio(true)
     }
 
-    let lightbox = new PhotoSwipeLightbox({
-      gallery: '#gallery a',
-      // children: 'a',
-      pswpModule: () => import('photoswipe'),
-    })
+    // let lightbox = new PhotoSwipeLightbox({
+    //   gallery: '#gallery a',
+    //   // children: 'a',
+    //   pswpModule: () => import('photoswipe'),
+    // })
 
-    lightbox.init()
+    // lightbox.init()
 
     return () => {
       document.removeEventListener('fullscreenchange', exitHandler)
@@ -350,7 +351,7 @@ const BarOptionsScene = memo(({
 
           <div className="!ml-auto"></div>
 
-          {/* <div className="relative w-20 h-20 sm:w-32 sm:h-32 select-none pointer-events-auto">
+          <div className="relative w-20 h-20 sm:w-32 sm:h-32 select-none pointer-events-auto">
             <Tooltip title={sceneAudioCheck ? 'Tắt giọng đọc': 'Mở giọng đọc'} placement="top" className="block">
               <button className="w-full h-full rounded-full"
                 onClick={() => toggleSceneAudio()}
@@ -372,22 +373,19 @@ const BarOptionsScene = memo(({
                 info_i
               </span>
             </Tooltip>
-          </div> */}
+          </div>
 
           <div className="flex flex-col space-y-2 select-none">
             <div id="gallery" className={`flex flex-col space-y-2 opacity-0 invisible translate-y-11 transition-all 
               ${showMoreOptions ? '!opacity-100 !visible !translate-y-0' : ''}`}>
               <Tooltip title="Xem bản đồ" placement="left">
-                <a href={findSettingByName("so do")?.url} className="bar-icon block"
-                  data-pswp-width="10000"
-                  data-pswp-height="10000"
-                  target="_blank"
-                  rel="noreferrer"
+                <div className="bar-icon"
+                  onClick={() => useScene.setState({googleMap: true})}
                 >
                   <span className="icon">
                     location_on
                   </span>
-                </a>
+                </div>
               </Tooltip>
 
               <Tooltip title="Chụp ảnh" placement="left">

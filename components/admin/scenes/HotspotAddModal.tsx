@@ -141,6 +141,7 @@ const HotspotAddModal = ({
                 <SelectAdmin label='loại' name='type' required value={type} onChange={e => setType(e.target.value)}>
                   <option value="1">Cơ bản</option>
                   <option value="2">Video</option>
+                  <option value="3">Thông tin</option>
                 </SelectAdmin>
 
                 {

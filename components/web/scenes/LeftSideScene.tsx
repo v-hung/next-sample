@@ -17,7 +17,7 @@ import 'simplebar-react/dist/simplebar.min.css';
 // import 'simplebar/dist/simplebar.css';
 // import ResizeObserver from 'resize-observer-polyfill';
 
-const LeftSideScene = memo(({
+const LeftSideScene = ({
   sceneSlug, currentScene
 }: {
   sceneSlug?: string, currentScene?: SceneProps
@@ -124,10 +124,8 @@ const LeftSideScene = memo(({
                   initial={{ scale: 0, opacity: 0 }}
                   animate={{ scale: 1, opacity: 1 }}
                   exit={{ scale: 0, opacity: 0 }}
-                  className="block w-20 h-20 md:w-32 md:h-32 pointer-events-auto rounded-full border-2 border-white overflow-hidden"
-                  style={{boxShadow: 'rgba(0, 0, 0, 0.24) 0px 3px 8px'}}
-                  // animate={{ scale: start ? 1 : 0, opacity: start ? 1 : 0 }}
-                  // initial={false}
+                  className="block w-20 h-20 md:w-32 md:h-32 pointer-events-auto"
+                  // style={{boxShadow: 'rgba(0, 0, 0, 0.24) 0px 3px 8px'}}
                 >
                   <Link href="/">
                     <Image
@@ -231,6 +229,6 @@ const LeftSideScene = memo(({
       </div>
     </div>
   )
-})
+}
 
-export default LeftSideScene
+export default memo(LeftSideScene)

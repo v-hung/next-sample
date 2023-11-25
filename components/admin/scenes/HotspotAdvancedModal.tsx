@@ -1,5 +1,5 @@
 "use client"
-import React, { FormEvent, memo, useRef, useState } from 'react'
+import React, { FormEvent, memo, useEffect, useRef, useState } from 'react'
 import { motion, useDragControls } from "framer-motion";
 import ButtonAdmin from '../form/ButtonAdmin';
 import InputAdmin from '../form/InputAdmin';
@@ -9,7 +9,7 @@ import FileInputAdmin from '../form/FileInputAdmin';
 import useAdminScene from '@/stores/admin/admin_scene';
 import { useAction, usePromise } from '@/lib/utils/promise';
 import { useRouter } from 'next/navigation';
-import { createEditAdvancedHotspot } from '@/actions/admin/scenes';
+import { createEditAdvancedHotspot, deleteHotspot } from '@/actions/admin/scenes';
 import { File } from '@prisma/client';
 import { Modal, ModalAction, ModalContent, ModalTitle } from '@/components/ui/Modal';
 
@@ -17,10 +17,30 @@ const HotspotAdvancedModal = ({ sceneId }: { sceneId: string }) => {
   const constraintsRef = useRef(null)
   const dragControls = useDragControls()
 
-  const { isAdvancedHotspotModal, type, position, deletePosition, changeType, advancedHotSpotId } = useAdminScene()
+  const { 
+    isAdvancedHotspotModal, type, position, deletePosition, changeType,
+    advancedHotSpotDelete, advancedHotSpotEdit
+  } = useAdminScene()
+
   const [title, setTitle] = useState('')
   const [layer, setLayer] = useState<File | null>(null)
 
+  // update data edit
+  useEffect(() => {
+    if (!advancedHotSpotEdit) return
+    setTitle(advancedHotSpotEdit.title)
+    setLayer(advancedHotSpotEdit.layer)
+  }, [advancedHotSpotEdit])
+
+  // close modal
+  useEffect(() => {
+    if (!isAdvancedHotspotModal) {
+      setTitle('')
+      setLayer(null)
+    }
+  }, [isAdvancedHotspotModal])
+
+  // save
   const router = useRouter()
   const [loading, setLoading] = useState(false)
   const handelSubmit = (e: FormEvent) => {
@@ -31,13 +51,29 @@ const HotspotAdvancedModal = ({ sceneId }: { sceneId: string }) => {
       setLoading,
       callback: async () => {
         await useAction(() => createEditAdvancedHotspot({
-          id: advancedHotSpotId,
+          id: advancedHotSpotEdit?.id,
           title,
           layerId: layer?.id,
           sceneId: sceneId || '',
           type,
           position
         }))
+  
+        router.refresh()
+        useAdminScene.setState({isAdvancedHotspotModal: false})
+      }
+    })
+  }
+
+  const handelDeleteHotspot = (e: FormEvent) => {
+    e.preventDefault()
+    if (!advancedHotSpotDelete) return
+
+    usePromise({
+      loading,
+      setLoading,
+      callback: async () => {
+        await useAction(() => deleteHotspot({id: advancedHotSpotDelete.id, type: 'advanced'}))
   
         router.refresh()
         useAdminScene.setState({isAdvancedHotspotModal: false})
@@ -117,16 +153,18 @@ const HotspotAdvancedModal = ({ sceneId }: { sceneId: string }) => {
 
       {/* dialog delete scene */}
       <Modal
-        open={openDeleteModal}
-        onClose={() => handelCloseModal(false)}
+        open={advancedHotSpotDelete != undefined}
+        onClose={() => useAdminScene.setState({ advancedHotSpotDelete: undefined })}
+        onSubmit={handelDeleteHotspot}
+        loading={loading}
       >
         <ModalTitle>Xóa điểm chụp</ModalTitle>
         <ModalContent>
-          Bạn có thực sự muốn xóa điểm chụp <span className="text-red-500">{currentScene?.name}</span>?
+          Bạn có thực sự muốn xóa điểm chụp <span className="text-red-500">{advancedHotSpotDelete?.title}</span>?
         </ModalContent>
         <ModalAction >
-          <ButtonAdmin disabled={loading} onClick={() => handelCloseModal(false)}>Hủy</ButtonAdmin>
-          <ButtonAdmin disabled={loading} color='red' onClick={handelDeleteScene} startIcon={loading ? "progress_activity" : null} >Tiếp tục</ButtonAdmin>
+          <ButtonAdmin disabled={loading} onClick={() => useAdminScene.setState({ advancedHotSpotDelete: undefined })}>Hủy</ButtonAdmin>
+          <ButtonAdmin disabled={loading} color='red' type='submit' startIcon={loading ? "progress_activity" : null} >Tiếp tục</ButtonAdmin>
         </ModalAction>
       </Modal>
     </>

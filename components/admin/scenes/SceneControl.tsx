@@ -8,6 +8,7 @@ import ButtonAdmin from '../form/ButtonAdmin'
 import { Modal, ModalAction, ModalContent, ModalTitle } from '@/components/ui/Modal'
 import Dropdown, { Divide, MenuItem, MenuTitle } from '@/components/ui/Dropdown'
 import Tooltip from '@/components/ui/Tooltip'
+import { v4 } from 'uuid'
 
 const AdminSceneControl = ({
   scenes, sceneId, setSceneId, setOpenModalAdd, tabCurrentHotspot, setTabCurrentHotspot,
@@ -27,7 +28,7 @@ const AdminSceneControl = ({
   const router = useRouter()
 
   // list hotspot in scene
-  // const {} = useAdminScene()
+  const openAdvancedHotspotModal = useAdminScene(state => state.openAdvancedHotspotModal)
   const [currentScene, setCurrentScene] = useState<SceneDataState | null>(scenes.find(v => v.id == sceneId) || null)
 
   useEffect(() => {
@@ -104,11 +105,16 @@ const AdminSceneControl = ({
   }
 
   // edit hotspot
-  const handelOpenEditHotspotModal = (data: any, type: 'link' | 'info') => {
-    if (loading) return
-    setEditHotspotModal(data)
-    setTabCurrentHotspot(type)
-    setOpenHotspotModal(true)
+  const handelOpenEditHotspotModal = (data: any, type: 'link' | 'info' |'advanced') => {
+    if (type == 'advanced') {
+      openAdvancedHotspotModal(data)
+    }
+    else {
+      if (loading) return
+      setEditHotspotModal(data)
+      setTabCurrentHotspot(type)
+      setOpenHotspotModal(true)
+    }
   }
 
   // update coordinates
@@ -140,7 +146,7 @@ const AdminSceneControl = ({
         <Dropdown
           renderItem={(rest) => (
             <ButtonAdmin {...rest}>
-              Danh sách điểm nóng ({(currentScene?.linkHotspots.length || 0) + (currentScene?.infoHotspots.length || 0)})
+              Danh sách điểm nóng ({(currentScene?.linkHotspots.length || 0) + (currentScene?.infoHotspots.length || 0) + (currentScene?.advancedHotspots.length || 0)})
             </ButtonAdmin>
           )}
         >
@@ -149,9 +155,9 @@ const AdminSceneControl = ({
               <MenuTitle>Điểm nóng liên kết</MenuTitle>
               {currentScene?.linkHotspots.map((v,i)=>
                 <MenuItem key={i}>
-                  <div className="hover:bg-gray-100 dark:hover:bg-gray-600 w-max max-w-md text-left flex items-center text-base font-semibold gap-2 cursor-auto">
-                    <span className="flex-none icon">my_location</span>
-                    <span className="flex-grow min-w-0 whitespace-pre-wrap text-sm">{findSceneDataById(v.target)?.name}</span> 
+                  <div className="hover:bg-gray-100 dark:hover:bg-gray-600 w-full text-left flex items-center text-base font-semibold gap-2 cursor-auto">
+                    <span className="flex-none icon">link</span>
+                    <span className="flex-grow min-w-0 w-max max-w-[250px] whitespace-pre-wrap text-sm">{findSceneDataById(v.target)?.name}</span> 
                     <span className="flex-none icon p-1 hover:text-sky-600 cursor-pointer"
                       onClick={() => handelOpenEditHotspotModal(v, 'link')}
                     >edit</span>
@@ -169,11 +175,11 @@ const AdminSceneControl = ({
           { currentScene?.infoHotspots.length != 0
           ? <>
               <MenuTitle>Điểm nóng thông tin</MenuTitle>
-              {currentScene?.linkHotspots.map((v,i)=>
+              {currentScene?.infoHotspots.map((v,i)=>
                 <MenuItem key={i}>
-                  <div className="hover:bg-gray-100 dark:hover:bg-gray-600 w-max max-w-md text-left flex items-center text-base font-semibold gap-2 cursor-auto">
+                  <div className="hover:bg-gray-100 dark:hover:bg-gray-600 w-full text-left flex items-center text-base font-semibold gap-2 cursor-auto">
                     <span className="flex-none icon">info</span>
-                    <span className="flex-grow min-w-0 whitespace-pre-wrap text-sm">{findSceneDataById(v.target)?.name}</span> 
+                    <span className="flex-grow min-w-0 w-max max-w-[250px] whitespace-pre-wrap text-sm">{v.title}</span> 
                     <span className="flex-none icon p-1 hover:text-sky-600 cursor-pointer"
                       onClick={() => handelOpenEditHotspotModal(v, 'info')}
                     >edit</span>
@@ -193,14 +199,14 @@ const AdminSceneControl = ({
               <MenuTitle>Điểm nóng nâng cao</MenuTitle>
               {currentScene?.advancedHotspots.map((v,i)=>
                 <MenuItem key={i}>
-                  <div className="hover:bg-gray-100 dark:hover:bg-gray-600 w-max max-w-md text-left flex items-center text-base font-semibold gap-2 cursor-auto">
-                    <span className="flex-none icon">info</span>
-                    <span className="flex-grow min-w-0 whitespace-pre-wrap text-sm">{v.title}</span> 
+                  <div className="hover:bg-gray-100 dark:hover:bg-gray-600 w-full text-left flex items-center text-base font-semibold gap-2 cursor-auto">
+                    <span className="flex-none icon">conversion_path</span>
+                    <span className="flex-grow min-w-0 w-max max-w-[250px] whitespace-pre-wrap text-sm">{v.title}</span> 
                     <span className="flex-none icon p-1 hover:text-sky-600 cursor-pointer"
-                      onClick={() => handelOpenEditHotspotModal(v, 'info')}
+                      onClick={() => handelOpenEditHotspotModal(v, 'advanced')}
                     >edit</span>
                     <span className="flex-none icon p-1 hover:text-red-600 cursor-pointer"
-                      onClick={() => handelOpenHotspotModal(v, 'info')}
+                      onClick={() => useAdminScene.setState({advancedHotSpotDelete: v})}
                     >delete</span>
                   </div>
                 </MenuItem>
@@ -237,7 +243,7 @@ const AdminSceneControl = ({
         <div className="absolute right-0 top-0 flex-none flex divide-x divide-transparent">
           <Tooltip title='Thêm điểm nóng nâng cao'>
             <button type="submit" className="icon w-10 h-10 p-2 bg-green-500 hover:bg-green-400 cursor-pointer"
-              onClick={() => useAdminScene.setState({isAdvancedHotspotModal: true})}
+              onClick={() => openAdvancedHotspotModal()}
             >
               <span className="icon">add_location_alt</span>
             </button>

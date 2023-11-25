@@ -74,7 +74,7 @@ const FileInputAdmin: React.FC<Props> = ({
         : null
       }
       <div className="h-40 border rounded bg-white relative">
-        <input type="text" className='sr-only' value={JSON.stringify(value)} required={required} />
+        <input type="text" className='sr-only' value={JSON.stringify(value)} onChange={() => {}} required={required} />
         <div className="w-full h-full flex flex-col justify-center items-center cursor-pointer"
           onClick={handelShowModal}
         >

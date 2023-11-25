@@ -1,6 +1,7 @@
 "use client"
-import { useFloating, offset, flip, shift, autoUpdate, FloatingFocusManager, useClick, useDismiss, useRole, useInteractions, Placement } from '@floating-ui/react';
+import { useFloating, offset, flip, shift, autoUpdate, FloatingFocusManager, useClick, useDismiss, useRole, useInteractions, Placement, size } from '@floating-ui/react';
 import React, { useState, HTMLAttributes, ReactNode, memo, FC } from 'react'
+import { flushSync } from 'react-dom';
 import { twMerge } from "tailwind-merge";
 
 type Props = HTMLAttributes<HTMLElement> & {
@@ -12,14 +13,22 @@ const Dropdown: React.FC<Props> = (props) => {
   const { renderItem, className, placement, children, ...rest } = props
 
   const [isOpen, setIsOpen] = useState(false);
+  const [maxHeight, setMaxHeight] = useState<number | null>(null)
 
   const { refs, floatingStyles, context } = useFloating({
     placement: placement,
     open: isOpen,
     onOpenChange: setIsOpen,
-    middleware: [offset(5), flip(), shift({
-      padding: 10
-    })],
+    middleware: [offset(5), flip(), 
+      shift({
+        padding: 10
+      }),
+      size({
+        apply({availableHeight}) {
+          flushSync(() => setMaxHeight(availableHeight));
+        },
+      }),
+  ] ,
     whileElementsMounted: autoUpdate,
   })
 
@@ -42,9 +51,9 @@ const Dropdown: React.FC<Props> = (props) => {
       {isOpen && (
         <FloatingFocusManager context={context} modal={false} initialFocus={-1}>
           <div ref={refs.setFloating}
-            style={floatingStyles}
+            style={{...floatingStyles, maxHeight: maxHeight || 'auto'}}
             {...getFloatingProps()}
-            className={twMerge(`min-w-[15rem] bg-white shadow-md border rounded-lg p-2 dark:bg-gray-800 dark:border dark:border-gray-700 !m-0`, className)}
+            className={twMerge(`min-w-[15rem] bg-white shadow-md border rounded-lg p-2 dark:bg-gray-800 dark:border dark:border-gray-700 !m-0 overflow-auto`, className)}
           >
             {children}
           </div>
