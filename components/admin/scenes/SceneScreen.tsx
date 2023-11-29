@@ -160,7 +160,8 @@ const AdminSceneScreen = ({
       let tooltip = undefined,
         html = undefined,
         image = undefined,
-        content = undefined
+        content = undefined,
+        width = 40, height = 40
 
       if (hotspot?.type == "2") {
         tooltip = hotspot.title ?? ''
@@ -168,6 +169,8 @@ const AdminSceneScreen = ({
       }
       else if (hotspot?.type == "3") {
         html = renderToString(LinkHotSpot4({title: hotspot.title ?? ''}))
+        content = hotspot.description ?? ''
+        width = height = 0
       }
       else {
         tooltip = hotspot.title ?? ''
@@ -180,7 +183,7 @@ const AdminSceneScreen = ({
         position: { yaw: hotspot.yaw, pitch: hotspot.pitch },
         html: html,
         image: image,
-        size: { width: 40, height: 40 },
+        size: { width, height },
         anchor: 'center',
         content,
         data: {

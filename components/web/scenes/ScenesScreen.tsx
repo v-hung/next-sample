@@ -164,7 +164,8 @@ const ScenesScreen = () => {
       let tooltip = undefined,
         html = undefined,
         image = undefined,
-        content = undefined
+        content = undefined,
+        width = 40, height = 40
 
       if (hotspot?.type == "2") {
         tooltip = hotspot.title ?? ''
@@ -173,6 +174,7 @@ const ScenesScreen = () => {
       else if (hotspot?.type == "3") {
         html = renderToString(LinkHotSpot4({title: hotspot.title ?? ''}))
         content = hotspot.description ?? ''
+        width = height = 0
       }
       else {
         tooltip = hotspot.title ?? ''
@@ -185,7 +187,7 @@ const ScenesScreen = () => {
         position: { yaw: hotspot.yaw, pitch: hotspot.pitch },
         html: html,
         image: image,
-        size: { width: 40, height: 40 },
+        size: { width: width, height: height },
         anchor: 'center',
         content,
         data: {

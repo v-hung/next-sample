@@ -161,7 +161,7 @@ const SceneAddModal = ({
           <InputAdmin label="Tiêu đề" name="name" value={name} onChange={handelChangeName} placeholder="Vd: bán đảo Bắc Hà" required={true} />
           <InputAdmin label="Slug" name="slug" value={slugName} onChange={handelChangeSlugName} required={true} />
           <div className="flex gap-6">
-            <FileInputAdmin className="w-1/2" label="Ảnh" name="image" value={image} onChange={(e) => setImage(e.target.value)} details={{tableName: 'scene'}} />
+            <FileInputAdmin className="w-1/2" label="Ảnh" name="image" value={image} onChange={(e) => setImage(e.target.value)} details={{tableName: 'scene'}} required />
             <FileInputAdmin className="w-1/2" label="Âm thanh" value={audio} onChange={(e) => setAudio(e.target.value)} name="audio" details={{tableName: 'scene', fileTypes: ['audio']}} />
           </div>
           <RelationInputAdmin label="Danh mục" value={group || null} onChange={(e) => setGroup(e.target.value)} details={{tableNameRelation: 'groupScene', titleRelation: 'name', typeRelation: 'many-to-one'}} />

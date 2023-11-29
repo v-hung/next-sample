@@ -49,7 +49,7 @@ export const addEditScene = async ({
   
       if (sceneBySlug) throw "Slug đã tồn tại"
 
-      if (!image || !image.url) throw "Ảnh không tồn tại"
+      if (!image) throw "Ảnh không tồn tại"
 
       let uuid = v4()
 
@@ -100,7 +100,7 @@ export const addEditScene = async ({
       })
 
       if (scene?.imageId != imageId) {
-        if (!image || image.url) throw "Ảnh không tồn tại"
+        if (!image) throw "Ảnh không tồn tại"
         
         await createImageForScene(image.url, id)
       }
