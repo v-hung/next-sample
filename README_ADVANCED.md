@@ -1,5 +1,11 @@
 ## Hướng dẫn nâng cao
 
+**Lần đầu tạo project mới :**&#x20;
+
+Xóa hết dữ liệu cũ trong thư mục storage (để lại .gitignore). Tạo bảng CSDL mới chỉnh sửa .env.
+
+Chạy `npm run seed` để tạo CSDL mẫu gồm tài khoản quản trị
+
 **Thêm Bảng CSDL vào trang quản lý :**&#x20;
 
 Cần sử dụng [prisma](https://github.com/prisma/prisma). Thêm bảng csdl trong schema.prisma, chạy các lệnh `npx prisma migrate` và `npx prisma generate` cần thiết

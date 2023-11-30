@@ -155,6 +155,7 @@ const SceneAddModal = ({
         onClose={onCloseModal}
         loading={loading}
         className="max-w-3xl"
+        onSubmit={handelSubmit}
       >
         <DrawerTitle>{!scene ? 'Thêm' : 'Sửa'} điểm chụp <span className="text-blue-600">{scene?.name}</span></DrawerTitle>
         <DrawerContent className="flex flex-col gap-4 relative">
@@ -170,7 +171,7 @@ const SceneAddModal = ({
         </DrawerContent>
         <DrawerAction>
           <ButtonAdmin variant="text" color='black' disabled={loading} onClick={onCloseModal}>Hủy</ButtonAdmin>
-          <ButtonAdmin onClick={handelSubmit} disabled={loading} startIcon={
+          <ButtonAdmin type="submit" disabled={loading} startIcon={
             loading ? <span className="icon w-4 h-4 animate-spin">progress_activity</span> : null
           }>Tiếp tục</ButtonAdmin>
         </DrawerAction>

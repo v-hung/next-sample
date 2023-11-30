@@ -2,3 +2,4 @@
 !.gitignore
 !schema.prisma
 !seed.ts
+!seed.js

@@ -159,7 +159,7 @@ const LeftSideScene = ({
                       exit={{ x: -280 }}
                       className="w-full h-full flex flex-col"
                     >
-                      <SimpleBar className="w-full h-full pointer-events-auto">
+                      <SimpleBar className="w-full max-h-full pointer-events-auto">
                         <div className="w-[280px] flex flex-col text-white divide-y divide-black/20"
                           onMouseLeave={() => leaveSceneTitle()}
                         >
@@ -195,7 +195,7 @@ const LeftSideScene = ({
                 </AnimatePresence>
 
                 <div className={`w-full h-full absolute top-0 left-0 transition-all ease-linear flex flex-col ${showGroupScene ? '!left-[calc(100%+1rem)]' : ''}`}>
-                  <SimpleBar className="w-full h-full pointer-events-auto">
+                  <SimpleBar className="w-full max-h-full pointer-events-auto">
                     <div ref={listScene} className="w-[280px] overflow-hidden">
                       <div className="flex flex-col text-white"
                         onMouseLeave={() => leaveSceneTitle()}
@@ -209,7 +209,7 @@ const LeftSideScene = ({
                             <span className="group-hover:text-teal-300" style={{textShadow: "rgb(0, 0, 0) 1px 1px 4px"}}>{v.name}</span>
                           </div>
                         )}
-                        { scenesNonGroup.map(v =>
+                        { scenesNonGroup.map((v,i) =>
                           <div key={`${v.id}-scene`} className="flex py-1 space-x-2 items-center cursor-pointer group transition-all duration-[0.4s] origin-left hover:scale-[1.1] pointer-events-auto"
                             onMouseEnter={() => enterSceneTitle(v, 'scene')}
                             onClick={() => clickSceneTitle(v.slug)}

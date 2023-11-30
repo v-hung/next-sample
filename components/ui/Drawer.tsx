@@ -1,19 +1,18 @@
 "use client"
-import React, { HTMLAttributes, MouseEvent, Suspense, useEffect, useRef } from 'react'
+import React, { FormEvent, HTMLAttributes, MouseEvent, Suspense, useEffect, useRef } from 'react'
 import { motion, AnimatePresence, HTMLMotionProps } from "framer-motion";
 import { createPortal } from 'react-dom';
 import { twMerge } from 'tailwind-merge';
 import ButtonAdmin from '../admin/form/ButtonAdmin';
 import { useClickOutside } from '@/lib/utils/clickOutside';
 
-export type DrawerProps = Omit<HTMLMotionProps<'div'>, 'children' | 'className'> & {
+export type DrawerProps = Omit<HTMLMotionProps<'form'>, 'children' | 'className'> & {
   anchor?: 'left' | 'right'
   open: boolean
   onClose?: () => void,
   children?: React.ReactNode,
   className?: string,
   title?: string,
-  onSubmit?: () => void,
   contentClass?: string,
   closeTitle?: string,
   submitTitle?: string,
@@ -32,7 +31,7 @@ export const Drawer: React.FC<DrawerProps> = (props) => {
     closeTitle = 'Close', submitTitle = 'Continue', ...rest
   } = props
 
-  const ref = useRef<HTMLDivElement>(null)
+  const ref = useRef<HTMLFormElement>(null)
 
   // useClickOutside(ref, () => {
   //   if (typeof onClose !== "undefined") {
@@ -45,6 +44,14 @@ export const Drawer: React.FC<DrawerProps> = (props) => {
       e.preventDefault()
       e.stopPropagation()
       onClose()
+    }
+  }
+
+  const handelSubmit = (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault()
+
+    if (typeof onSubmit == "function" && !loading) {
+      onSubmit(e)
     }
   }
 
@@ -64,7 +71,7 @@ export const Drawer: React.FC<DrawerProps> = (props) => {
               className='fixed top-0 left-0 w-full h-screen bg-black/30 z-[60] cs-backdrop'
               onClick={handleBackgroundClick }
             >
-              <motion.div
+              <motion.form
                 ref={ref}
                 initial={{ x: anchor == 'left' ? '-100%' : '100%' }}
                 animate={open ? { x: 0, display: 'flex' }: { x: anchor == 'left' ? '-100%' : '100%', transitionEnd: { display: 'none'}}}
@@ -72,6 +79,7 @@ export const Drawer: React.FC<DrawerProps> = (props) => {
                 transition={{ type: 'tween' }}
                 className={twMerge(`max-w-xs w-full h-full flex flex-col bg-white border-s dark:bg-gray-800 dark:border-gray-700 ${anchor == 'right' ? 'float-right' : ''}`, className)}
                 {...rest}
+                onSubmit={handelSubmit}
               >
                 { title 
                   ? <div className="flex justify-between items-center py-3 px-4 border-b dark:border-gray-700">
@@ -93,11 +101,11 @@ export const Drawer: React.FC<DrawerProps> = (props) => {
                 { action
                   ? <div className="flex justify-end items-center gap-x-2 py-3 px-4 border-t dark:border-gray-700">
                       <ButtonAdmin color='white'>{closeTitle}</ButtonAdmin>
-                      <ButtonAdmin onClick={onSubmit}>{submitTitle}</ButtonAdmin>
+                      <ButtonAdmin type='submit'>{submitTitle}</ButtonAdmin>
                     </div>
                   : null
                 }
-              </motion.div>
+              </motion.form>
             </motion.div>
           )}
         </AnimatePresence>,
