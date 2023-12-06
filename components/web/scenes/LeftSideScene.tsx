@@ -13,10 +13,8 @@ import { SceneProps } from "@/app/(web)/layout";
 import { useClickOutside } from "@/lib/utils/clickOutside";
 import SimpleBar from 'simplebar-react';
 import 'simplebar-react/dist/simplebar.min.css';
-// import SimpleBar from 'simplebar';
-// import 'simplebar/dist/simplebar.css';
-// import ResizeObserver from 'resize-observer-polyfill';
 
+// million-ignore
 const LeftSideScene = ({
   sceneSlug, currentScene
 }: {
