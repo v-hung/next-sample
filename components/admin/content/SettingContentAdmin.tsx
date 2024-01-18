@@ -3,19 +3,19 @@ import { useEffect, useState, FC } from 'react'
 import { DATA_FIELDS, createDefaultValue } from '@/lib/admin/fields';
 import { useRouter } from 'next/navigation';
 import slugify from 'slugify';
-import { GroupSettingSampleType } from '@/app/admin/(admin)/[slug]/table';
-import { GroupSettingType, createEditSettings, saveSettings } from '@/actions/admin/settings';
+import { SettingGroupType, createEditSettings, saveSettings } from '@/actions/admin/settings';
 import { SampleColumnSlugType } from '@/actions/admin/sample';
 import { useAction, usePromise } from '@/lib/utils/promise';
 import ButtonAdmin from '../form/ButtonAdmin';
 import { Modal, ModalAction, ModalContent, ModalTitle } from '@/components/ui/Modal';
+import { SettingGroupSampleType } from '@/types/sample';
 
 type State = {
-  groupSettings: GroupSettingType[],
+  groupSettings: SettingGroupType[],
   canDelete: boolean,
   canEdit: boolean,
   canCreate: boolean,
-  GROUPS: GroupSettingSampleType[]
+  GROUPS: SettingGroupSampleType[]
 }
 
 // million-ignore
@@ -43,7 +43,7 @@ const SettingContentAdmin: FC<State> = ({
     setListDataValue(createDataDefault(groupSettings))
   }, [groupSettings])
 
-  const createDataDefault = (groupSettings: GroupSettingType[]) => {
+  const createDataDefault = (groupSettings: SettingGroupType[]) => {
     let data: {
       name: string,
       value: any

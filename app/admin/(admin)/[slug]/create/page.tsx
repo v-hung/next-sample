@@ -1,16 +1,16 @@
 import AdminContentSampleCreateEdit from '@/components/admin/sample/AdminContentSampleCreateEdit'
 import React from 'react'
-import { TABLES_SAMPLE } from '../table'
 import { checkPermissions } from '@/lib/admin/fields'
 import { getAdmin } from '@/actions/admin/admin'
+import sampleConfig from '@/sample.config'
 
 const page = async ({
   params: { slug }
 }: { 
   params: { slug: string } 
 }) => {
-  const table = TABLES_SAMPLE.find(v => v.slug == slug)
-  const tablesName = TABLES_SAMPLE.map(v => v.tableName)
+  const table = sampleConfig.tables.find(v => v.slug == slug)
+  const tablesName = sampleConfig.tables.map(v => v.tableName)
 
   if (table == undefined)
     return <div>Trang không tồn tại</div>

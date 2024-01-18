@@ -104,17 +104,29 @@ export const getAccessDevice = async () => {
     }[] = await db.$queryRaw(
       Prisma.sql`
         SELECT
-          (SELECT COUNT(*) FROM \`access_histories\` WHERE \`device\` = 'Mobile') as mobile,
-          (SELECT COUNT(*) FROM \`access_histories\` WHERE \`device\` = 'Tablet') as tablet,
-          (SELECT COUNT(*) FROM \`access_histories\` WHERE \`device\` = 'PC') as pc
+          (SELECT COUNT(*) FROM access_histories WHERE device = 'Mobile') as mobile,
+          (SELECT COUNT(*) FROM access_histories WHERE device = 'Tablet') as tablet,
+          (SELECT COUNT(*) FROM access_histories WHERE device = 'PC') as pc
       `
     )
 
-    // sqlite select
+    // sqlite
     // `SELECT
     //   (SELECT COUNT(*) FROM "access_histories" WHERE "device" = 'Mobile') as mobile,
     //   (SELECT COUNT(*) FROM "access_histories" WHERE "device" = 'Tablet') as tablet,
     //   (SELECT COUNT(*) FROM "access_histories" WHERE "device" = 'PC') as pc`
+
+    // mysql
+    // `SELECT
+    //   (SELECT COUNT(*) FROM \`access_histories\` WHERE \`device\` = 'Mobile') as mobile,
+    //   (SELECT COUNT(*) FROM \`access_histories\` WHERE \`device\` = 'Tablet') as tablet,
+    //   (SELECT COUNT(*) FROM \`access_histories\` WHERE \`device\` = 'PC') as pc`
+
+    // postgresql
+    // `SELECT
+    //   (SELECT COUNT(*) FROM access_histories WHERE device = 'Mobile') as mobile,
+    //   (SELECT COUNT(*) FROM access_histories WHERE device = 'Tablet') as tablet,
+    //   (SELECT COUNT(*) FROM access_histories WHERE device = 'PC') as pc`
 
     return {counts: counts[0]}
   } catch (error) {

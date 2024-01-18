@@ -1,13 +1,13 @@
 "use server"
 import db from "@/lib/admin/db"
 import { parseDataInString } from "@/lib/utils/hepler"
-import { GroupSetting, Setting } from "@prisma/client"
+import { SettingGroup, Setting } from "@prisma/client"
 import { SampleFieldAndDetailsType } from "./sample"
 import { createHistoryAdmin, getAdmin } from "./admin"
 import { checkPermissions } from "@/lib/admin/fields"
-import { GROUP_SETTINGS } from "@/app/admin/(admin)/[slug]/table"
+import sampleConfig from "@/sample.config"
 
-export type GroupSettingType = Omit<GroupSetting, 'settings'> & {
+export type SettingGroupType = Omit<SettingGroup, 'settings'> & {
   settings: SettingType[]
 }
 
@@ -16,7 +16,7 @@ export type SettingType = (Omit<Setting, 'type' | 'details' | 'value'>) & Sample
 }
 
 export const getSettings = async () => {
-  const data = await db.groupSetting.findMany({
+  const data = await db.settingGroup.findMany({
     include: {
       settings: true
     },
@@ -25,21 +25,21 @@ export const getSettings = async () => {
     }
   })
 
-  const groupSettings = await Promise.all(data.map(async v => ({
+  const SettingGroups = await Promise.all(data.map(async v => ({
     ...v,
     settings: await getValueSettings(v.settings)
 
-  })) as any[] as GroupSettingType[])
+  })) as any[] as SettingGroupType[])
 
-  const groupSettingsFormat = groupSettings.map(v => ({...v, settings: v.settings.sort((a, b) => (a?.sort || 0) - (b?.sort || 0))}))
+  const SettingGroupsFormat = SettingGroups.map(v => ({...v, settings: v.settings.sort((a, b) => (a?.sort || 0) - (b?.sort || 0))}))
  
-  return groupSettingsFormat
+  return SettingGroupsFormat
 }
 
 export const createEditSettings = async () => {
   "use server"
   const user = await getAdmin()
-  if (!user) throw "Authorization"
+  if (!user) throw "Unauthorized"
   try {
     if (!checkPermissions(user.role.permissions, "setting", "edit")) {
       throw "Forbidden";
@@ -48,10 +48,10 @@ export const createEditSettings = async () => {
     const oldSettings = await db.setting.findMany()
 
     await db.setting.deleteMany()
-    await db.groupSetting.deleteMany()
+    await db.settingGroup.deleteMany()
 
     await db.$transaction(
-      GROUP_SETTINGS.map((v,i) => db.groupSetting.create({
+      sampleConfig.settingsGroups.map((v,i) => db.settingGroup.create({
         data: {
           name: v.name,
           label: v.label,
@@ -96,7 +96,7 @@ export const saveSettings = async(data : {name: string, value: string}[]) => {
   "use server"
 
   const user = await getAdmin()
-  if (!user) throw "Authorization"
+  if (!user) throw "Unauthorized"
 
   try {
     if (!checkPermissions(user.role.permissions, "setting", "edit")) {

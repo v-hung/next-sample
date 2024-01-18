@@ -5,9 +5,9 @@ import HeaderAdmin from './HeaderAdmin';
 import MenuAdmin from './MenuAdmin';
 import { useStore } from 'zustand';
 import useAdminMenu from '@/stores/admin/admin_menu';
-import ClientOnly from '../CLientOnly';
+import ClientOnly from '../ClientOnly';
 import { AdminType } from '@/actions/admin/admin';
-import { TABLES_SAMPLE } from '@/app/admin/(admin)/[slug]/table';
+import sampleConfig from '@/sample.config';
 
 export type LinkState = {
   icon?: string,
@@ -22,7 +22,7 @@ export const MANAGER_LINKS: LinkState[] = [
     name: "Bảng điều khiển",
     path: "/admin"
   }, 
-  ...TABLES_SAMPLE.filter(v => v.slug && !["users", "roles", "settings"].includes(v.slug)).map(v => ({
+  ...sampleConfig.tables.filter(v => v.slug && !["users", "roles", "settings"].includes(v.slug)).map(v => ({
     icon: v.icon,
     name: v.name,
     path: '/admin/' + v.slug,
@@ -60,7 +60,7 @@ const AdminLayout : React.FC<{
 
   return (
     <ClientOnly>
-      <div className='w-full min-h-screen bg-gray-100'>
+      <div className='w-full min-h-screen bg-slate-100'>
         <MenuAdmin managerLinks={MANAGER_LINKS} generalLinks={GENERAL_LINKS} permissions={userData.role.permissions}/>
         <div 
           className='w-full transition-all'

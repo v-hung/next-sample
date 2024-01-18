@@ -1,7 +1,7 @@
 "use client"
 import { usePathname } from 'next/navigation'
 import { Dispatch, SetStateAction } from 'react'
-import ClientOnly from '../CLientOnly'
+import ClientOnly from '../ClientOnly'
 import { usePromise } from '@/lib/utils/promise'
 import { Modal, ModalAction, ModalContent, ModalTitle } from '../ui/Modal'
 

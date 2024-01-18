@@ -1,6 +1,6 @@
 "use client"
-import { TABLES_SAMPLE } from '@/app/admin/(admin)/[slug]/table'
 import Checkbox from '@/components/ui/Checkbox'
+import sampleConfig from '@/sample.config'
 import { PermissionsOnRoles } from '@prisma/client'
 import React, { useEffect, useState, useRef, forwardRef, useImperativeHandle, memo, useCallback, useMemo } from 'react'
 
@@ -31,15 +31,15 @@ const PermissionsInputAdmin: React.FC<Props> = ({
   defaultValue,
 }) => {
   const handelChange = useCallback((data: string[], tableName: string) => {
-    let arOri = (value || []).slice().filter(v => 
+    const arrOld = (value || []).slice().filter(v => 
       !permissionKeys.some(v2 => v2 == v.permissionKey && v.permissionTableName == tableName))
 
-    let arrAdd = data.map(v => ({
+    const arrAdd = data.map(v => ({
       permissionKey: v,
       permissionTableName: tableName
     }))
 
-    let newValue = [...arOri, ...arrAdd]
+    const newValue = [...arrOld, ...arrAdd]
 
     const syntheticEvent: any = {
       target: {
@@ -48,13 +48,13 @@ const PermissionsInputAdmin: React.FC<Props> = ({
     };
 
     onChange?.(syntheticEvent)
-  }, [])
+  }, [value])
 
   const setChecked = (e: React.MouseEvent<HTMLButtonElement>, check: boolean) => {
     e.preventDefault()
     e.stopPropagation()
 
-    const newValue = check ? TABLES_SAMPLE.reduce<ItemType[]>((pre, cur) => {
+    const newValue = check ? sampleConfig.tables.reduce<ItemType[]>((pre, cur) => {
       const item: ItemType[] = permissionKeys.map(key => ({
         permissionKey: key,
         permissionTableName: cur.tableName
@@ -74,7 +74,7 @@ const PermissionsInputAdmin: React.FC<Props> = ({
     onChange?.(syntheticEvent)
   }
 
-  const tablesName = TABLES_SAMPLE.map(v => v.tableName)
+  const [tablesName] = useState(sampleConfig.tables.map(v => v.tableName))
 
   const roleValue = useMemo(() => tablesName.map(tableName =>
     (value || []).filter(v => v.permissionTableName === tableName).map(v => v.permissionKey)

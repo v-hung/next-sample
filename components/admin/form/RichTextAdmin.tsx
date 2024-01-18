@@ -1,5 +1,5 @@
 "use client"
-import ClientOnly from '@/components/CLientOnly';
+import ClientOnly from '@/components/ClientOnly';
 import { Editor } from '@tinymce/tinymce-react'
 import React, { useRef, InputHTMLAttributes, FC, memo } from 'react'
 import type { Editor as TinyMCEEditor } from 'tinymce';

@@ -97,6 +97,4 @@ export const MenuTitle = (props: HTMLAttributes<HTMLDivElement>) => {
   )
 }
 
-export const Menu = memo(Dropdown)
-
-export default memo(Dropdown)
+export default Dropdown

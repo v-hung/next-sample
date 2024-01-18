@@ -44,6 +44,26 @@
       {
         key: 'image',
         tableName: 'role'
+      },
+      {
+        key: 'browse',
+        tableName: 'setting'
+      },
+      {
+        key: 'create',
+        tableName: 'setting'
+      },
+      {
+        key: 'edit',
+        tableName: 'setting'
+      },
+      {
+        key: 'delete',
+        tableName: 'setting'
+      },
+      {
+        key: 'image',
+        tableName: 'setting'
       }
     ].map(v => prisma.permission.create({
       data: v

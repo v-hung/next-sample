@@ -25,6 +25,7 @@ export const usePromise = async ({
     }
   } 
   catch (error) {
+    console.log(error)
     let text = error instanceof Error ? error.message : "Có lỗi xảy ra, vui lòng thử lại sau"
 
     useAlerts.getState().addAlert({type: 'error', message: text})

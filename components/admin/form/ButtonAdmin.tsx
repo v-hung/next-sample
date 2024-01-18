@@ -19,7 +19,7 @@ const ButtonAdmin = forwardRef<HTMLButtonElement, Props>((props, ref ) => {
 
   const variantColor = colors[color]
 
-  const commonClass = `inline-flex items-center gap-x-2 text-sm font-semibold border disabled:opacity-50 disabled:pointer-events-none dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600 shadow
+  const commonClass = `inline-flex items-center justify-center text-center gap-x-2 text-sm font-semibold border disabled:opacity-50 disabled:pointer-events-none dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600 shadow
     ${variant == 'solid' ? variantColor.solid : variant == 'outline' ? variantColor.outline : variantColor.text }
     ${size == 'sm' ? 'px-2 py-1.5 text-sm rounded' : size == 'md' ? 'py-2 px-4 rounded-lg' : 'py-3 px-4 text-lg rounded-lg' }
   `

@@ -1,20 +1,27 @@
-import React from 'react'
+import React, { HTMLAttributes } from 'react'
 import { motion, AnimatePresence } from "framer-motion"
+import { twMerge } from 'tailwind-merge'
 
-const Collapsed = ({ open, children }: { 
-  open: boolean, children: React.ReactNode
-}) => {
+type Props = HTMLAttributes<HTMLDivElement> & {
+  open: boolean,
+  keepMounted?: boolean,
+}
+
+const Collapsed = (props: Props) => {
+  const { open, children, keepMounted, className, ...rest } = props
+
   return (
-    <AnimatePresence mode="wait">
-      {open && (
+    <AnimatePresence>
+      {(open || keepMounted) && (
         <motion.div
           initial={{
             height: 0,
             opacity: 0,
           }}
-          animate={{
+          animate={open ? {
             height: "auto",
             opacity: 1,
+            display: 'block',
             transition: {
               height: {
                 duration: 0.4,
@@ -24,6 +31,18 @@ const Collapsed = ({ open, children }: {
                 delay: 0.15,
               },
             },
+          }: {
+            height: 0,
+            opacity: 0,
+            transition: {
+              height: {
+                duration: 0.4,
+              },
+              opacity: {
+                duration: 0.25,
+              },
+            },
+            transitionEnd: {display: 'none'}
           }}
           exit={{
             height: 0,
@@ -37,8 +56,7 @@ const Collapsed = ({ open, children }: {
               },
             },
           }}
-          key="collapse"
-          className='overflow-hidden'
+          className={twMerge('overflow-hidden', className)}
         >
           {children}
         </motion.div>

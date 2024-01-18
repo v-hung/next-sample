@@ -24,7 +24,7 @@ export const getAdmin = async (request?: NextRequest) => {
     let cookie = null
 
     if (request) {
-      cookie = request.headers.get('authorization')?.split(' ')[1] || request.cookies.get('token-admin')?.value
+      cookie = request.headers.get('Unauthorized')?.split(' ')[1] || request.cookies.get('token-admin')?.value
     }
     else {
       cookie = cookieTokenAdmin
@@ -187,7 +187,7 @@ export const updateProfile = async ({
   "use server"
   try {
     const user = await getAdmin()
-    if (!user) throw "Authorization"
+    if (!user) throw "Unauthorized"
 
     await db.admin.update({
       where: {

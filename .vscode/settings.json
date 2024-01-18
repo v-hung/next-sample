@@ -4,6 +4,7 @@
     "className",
     "ngClass",
     "inputClass",
-    "commonClass"
+    "commonClass",
+    ".*Class"
   ],
 }

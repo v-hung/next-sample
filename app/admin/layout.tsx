@@ -18,7 +18,7 @@ export async function generateMetadata(
     description: description || 'Việt Hùng It lập trình viên web, mobile, hệ thống',
     authors: {
       name: 'Việt Hùng It',
-      url: 'https://github.com/rowdy-dowdy'
+      url: 'https://github.com/v-hung'
     },
     twitter: {
       title: title || "Việt Hùng It",

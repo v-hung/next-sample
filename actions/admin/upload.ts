@@ -14,14 +14,15 @@ import { checkPermissions } from "@/lib/admin/fields"
 import db from "@/lib/admin/db"
 
 const getParentString = (depth = 1) => {
-
   let includeObject: any = {
-    include: {parent: true}
+    include: { parent: true }
   }
-  let pointer = includeObject.include;
+
+  let pointer = includeObject.include
+
   for (let i = 0; i < depth - 1; i++) {
-    pointer.parent = {include: {parent: true}};
-    pointer = pointer.parent.include;
+    pointer.parent = { include: { parent: true } }
+    pointer = pointer.parent.include
   }
 
   return includeObject
@@ -40,7 +41,7 @@ export const getListFolderFile = async ({
   try {
     const user = await getAdmin()
 
-    if (!user) throw "Authorization"
+    if (!user) throw "Unauthorized"
 
     const myself = tableName ? !checkPermissions(user.role.permissions, tableName, "image") : false
 
@@ -101,7 +102,7 @@ export const createEditFolder = async ({
 }: CreateEditFolderType) => {
   try {
     const user = await getAdmin()
-    if (!user) throw "Authorization"
+    if (!user) throw "Unauthorized"
 
     let dataCreate = {
       name,
@@ -177,7 +178,7 @@ export const deleteFolder = async ({
   try {
     const user = await getAdmin()
 
-    if (!user) throw "Authorization"
+    if (!user) throw "Unauthorized"
     const myself = tableName ? !checkPermissions(user.role.permissions, tableName, "image") : false
 
     const currentFiles: any[] = [],
@@ -366,7 +367,7 @@ export const editFileData = async({
   try {
     const user = await getAdmin()
 
-    if (!user) throw "Authorization"
+    if (!user) throw "Unauthorized"
 
     const file = await db.file.update({
       where: {
@@ -396,7 +397,7 @@ export const deleteFileData = async({
   try {
     const user = await getAdmin()
 
-    if (!user) throw "Authorization"
+    if (!user) throw "Unauthorized"
 
     const file = await db.file.delete({
       where: {

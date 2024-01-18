@@ -1,8 +1,8 @@
 import AdminContentSample from "@/components/admin/sample/AdminContentSample";
 import { getDataSample } from "@/actions/admin/sample";
-import { TABLES_SAMPLE } from "./table";
 import { checkPermissions } from "@/lib/admin/fields";
 import { getAdmin } from "@/actions/admin/admin";
+import sampleConfig from "@/sample.config";
 
 export default async ({
   searchParams,
@@ -11,7 +11,7 @@ export default async ({
   searchParams: { [key: string]: string | undefined },
   params: { slug: string }
 }) => {
-  const table = TABLES_SAMPLE.find(v => v.slug == slug)
+  const table = sampleConfig.tables.find(v => v.slug == slug)
 
   if (table == undefined)
     return <div>Trang không tồn tại</div>

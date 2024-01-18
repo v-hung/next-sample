@@ -5,7 +5,8 @@ import { checkPermissions } from "@/lib/admin/fields";
 import { FC } from "react";
 import { createHistoryAdmin, getAdmin } from "./admin";
 import { hash } from "bcrypt";
-import { TABLES_SAMPLE } from "@/app/admin/(admin)/[slug]/table";
+import sampleConfig from "@/sample.config";
+// import { sampleConfig.tables } from "@/sample.config";
 
 export type SampleColumnsType = {
   name: string,
@@ -93,11 +94,11 @@ export const getDataSample = async ({
   orderBy, orderType
 }: GetDataSampleState & { tableName: string }) => {
   // const user = await useCurrentUserAdmin()
-  // if (!user) throw "Authorization"
+  // if (!user) throw "Unauthorized"
 
   // if (!checkPermissions(user.role.permissions, tableName, "browse")) throw "Forbidden"
 
-  const columns = TABLES_SAMPLE.find(v => v.tableName == tableName)?.columns || []
+  const columns = sampleConfig.tables.find(v => v.tableName == tableName)?.columns || []
 
   if (page < 1) page = 1
 
@@ -145,11 +146,11 @@ export const getItemDataSample = async ({
   tableName
 }: GetItemDataSampleState & { tableName: string }) => {
   // const user = await useCurrentUserAdmin()
-  // if (!user) throw "Authorization"
+  // if (!user) throw "Unauthorized"
 
   // if (!checkPermissions(user.role.permissions, tableName, "browse")) throw "Forbidden"
 
-  const columns = TABLES_SAMPLE.find(v => v.tableName == tableName)?.columns || []
+  const columns = sampleConfig.tables.find(v => v.tableName == tableName)?.columns || []
 
   const data = await (db as any)[tableName].findUnique({
     where: {
@@ -192,7 +193,7 @@ export const deleteDataSample = async ({
   tableName
 }: DeleteDataSampleState & { tableName: string }) => {
   const user = await getAdmin()
-  if (!user) throw "Authorization"
+  if (!user) throw "Unauthorized"
 
   if (!checkPermissions(user.role.permissions, tableName, "delete")) throw "Forbidden"
 
@@ -222,7 +223,7 @@ export const addEditDataSample = async ({
   data, edit = false, tableName
 }: AddEditDataSampleState & { tableName: string }) => {
   const user = await getAdmin()
-  if (!user) throw "Authorization"
+  if (!user) throw "Unauthorized"
 
   try {
     if (!(edit ? checkPermissions(user.role.permissions, tableName, "edit") 
@@ -230,7 +231,7 @@ export const addEditDataSample = async ({
       throw "Forbidden";
     }
 
-    const columns = TABLES_SAMPLE.find(v => v.tableName == tableName)?.columns || []
+    const columns = sampleConfig.tables.find(v => v.tableName == tableName)?.columns || []
 
     const intermediateResults = await Promise.all(columns.filter(v => !['id', 'createdAt', 'updatedAt', 'publish']
       .includes(v.name)).map(async (pre) => {

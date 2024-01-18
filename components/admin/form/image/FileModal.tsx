@@ -190,7 +190,7 @@ const AdminFileModal: React.FC<ModalType> = ({
         <ModalTitle>Danh sách tài sản</ModalTitle>
 
         <ModalContent className='overflow-hidden p-0 flex flex-col'>
-          <div className="flex-none px-6 flex items-center border-b">
+          <div className="flex-none px-4 flex items-center border-b">
             <div 
               className={`p-4 uppercase text-xs font-semibold border-b hover:bg-sky-100 cursor-pointer border-transparent ${page == 0 ? 'text-sky-600 !border-sky-600' : ''}`}
               onClick={() => setPage(0)}

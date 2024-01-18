@@ -183,7 +183,7 @@ const AdminContentSampleCreateEdit: React.FC<SampleStateType> = ({
 
       <Backdrop
         open={loading}
-        className='grid place-items-center'
+        className='grid place-items-center bg-white/30'
       >
         <span className="icon animate-spin">progress_activity</span>
       </Backdrop>
