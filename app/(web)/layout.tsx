@@ -10,9 +10,7 @@ import WebRootLayout from '@/components/web/layouts/WebRootLayout';
 import { auth } from '@/auth.config';
 import { createAccess } from '@/actions/access';
 
-export async function generateMetadata(
-  parent?: ResolvingMetadata
-): Promise<Metadata> {
+export async function generateMetadata(): Promise<Metadata> {
   const settings = await getSettingsData()
 
   const siteTitle = findSettingByName(settings, "site title")

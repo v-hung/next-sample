@@ -37,6 +37,7 @@ export const getAdminHistory = async (page: number = 1, per_page: number = 10) =
           createdAt: true,
           updatedAt: true,
           adminId: true,
+          error: true,
           admin: {
             select: {
               id: true,

@@ -5,13 +5,13 @@ import { ReactNode } from 'react'
 const layout = async ({
   searchParams, children
 }: {
-  searchParams: { [key: string]: string | undefined },
+  searchParams: never,
   children: ReactNode
 }) => {
   const user = await auth()
 
   if (user) {
-    const url = searchParams?.url || '/'
+    const url = (searchParams as any)?.url || '/'
     redirect(url)
   }
 
