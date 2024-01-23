@@ -6,15 +6,17 @@ import ShortFormField from './questions/ShortFormField'
 import SingleFormField from './questions/SingleFormField'
 import SummaryFormField from './questions/SummaryFormField'
 import YesNoFormField from './questions/YesNoFormField'
-import MatchingFormField from './questions/MatchingFormField'
+import MatchingHeadingFormField from './questions/MatchingHeadingFormField'
 import "./custom.css";
 import { v4 } from 'uuid'
 import { File, QuestionGroup as QuestionGroupDB, Passage, Question, Answer } from '@prisma/client'
 import ButtonAdmin from '../form/ButtonAdmin'
 import { Accordion, AccordionContent, AccordionGroup, AccordionTitle } from '@/components/ui/Accordion'
 import RichTextAdmin from '../form/RichTextAdmin'
+import SummaryWithHintFormField from './questions/SummaryWithHintFormField'
+import MatchingParagraphFormField from './questions/MatchingParagraphFormField'
 
-type OptionTypeState = 'diagram' | 'true-false' | 'short' | 'single' | 'summary' | 'yes-no' | 'matching'
+export type QuestionGroupTypeState = 'diagram' | 'true-false' | 'short' | 'single' | 'summary' | 'yes-no' | 'matching-heading' | 'summary-with-hint' | 'matching-paragraph'
 
 export type AnswerState = Omit<Answer, 'questionId'> | null
 
@@ -38,7 +40,7 @@ type GroupQuestionState = Omit<QuestionGroupDB, 'imageId' | 'passageId' | 'optio
 }
 
 type PassageState = Omit<Passage, 'quizId'> & {
-  groupQuestions: GroupQuestionState[]
+  questionGroups: GroupQuestionState[]
 }
 
 type State = {
@@ -75,7 +77,7 @@ const PassageFormField: FC<State> = memo(({
       id: newId,
       title: 'Đoạn văn ' + (value.length + 1),
       content: '',
-      groupQuestions: [],
+      questionGroups: [],
     }]
 
     const syntheticEvent: any = {
@@ -93,7 +95,7 @@ const PassageFormField: FC<State> = memo(({
       if (v.id == id) {
         return {
           ...v,
-          groupQuestions: data
+          questionGroups: data
         }
       }
       return v
@@ -147,7 +149,7 @@ const PassageFormField: FC<State> = memo(({
         break
       }
 
-      count += value[i].groupQuestions.reduce((pre2, cur2) => {
+      count += value[i].questionGroups.reduce((pre2, cur2) => {
         return pre2 += cur2.questions.length
       }, 0)
     }
@@ -180,7 +182,7 @@ const PassageFormField: FC<State> = memo(({
                 <div className="mb-4">
                   <RichTextAdmin value={v.content} onChange={(e) => handelChangeContent(e.target.value, v.id)} />
                 </div>
-                <GroupQuestion beforeCount={findQuestionBeforeCount(v.id)} data={v.groupQuestions} updateData={(data) => updateData(data, v.id)} />
+                <GroupQuestion beforeCount={findQuestionBeforeCount(v.id)} data={v.questionGroups} updateData={(data) => updateData(data, v.id)} />
               </AccordionContent>
             </Accordion>
           )}
@@ -199,7 +201,7 @@ const PassageFormField: FC<State> = memo(({
 })
 
 type QuestionTypeMap = {
-  type: OptionTypeState;
+  type: QuestionGroupTypeState;
   label: string;
   component: FC<{
     data: any, updateData: (data: QuestionState[]) => void
@@ -230,22 +232,24 @@ const GroupQuestion = memo(({
     setExpanded(isExpanded ? panel : false);
   }
 
-  const groupQuestionsListAdd: QuestionTypeMap[] = [
-    { type: 'diagram', label: 'Diagram Label Completion', component: DiagramFormField},
-    { type: 'true-false', label: 'True / False / Not given', component: TrueFalseFormField},
-    { type: 'short', label: 'Short Answer', component: ShortFormField},
-    { type: 'single', label: 'Single Answer', component: SingleFormField},
-    { type: 'summary', label: 'Summary, Note Completion With Hint', component: SummaryFormField},
-    { type: 'yes-no', label: 'Yes / No / Not Given', component: YesNoFormField},
-    { type: 'matching', label: 'Matching Heading', component: MatchingFormField}
+  const questionGroupListAdd: QuestionTypeMap[] = [
+    { type: 'diagram', label: 'Diagram Label Completion', component: DiagramFormField },
+    { type: 'true-false', label: 'True / False / Not given', component: TrueFalseFormField },
+    { type: 'short', label: 'Short Answer', component: ShortFormField },
+    { type: 'single', label: 'Single Answer', component: SingleFormField },
+    { type: 'summary', label: 'Summary, Note Completion', component: SummaryFormField },
+    { type: 'summary-with-hint', label: 'Summary, Note Completion With Hint', component: SummaryWithHintFormField },
+    { type: 'yes-no', label: 'Yes / No / Not Given', component: YesNoFormField },
+    { type: 'matching-heading', label: 'Matching Heading', component: MatchingHeadingFormField },
+    { type: 'matching-paragraph', label: 'Matching Paragraph', component: MatchingParagraphFormField }
   ]
 
   const [showAdd, setShowAdd] = useState(false)
 
-  const addToData = (e: MouseEvent, type: OptionTypeState) => {
+  const addToData = (e: MouseEvent, type: QuestionGroupTypeState) => {
     e.preventDefault()
 
-    const titleGroupQuestion = groupQuestionsListAdd.find(v => v.type == type)?.label || 'Nhóm câu hỏi'
+    const titleGroupQuestion = questionGroupListAdd.find(v => v.type == type)?.label || 'Nhóm câu hỏi'
 
     const newId = v4()
     const newData: GroupQuestionState[] = [...data, {
@@ -342,7 +346,7 @@ const GroupQuestion = memo(({
       <div className="list-rounded-2 flex flex-col">
         <AccordionGroup>
           { data.map((v,i) => {
-            const Component = groupQuestionsListAdd.find(v2 => v2.type == v.type)?.component
+            const Component = questionGroupListAdd.find(v2 => v2.type == v.type)?.component
             
             return <Accordion key={i} expanded={expanded == `panel-${v.id}`} onChange={(isExpanded) => handleChange(`panel-${v.id}`, isExpanded)}>
               <AccordionTitle className='py-2' renderItem={(active) => 
@@ -381,7 +385,7 @@ const GroupQuestion = memo(({
 
         <div className="flex flex-col justify-center items-center mt-4">
           <div className={`w-full grid gap-2 ${!showAdd ? '!hidden' : 'mb-4'}`} style={{ gridTemplateColumns: 'repeat(auto-fit, minmax(9rem, 1fr))' }}>
-            { groupQuestionsListAdd.map(v => 
+            { questionGroupListAdd.map(v => 
               <button 
                 key={v.type}
                 className="flex flex-col items-center justify-center border p-2 rounded group cursor-pointer bg-gray-100 hover:bg-blue-100 hover:text-blue-600 hover:border-blue-600"

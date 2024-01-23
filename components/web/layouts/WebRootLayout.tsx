@@ -202,18 +202,18 @@ const AvatarUser = () => {
             }
             className="font-medium"
           >
-            <Link href="/" className='flex items-center px-4 py-2 hover:bg-gray-100'>
+            <Link href="/" className='flex items-center px-4 py-2 hover:bg-gray-200 rounded'>
               <span className="icon mr-4">badge</span> Trang cá nhân
             </Link>
-            <Link href="/" className='flex items-center px-4 py-2 hover:bg-gray-100'>
+            <Link href="/" className='flex items-center px-4 py-2 hover:bg-gray-200 rounded'>
               <span className="icon mr-4">upgrade</span> Tài khoản pro
             </Link>
-            <Link href="/" className='flex items-center px-4 py-2 hover:bg-gray-100'>
+            <Link href="/" className='flex items-center px-4 py-2 hover:bg-gray-200 rounded'>
               <span className="icon mr-4">star</span> Nhận ngay học phí free
             </Link>
             <button
               onClick={() => useAction(logout)} 
-              className='flex items-center px-4 py-2 hover:bg-gray-100 cursor-pointer'>
+              className='w-full flex items-center px-4 py-2 hover:bg-gray-200 rounded cursor-pointer text-red-600'>
               <span className="icon mr-4">logout</span> Đăng xuất
             </button>
           </Dropdown>

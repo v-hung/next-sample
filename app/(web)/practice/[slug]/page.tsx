@@ -7,7 +7,7 @@ import { redirect } from "next/navigation"
 
 export type QuizState = Quiz & {
   passages: (Passage & {
-    groupQuestions: (Omit<QuestionGroup, "options"> & {
+    questionGroups: (Omit<QuestionGroup, "options"> & {
       image: File | null,
       questions: Question[]
       options: GroupQuestionOptionsState

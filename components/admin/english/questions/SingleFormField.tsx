@@ -109,7 +109,7 @@ const SingleFormField = ({
                   <input type="text" 
                     value={question.optionA || ''} 
                     onChange={(e) => handelUpdate(e.target.value, question.id, "a")} 
-                    className="w-full py-1 text-[#333] bg-transparent border-none outline-none focus:ring-0 px-0" 
+                    className="w-full py-1 text-[#333] bg-transparent placeholder:text-gray-400 border-none outline-none focus:ring-0 px-0" 
                     placeholder="Our use of technology is having a hidden effect on us." required 
                   />
                 </div>
@@ -128,7 +128,7 @@ const SingleFormField = ({
                   <input type="text" 
                     value={question.optionB || ''} 
                     onChange={(e) => handelUpdate(e.target.value, question.id, "b")} 
-                    className="w-full py-1 text-[#333] bg-transparent border-none outline-none focus:ring-0 px-0" 
+                    className="w-full py-1 text-[#333] bg-transparent placeholder:text-gray-400 border-none outline-none focus:ring-0 px-0" 
                     placeholder="Technology can be used to help youngsters to read." required 
                   />
                 </div>
@@ -147,7 +147,7 @@ const SingleFormField = ({
                   <input type="text" 
                     value={question.optionC || ''} 
                     onChange={(e) => handelUpdate(e.target.value, question.id, "c")} 
-                    className="w-full py-1 text-[#333] bg-transparent border-none outline-none focus:ring-0 px-0" 
+                    className="w-full py-1 text-[#333] bg-transparent placeholder:text-gray-400 border-none outline-none focus:ring-0 px-0" 
                     placeholder="Travellers should be encouraged to use technology on planes." required 
                   />
                 </div>
@@ -166,7 +166,7 @@ const SingleFormField = ({
                   <input type="text" 
                     value={question.optionD || ''} 
                     onChange={(e) => handelUpdate(e.target.value, question.id, "d")} 
-                    className="w-full py-1 !text-[#111] bg-transparent border-none outline-none focus:ring-0 px-0" 
+                    className="w-full py-1 !text-[#111] bg-transparent placeholder:text-gray-400 border-none outline-none focus:ring-0 px-0" 
                     placeholder="Playing games is a more popular use of technology than reading." required 
                   />
                 </div>

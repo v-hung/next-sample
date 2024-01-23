@@ -129,7 +129,7 @@ const settingsGroups: SettingGroupSampleType[] = [
 const sampleConfig: ConfigSampleType = {
   tables: tables,
   settingsGroups: settingsGroups,
-  upload: 'local'
+  upload: 'vercle'
 }
 
 export default sampleConfig

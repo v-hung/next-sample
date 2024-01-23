@@ -33,7 +33,8 @@ const Short = ({
           <span className="text-[#333] font-normal">{v.questionName}</span>
           <div className="input !ml-3" 
             contentEditable 
-            dangerouslySetInnerHTML={{__html : answers.find(v2 => v2.questionId == v.id)?.answer || ''}}
+            onKeyDown={e => e.key == "Enter" && e.preventDefault()}
+            // dangerouslySetInnerHTML={{__html : answers.find(v2 => v2.questionId == v.id)?.answer || ''}}
             onInput={(e) => handelChange(e, v.id)}
           ></div>
         </div>

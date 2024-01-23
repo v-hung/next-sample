@@ -9,12 +9,12 @@
   @apply text-[#333];
 }
 
-.practice :global(.group-question-wrapper .question .input) {
+.practice :global(.group-question-wrapper .input) {
   margin-left: .75rem;
-  @apply min-w-[3.5rem] border-b-2 font-normal text-[#333] whitespace-nowrap;
+  @apply min-w-[3.5rem] border-0 border-b-2 font-medium text-black whitespace-nowrap;
 }
 
-.practice :global(.group-question-wrapper .question .input:focus) {
+.practice :global(.group-question-wrapper .input:focus) {
   @apply outline-none border-sky-600;
 }
 

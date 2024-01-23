@@ -2,13 +2,13 @@
 
 import { Dispatch, DragEvent, MouseEvent, RefObject, SetStateAction, useEffect, useRef, useState } from "react";
 import { GroupQuestionState } from "../content/PracticeContent";
-import { Menu } from "@mui/material";
 import { animate, useAnimationFrame, motion } from "framer-motion"
 import styles from "./english.module.css";
+import Menu from "@/components/ui/Menu";
 
 const ALPHABET = 'abcdefghijklmnopqrstuvwxyz'.split('')
 
-const Matching = ({
+const MatchingParagraph = ({
   groupQuestion, answers, setAnswers
 }: {
   groupQuestion: GroupQuestionState,
@@ -41,7 +41,7 @@ const Matching = ({
   // show field
   const [menuId, setMenuId] = useState<string | null>(null)
   const [anchorElShowMenu, setAnchorElShowMenu] = useState<null | HTMLElement>(null)
-  const openShowMenu = Boolean(anchorElShowMenu)
+  
   const handleClickShowMenu = (event: MouseEvent<HTMLElement>, id: string) => {
     setAnchorElShowMenu(event.currentTarget)
     setMenuId(id)
@@ -64,7 +64,6 @@ const Matching = ({
   }
 
   const dropAnswerItemModal = (e: DragEvent, id: string) => {
-    console.log(answerDragstart.current)
     if (!answerDragstart.current) return
 
     setAnswers(state => state.map(v => ({
@@ -76,6 +75,7 @@ const Matching = ({
   }
 
   const dragenterAnswerItemModal = (e: MouseEvent) => {
+    if (!answerDragstart.current) return
     (e.target as HTMLElement).classList.add('is-drag-over')
   }
 
@@ -94,9 +94,7 @@ const Matching = ({
                 <div className="question">
                   <span>{v.number}</span>
                   <span className="icon w-4 h-4 !text-lg">arrow_right_alt</span>
-                  <span className="font-semibold text-sm">
-                    Paragraph <span className="uppercase">{ALPHABET[i]}</span>
-                  </span>
+                  <span className="font-semibold text-sm">{v.questionName}</span>
                 </div>
                 <div className="mt-2 flex items-end space-x-1">
                   <span className={`ml-6 ${answerItem?.answer ? 'text-blue-500' : 'text-gray-300'}`}>
@@ -140,9 +138,9 @@ const Matching = ({
           </div>
         </div>
 
-        <motion.div drag dragConstraints={answerConstraintsEl} className="w-72 max-h-[30rem] overflow-y-auto absolute right-4 top-4 pb-4 shadow rounded bg-white">
+        <motion.div drag dragConstraints={answerConstraintsEl} className="w-72 max-h-[30rem] overflow-y-auto absolute right-4 top-4 pb-4 shadow rounded bg-white border border-gray-200">
           <div className="flex flex-col space-y-2 text-sm">
-            <div className="sticky top-0 flex items-center justify-center space-x-2 p-4 cursor-move bg-blue-50">
+            <div className="sticky top-0 flex items-center justify-center space-x-2 p-4 cursor-move bg-blue-50 border-b">
               <span className="text-base font-semibold">Drag option to the question</span>
             </div>
 
@@ -151,6 +149,7 @@ const Matching = ({
                 className="flex items-center space-x-2 rounded cursor-pointer mx-2 px-2 py-2 hover:bg-blue-200 select-none"
                 draggable="true"
                 onDragStart={(e) => dragAnswerItemModal(e, v)}
+                onDragEnd={(e) => answerDragstart.current = null}
               >
                 <span className="flex-none grid place-items-center w-6 h-6 rounded-full bg-blue-500 text-white uppercase font-semibold">
                   {v.label}
@@ -163,23 +162,8 @@ const Matching = ({
       </div>
 
       <Menu
-        anchorEl={anchorElShowMenu}
-        open={openShowMenu}
+        referenceEl={anchorElShowMenu}
         onClose={handleCloseShowMenu}
-        anchorOrigin={{
-          vertical: 'bottom',
-          horizontal: 'center',
-        }}
-        transformOrigin={{
-          vertical: 'top',
-          horizontal: 'center',
-        }}
-        PaperProps={{
-          style: {
-            maxHeight: '14rem',
-            width: '16.5rem',
-          },
-        }}
       >
         <div className=" flex flex-col space-y-2 px-2">
           { suggestions.map(v =>
@@ -197,4 +181,4 @@ const Matching = ({
   )
 }
 
-export default Matching
+export default MatchingParagraph

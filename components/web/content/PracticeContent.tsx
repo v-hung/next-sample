@@ -11,13 +11,15 @@ import Short from "../english/Short"
 import Single from "../english/Single"
 import Summary from "../english/Summary"
 import YesNo from "../english/YesNo"
-import Matching from "../english/Matching"
+import MatchingHeading from "../english/MatchingHeading"
 import { File, QuestionGroup, Question } from "@prisma/client"
-import { GroupQuestionOptionsState } from "@/components/admin/english/PassageFormField"
+import { GroupQuestionOptionsState, QuestionGroupTypeState } from "@/components/admin/english/PassageFormField"
 import Link from "next/link"
+import SummaryWithHint from "../english/SummaryWithHint"
+import MatchingParagraph from "../english/MatchingParagraph"
 
-const groupQuestionsList: {
-  type: string,
+const questionGroupsList: {
+  type: QuestionGroupTypeState,
   component: FC<{
     groupQuestion: GroupQuestionState,
     answers: {
@@ -35,8 +37,10 @@ const groupQuestionsList: {
   { type: 'short', component: Short},
   { type: 'single', component: Single},
   { type: 'summary', component: Summary},
+  { type: 'summary-with-hint', component: SummaryWithHint },
   { type: 'yes-no', component: YesNo},
-  { type: 'matching', component: Matching}
+  { type: 'matching-heading', component: MatchingHeading },
+  { type: 'matching-paragraph', component: MatchingParagraph }
 ]
 
 export type GroupQuestionState =  Omit<QuestionGroup, "options"> & {
@@ -66,10 +70,10 @@ const PracticeContent = ({
     let questionIndex = 0
     return passages.map(v => ({
       ...v,
-      questionCount: v.groupQuestions.reduce((a,c) => {
+      questionCount: v.questionGroups.reduce((a,c) => {
         return a + c.questions.length
       },0),
-      groupQuestions: v.groupQuestions.map((v2,i2) => {
+      questionGroups: v.questionGroups.map((v2,i2) => {
         return {
           ...v2,
           questions: v2.questions.map((v3,i3) => {
@@ -84,7 +88,7 @@ const PracticeContent = ({
   }
 
   const [passages, setPassages] = useState(mapPassages(quiz.passages))
-  const [groupQuestionCurrent, setGroupQuestionCurrent] = useState(passages[0]?.groupQuestions[0])
+  const [groupQuestionCurrent, setGroupQuestionCurrent] = useState(passages[0]?.questionGroups[0])
   const [GroupQuestionComponent, setGroupQuestionComponent] = useState<FC<{
     groupQuestion: GroupQuestionState,
     answers: {
@@ -96,17 +100,38 @@ const PracticeContent = ({
       answer: string;
     }[]>>
   }> | null>(
-    () => groupQuestionsList.find(v => passages[0]?.groupQuestions[0].type)?.component || null
+    () => questionGroupsList.find(v => passages[0]?.questionGroups[0].type)?.component || null
   )
 
+  const [timer, setTimer] = useState(quiz.workTime * 60)
+
+  useEffect(() => {
+    const intervalId = setInterval(() => {
+      if (timer == 0) {
+        submit(true)
+        clearInterval(intervalId)
+        return
+      }
+      setTimer(state => state - 1)
+    }, 1000)
+
+    return () => clearInterval(intervalId)
+  }, [])
+
+  const formatTime = (timeInSeconds: number) => {
+    const minutes = Math.floor(timeInSeconds / 60);
+    const remainingSeconds = timeInSeconds % 60;
+    return `${String(minutes).padStart(2, '0')}:${String(remainingSeconds).padStart(2, '0')}`
+  }
+
   const [answers, setAnswers] = useState(quiz.passages.reduce<{ questionId: string, answer: string }[]>((pre,cur) => {
-    return [...pre, ...cur.groupQuestions.reduce<{ questionId: string, answer: string }[]>((pre2, cur2) => {
+    return [...pre, ...cur.questionGroups.reduce<{ questionId: string, answer: string }[]>((pre2, cur2) => {
       return [...pre2, ...cur2.questions.map(v3 => ({ questionId: v3.id, answer: '' }))]
     }, [])]
   },[]))
 
   const getAnswerCount = (index: number) => {
-    let listQuestionId = passages[index].groupQuestions.reduce<string[]>((pre, cur) => {
+    let listQuestionId = passages[index].questionGroups.reduce<string[]>((pre, cur) => {
       return [...pre, ...cur.questions.map(v => v.id)]
     }, [])
 
@@ -128,29 +153,29 @@ const PracticeContent = ({
   const watchGroupQuestion = () => {
     if (passageIndex == 0 ) {
       if (passageIndexList[passageIndex].groupQuestionIndex != 0)
-        setGroupQuestionPrev(passages[passageIndex].groupQuestions[passageIndexList[passageIndex].groupQuestionIndex - 1])
+        setGroupQuestionPrev(passages[passageIndex].questionGroups[passageIndexList[passageIndex].groupQuestionIndex - 1])
       else 
         setGroupQuestionPrev(null)
     } else {
       if (passageIndexList[passageIndex].groupQuestionIndex != 0) {
-        setGroupQuestionPrev(passages[passageIndex].groupQuestions[passageIndexList[passageIndex].groupQuestionIndex - 1])
+        setGroupQuestionPrev(passages[passageIndex].questionGroups[passageIndexList[passageIndex].groupQuestionIndex - 1])
       }
       else {
-        setGroupQuestionPrev(passages[passageIndex - 1].groupQuestions.at(-1))
+        setGroupQuestionPrev(passages[passageIndex - 1].questionGroups.at(-1))
       }
     }
 
     if (passageIndex == passages.length - 1 ) {
-      if (passageIndexList[passageIndex].groupQuestionIndex != passages[passageIndex].groupQuestions.length - 1)
-        setGroupQuestionNext(passages[passageIndex].groupQuestions[passageIndexList[passageIndex].groupQuestionIndex + 1])
+      if (passageIndexList[passageIndex].groupQuestionIndex != passages[passageIndex].questionGroups.length - 1)
+        setGroupQuestionNext(passages[passageIndex].questionGroups[passageIndexList[passageIndex].groupQuestionIndex + 1])
       else 
         setGroupQuestionNext(null)
     } else {
-      if (passageIndexList[passageIndex].groupQuestionIndex != passages[passageIndex].groupQuestions.length - 1) {
-        setGroupQuestionNext(passages[passageIndex].groupQuestions[passageIndexList[passageIndex].groupQuestionIndex + 1])
+      if (passageIndexList[passageIndex].groupQuestionIndex != passages[passageIndex].questionGroups.length - 1) {
+        setGroupQuestionNext(passages[passageIndex].questionGroups[passageIndexList[passageIndex].groupQuestionIndex + 1])
       }
       else {
-        setGroupQuestionNext(passages[passageIndex + 1].groupQuestions[0])
+        setGroupQuestionNext(passages[passageIndex + 1].questionGroups[0])
       }
     }
   }
@@ -158,9 +183,9 @@ const PracticeContent = ({
   useEffect(() => {
     watchGroupQuestion()
 
-    let tempGroupQuestion = passages[passageIndex].groupQuestions[passageIndexList[passageIndex].groupQuestionIndex]
+    let tempGroupQuestion = passages[passageIndex].questionGroups[passageIndexList[passageIndex].groupQuestionIndex]
     setGroupQuestionCurrent(tempGroupQuestion)
-    setGroupQuestionComponent(() => groupQuestionsList.find(v => v.type == tempGroupQuestion.type)?.component || null)
+    setGroupQuestionComponent(() => questionGroupsList.find(v => v.type == tempGroupQuestion.type)?.component || null)
   }, [passageIndex, passageIndexList])
 
   const changeGroupQuestion = (type: 'next' | 'prev') => {
@@ -175,12 +200,12 @@ const PracticeContent = ({
         setPassageIndex(state => state > 0 ? state - 1 : state)
         setPassageIndexList(state => state.map((v,i) => ({
           ...v,
-          groupQuestionIndex: i == passageIndex ? quiz.passages[i].groupQuestions.length - 1 : v.groupQuestionIndex
+          groupQuestionIndex: i == passageIndex ? quiz.passages[i].questionGroups.length - 1 : v.groupQuestionIndex
         })))
       }
     }
     else if (type == "next") {
-      if (passageIndexList[passageIndex].groupQuestionIndex != quiz.passages[passageIndex].groupQuestions.length - 1) {
+      if (passageIndexList[passageIndex].groupQuestionIndex != quiz.passages[passageIndex].questionGroups.length - 1) {
         setPassageIndexList(state => state.map((v,i) => ({
           ...v,
           groupQuestionIndex: i == passageIndex ? v.groupQuestionIndex + 1 : v.groupQuestionIndex
@@ -199,8 +224,23 @@ const PracticeContent = ({
   const [checkSubmit, setCheckSubmit] = useState(false)
   const [unansweredQuestion, setUnansweredQuestion] = useState(0)
 
-  const submit = () => {
-    setCheckSubmit(true)
+  // useEffect(() => {
+  //   let tempAnswers = answers.length - answers.filter(v => v.answer).length
+  //   setUnansweredQuestion(tempAnswers)
+  //   setCheckSubmit(tempAnswers > 0)
+  // }, [answers])
+
+  const submit = (force?: boolean) => {
+    let tempAnswers = answers.length - answers.filter(v => v.answer).length
+
+    setUnansweredQuestion(tempAnswers)
+    
+    if (tempAnswers > 0 && !force) {
+      setCheckSubmit(true)
+      return
+    }
+
+
   }
 
   return (
@@ -218,7 +258,7 @@ const PracticeContent = ({
             </Link>
         
             <div className="flex-none flex items-center space-x-1 py-3">
-              <Image src={findSettingByName('site logo')?.url || '/logo2.png'} alt="" width={40} height={40} className="w-10 h-10 rounded" />
+              <Image src={findSettingByName('site logo')?.url || '/images/logo2.png'} alt="" width={40} height={40} className="w-10 h-10 rounded" />
               <div className="logo-title">
                 <h1 className="text-lg font-semibold">Việt Hùng IT</h1>
                 <h5 className="text-xs text-gray-500">Developer . Transporter</h5>
@@ -227,7 +267,7 @@ const PracticeContent = ({
         
             <div className="!ml-auto">
               <div className="flex items-center space-x-1 text-red-600 rounded-lg border px-2 py-1">
-                <span className="font-semibold">{quiz.workTime} : 00</span>
+                <span className="font-semibold">{formatTime(timer)}</span>
                 <span className="icon">
                   <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="m20.145 8.27 1.563-1.563-1.414-1.414L18.586 7c-1.05-.63-2.274-1-3.586-1-3.859 0-7 3.14-7 7s3.141 7 7 7 7-3.14 7-7a6.966 6.966 0 0 0-1.855-4.73zM15 18c-2.757 0-5-2.243-5-5s2.243-5 5-5 5 2.243 5 5-2.243 5-5 5z"></path><path d="M14 10h2v4h-2zm-1-7h4v2h-4zM3 8h4v2H3zm0 8h4v2H3zm-1-4h3.99v2H2z"></path></svg>
                 </span>
@@ -270,8 +310,8 @@ const PracticeContent = ({
           <div className="practice-container">
             <div className="flex items-stretch space-x-4 py-2">
               <div className="flex space-x-2">
-                <div className="w-8 bg-gray-200">
-                  <img src="https://suijm9clouobj.vcdn.cloud/PRIVATE/MEDIA/7606d599-4920-4860-8fb1-de3ee721bf85.png" alt="" className="w-full h-full object-cover" />
+                <div className="w-8">
+                  <Image src="/images/logo2.png" alt="logo" width={32} height={32} className="w-full h-full object-contain" />
                 </div>
                 <div className="w-36">
                   <h5 className="font-semibold truncate">{quiz.title}</h5>
@@ -366,7 +406,7 @@ const PracticeContent = ({
                   </button>
                 : <button 
                     className="flex items-center pl-4 pr-2 py-2 rounded-lg font-semibold bg-red-500 text-white hover:bg-red-400"
-                    onClick={submit}
+                    onClick={() => submit()}
                   >
                     <span>Submit</span>
                     <span className="icon">chevron_right</span>
@@ -383,7 +423,7 @@ const PracticeContent = ({
           >
             <div className="practice-container py-2">
               <div className="flex space-x-8">
-                { passages[passageIndex].groupQuestions.map((v,i) => 
+                { passages[passageIndex].questionGroups.map((v,i) => 
                   <div key={v.id} className="text-xs">
                     <p className="text-gray-500">{v.title}</p>
                     <div className="flex space-x-2">
@@ -413,21 +453,21 @@ const PracticeContent = ({
               <span className="icon w-10 h-10 text-yellow-500">
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M12 2C6.486 2 2 6.486 2 12s4.486 10 10 10 10-4.486 10-10S17.514 2 12 2zm0 18c-4.411 0-8-3.589-8-8s3.589-8 8-8 8 3.589 8 8-3.589 8-8 8z"></path><path d="M11 11h2v6h-2zm0-4h2v2h-2z"></path></svg>
               </span>
-              <span className="font-semibold text-xl">Missing sentence</span>
+              <span className="font-semibold text-xl">Thiếu câu</span>
             </div>
 
             <div className="mt-6 font-medium">
-              You are still missing {unansweredQuestion} unfinished questions
+              Bạn còn {unansweredQuestion} câu chưa làm kìa!
             </div>
 
-            <form action="?/submit" className="mt-6 flex space-x-4 justify-end" method="post">
+            <div className="mt-6 flex space-x-4 justify-end">
               <button 
                 className="px-4 py-2 rounded-lg font-semibold bg-gray-100 hover:bg-gray-200"
                 onClick={() => setCheckSubmit(false)}
-              >Review</button>
+              >Xem lại</button>
 
-              <button type="submit" className="px-4 py-2 rounded-lg font-semibold bg-red-500 text-white hover:bg-red-400">Submit regardless</button>
-            </form>
+              <button onClick={() => submit(true)} className="px-4 py-2 rounded-lg font-semibold bg-red-500 text-white hover:bg-red-400">Nộp bất chấp</button>
+            </div>
           </div>
         </div>
         : null

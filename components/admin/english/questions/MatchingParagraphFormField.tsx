@@ -5,7 +5,7 @@ import { GroupQuestionOptionsState, QuestionState } from "../PassageFormField"
 import QuestionFormField from "../QuestionFormField"
 import InputAdmin from "../../form/InputAdmin"
 
-const MatchingFormField = ({
+const MatchingParagraphFormField = ({
   data, updateData, beforeCount, options, setOptions
 }: {
   data: QuestionState[]
@@ -96,15 +96,23 @@ const MatchingFormField = ({
       <QuestionFormField 
         label="Nhóm câu trả lời" className="w-full lg:w-1/2 px-2 mb-4" 
         data={data} updateData={updateData} beforeCount={beforeCount} renderItem={(question) =>
-          <InputAdmin 
-            label="Answer"
-            placeholder="canal" required
-            value={question.answer?.answerName} onChange={(e) => handelUpdate(e.target.value, question.id, "answer")}
-          />
+          <>
+            <InputAdmin 
+              label="Question name"
+              placeholder="Water runs into a __ used by local people" required
+              value={question.questionName || ''} onChange={(e) => handelUpdate(e.target.value, question.id, 'questionName')}
+            />
+            
+            <InputAdmin 
+              label="Answer"
+              placeholder="canal" required
+              value={question.answer?.answerName} onChange={(e) => handelUpdate(e.target.value, question.id, "answer")}
+            />
+          </>
         } 
       />
     </div>
   )
 }
 
-export default MatchingFormField
+export default MatchingParagraphFormField

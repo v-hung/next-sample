@@ -12,6 +12,8 @@ import { FileTypeState } from "./sample"
 import { getAdmin } from "./admin"
 import { checkPermissions } from "@/lib/admin/fields"
 import db from "@/lib/admin/db"
+import sampleConfig from "@/sample.config"
+import { put } from '@vercel/blob';
 
 const getParentString = (depth = 1) => {
   let includeObject: any = {
@@ -275,23 +277,24 @@ export const uploadFiles = async ({
 
       if (!checkMimeType) throw "Bạn không được tải lên tệp tin này"
 
+      let name = v4() + extension
+      let fileUrl = `${sampleConfig.upload == "vercle" ? process.env.AUTH_URL : './storage'}/${tableName}/${name}`
+
       // upload image
       if (mimeName.startsWith('image/')) {
         if (Object.keys(sharpCompress).findIndex(v => `.${v}` == extension || extension == ".jpg") >= 0) {
           let fileData = sharp(await file.arrayBuffer(), { animated: true })
-          
-          let metadata = await fileData.metadata()
-          
-          let name = v4() + "." + metadata.format
-          let fileUrl = `./storage/${tableName}/${name}`
+
+          const { size, width, height } = await fileData.metadata()
       
           //@ts-ignore
-          let fileSave = await fileData[metadata.format || "jpeg"](sharpCompress[metadata.format || "jpeg"]).toFile(fileUrl)
-            .then((data: any) => {
-              return data
+          if (sampleConfig.upload == "vercle") {
+            await put(name, fileData, {
+              access: 'public',
             })
-      
-          let { size, width, height } = fileSave
+          } else {
+            await (fileData as any)[extension || "jpeg"]((sharpCompress as any)[extension || "jpeg"]).toFile(fileUrl).then((data: any) => data)
+          }
       
           res.push({
             name: fileName,
@@ -303,14 +306,15 @@ export const uploadFiles = async ({
           })
         }
         else {
-          let name = v4() + extension
-          let fileUrl = `./storage/${tableName}/${name}`
-  
           const fileBuffer = Buffer.from(await file.arrayBuffer())
   
           const {width, height} = imageSize(fileBuffer)
   
-          await fsPromise.writeFile(fileUrl, fileBuffer)
+          sampleConfig.upload == "vercle" 
+          ? await put(name, file, {
+            access: 'public',
+          })
+          : await fsPromise.writeFile(fileUrl, fileBuffer)
   
           res.push({
             name: fileName,
@@ -324,12 +328,13 @@ export const uploadFiles = async ({
       }
       // upload file
       else {
-        let name = v4() + extension
-        let fileUrl = `./storage/${tableName}/${name}`
-
         const fileBuffer = Buffer.from(await file.arrayBuffer())
 
-        await fsPromise.writeFile(fileUrl, fileBuffer)
+        sampleConfig.upload == "vercle" 
+          ? await put(name, file, {
+            access: 'public',
+          })
+          : await fsPromise.writeFile(fileUrl, fileBuffer)
 
         res.push({
           name: fileName,

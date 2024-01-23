@@ -1,6 +1,6 @@
 "use client"
 
-import { Placement, autoUpdate, computePosition, flip, offset, shift, size } from "@floating-ui/dom"
+import { Placement, Strategy, autoUpdate, computePosition, flip, offset, shift, size } from "@floating-ui/dom"
 import { HTMLAttributes, useEffect, useRef } from "react"
 import { motion, AnimatePresence, HTMLMotionProps } from "framer-motion";
 import { useClickOutside } from "@/lib/utils/clickOutside";
@@ -9,11 +9,12 @@ import { twMerge } from "tailwind-merge";
 type Props = HTMLMotionProps<'div'> & {
   referenceEl: HTMLElement | null,
   onClose?: (e: Event) => void,
-  placement?: Placement
+  placement?: Placement,
+  strategy?: Strategy
 }
 
 const Menu = (props: Props) => {
-  const { children, referenceEl, onClose, placement, className, ...rest } = props
+  const { children, referenceEl, onClose, placement, strategy = 'absolute', className, ...rest } = props
 
   const floatingEl = useRef<HTMLDivElement>(null)
 
@@ -21,6 +22,7 @@ const Menu = (props: Props) => {
     if (referenceEl && floatingEl.current) {
       computePosition(referenceEl, floatingEl.current, {
         placement: placement,
+        strategy: strategy,
         middleware: [
           offset(5), 
           flip(), 
@@ -36,10 +38,11 @@ const Menu = (props: Props) => {
             },
           }),
         ],
-      }).then(({x, y}) => {
+      }).then(({ x, y, strategy }) => {
         floatingEl.current && Object.assign(floatingEl.current.style, {
           left: `${x}px`,
           top: `${y}px`,
+          position: strategy
         })
       })
     }

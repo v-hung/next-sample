@@ -15,8 +15,8 @@ export const customDataEnglishCreate = async (name: string, data: any, editId?: 
     create: data.map((v: any) => ({
       title: v?.title || '',
       content: v?.content || '',
-      groupQuestions: {
-        create: v.groupQuestions.map((v2: any) => ({
+      questionGroups: {
+        create: v.questionGroups.map((v2: any) => ({
           title: v2?.title || '',
           type: v2?.type || '',
           options: v2?.options ? JSON.stringify(v2.options) : null,
@@ -51,7 +51,7 @@ export const customDataEnglishSelect = (name: string) => {
       id: true,
       title: true,
       content: true,
-      groupQuestions: {
+      questionGroups: {
         select: {
           id: true,
           title: true,
@@ -82,7 +82,7 @@ export const customDataEnglishSelect = (name: string) => {
 export const formatDataEnglishSelect = (data: any) => {
   return data.map((v: any) => ({
     ...v, 
-    groupQuestions: v.groupQuestions.map((v2: any) => ({
+    questionGroups: v.questionGroups.map((v2: any) => ({
       ...v2,
       options: v2.options ? JSON.parse(v2.options) : null
     }))

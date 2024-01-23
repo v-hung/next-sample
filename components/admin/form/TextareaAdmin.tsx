@@ -1,8 +1,8 @@
 "use client"
-import React, {FC, InputHTMLAttributes, memo, useId} from 'react'
+import React, {FC, TextareaHTMLAttributes, memo, useId} from 'react'
 import { twMerge } from "tailwind-merge";
 
-type Props = InputHTMLAttributes<HTMLTextAreaElement> & {
+type Props = TextareaHTMLAttributes<HTMLTextAreaElement> & {
   label?: string | null | undefined,
   inputClass?: string
 }

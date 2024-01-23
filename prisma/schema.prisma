@@ -6,8 +6,8 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
-  url = env("POSTGRES_PRISMA_URL") // uses connection pooling
+  provider  = "postgresql"
+  url       = env("POSTGRES_PRISMA_URL") // uses connection pooling
   directUrl = env("POSTGRES_URL_NON_POOLING") // uses a direct connection
 }
 
@@ -53,6 +53,8 @@ model User {
   accounts      Account[]
   sessions      Session[]
 
+  tests Test[]
+
   @@map("users")
 }
 
@@ -65,7 +67,6 @@ model VerificationRequest {
   updatedAt  DateTime @updatedAt
 
   @@unique([identifier, token])
-
   @@map("verificati_on_requests")
 }
 
@@ -187,10 +188,10 @@ model File {
 }
 
 model SettingGroup {
-  id        String  @id @default(uuid())
-  name      String
-  label     String?
-  sort      Int?
+  id    String  @id @default(uuid())
+  name  String
+  label String?
+  sort  Int?
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -201,14 +202,14 @@ model SettingGroup {
 }
 
 model Setting {
-  id        String  @id @default(uuid())
-  name      String  @unique
-  label     String?
-  type      String
-  details   String?
-  value     String? @db.Text
-  col       Int?
-  sort      Int?
+  id      String  @id @default(uuid())
+  name    String  @unique
+  label   String?
+  type    String
+  details String?
+  value   String? @db.Text
+  col     Int?
+  sort    Int?
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -221,14 +222,15 @@ model Setting {
 
 model AdminHistory {
   id        Int     @id @default(autoincrement())
-  status    String  // 'succcess' | 'error'
-  action    String  // 'create' | 'edit' | 'delete' | 'upload' | 'login'
+  status    String // 'succcess' | 'error'
+  action    String // 'create' | 'edit' | 'delete' | 'upload' | 'login'
   title     String
   tableName String?
   data      String? @db.Text
+  error     String?
 
   adminId String
-  admin Admin @relation(fields: [adminId], references: [id])
+  admin   Admin  @relation(fields: [adminId], references: [id])
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -239,7 +241,7 @@ model AdminHistory {
 model AccessHistory {
   id     String  @id @default(cuid())
   device String
-  url    String @default("/")
+  url    String  @default("/")
   ip     String?
 
   accessTime  DateTime @default(now())
@@ -252,7 +254,7 @@ model AccessHistory {
 // CUSTOM
 // *
 model Quiz {
-  id       String   @id @default(cuid())
+  id       String @id @default(cuid())
   title    String
   slug     String
   workTime Int // so phut
@@ -271,10 +273,11 @@ model Passage {
   title   String
   content String
 
-  quizId  String
-  quiz    Quiz @relation(fields: [quizId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  quizId String
+  quiz   Quiz   @relation(fields: [quizId], references: [id], onDelete: Cascade, onUpdate: Cascade)
 
   questionGroups QuestionGroup[]
+  tests          Test[]
 
   @@map("passages")
 }
@@ -286,10 +289,10 @@ model QuestionGroup {
   options String
 
   imageId String?
-  image    File? @relation(fields: [imageId], references: [id])
+  image   File?   @relation(fields: [imageId], references: [id])
 
   passageId String
-  passage    Passage @relation(fields: [passageId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  passage   Passage @relation(fields: [passageId], references: [id], onDelete: Cascade, onUpdate: Cascade)
 
   questions Question[]
 
@@ -317,8 +320,23 @@ model Answer {
   id         String @id @default(cuid())
   answerName String
 
-  questionId String    @unique
-  question    Question @relation(fields: [questionId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  questionId String   @unique
+  question   Question @relation(fields: [questionId], references: [id], onDelete: Cascade, onUpdate: Cascade)
 
   @@map("answers")
+}
+
+model Test {
+  id        String   @id @default(cuid())
+  answers   String
+  point     Float
+
+  userId    String   @unique
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  passageId String   @unique
+  passage   Passage  @relation(fields: [passageId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  createdAt DateTime @default(now())
+
+  @@map("tests")
 }
